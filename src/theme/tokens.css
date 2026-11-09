@@ -1,0 +1,32 @@
+/*
+ * Design tokens: every colour, font and radius the app uses, as CSS custom
+ * properties. Components only ever use var(--…), so the dark theme (#4) is
+ * a second set of values here, not a change to any component.
+ *
+ * Light = theme A "Clean minimal" from the design canvas.
+ */
+:root {
+  --font: 'Inter', system-ui, sans-serif;
+
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --text: #16181d;
+  --text-secondary: #5b606b;
+  --border: #d9dbe0;
+  --grid-line: #e3e5ea;
+
+  --x: #2457d6;
+  --o: #e0611a;
+  --win-bg: #eaf0fd;
+
+  --link: #2457d6;
+  --link-hover: #163c9e;
+
+  --primary-bg: #16181d;
+  --primary-text: #ffffff;
+
+  --board-shadow: 0 1px 2px rgba(22, 24, 29, 0.06), 0 8px 24px rgba(22, 24, 29, 0.06);
+
+  --radius-card: 14px;
+  --radius-board: 20px;
+}
