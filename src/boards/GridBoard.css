@@ -1,0 +1,49 @@
+.grid-board {
+  width: min(342px, 100%);
+  aspect-ratio: 1;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  background: var(--surface);
+  border-radius: var(--radius-board);
+  box-shadow: var(--board-shadow);
+}
+
+.grid-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Inner grid lines only: right edge of columns 1–2, bottom edge of rows 1–2. */
+.grid-square:not(:nth-child(3n)) {
+  border-right: 2px solid var(--grid-line);
+}
+
+.grid-square:nth-child(-n + 6) {
+  border-bottom: 2px solid var(--grid-line);
+}
+
+.grid-square[aria-disabled='true'] {
+  cursor: default;
+}
+
+.grid-square[data-win] {
+  background: var(--win-bg);
+}
+
+.grid-square .mark {
+  width: 75%;
+  height: 75%;
+  max-width: 64px;
+  max-height: 64px;
+}
