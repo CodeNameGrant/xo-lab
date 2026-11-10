@@ -97,7 +97,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
 function PlayerCard({ player, active, first }: { player: Player; active: boolean; first: boolean }) {
   return (
     <div className="player-card" data-player={player} data-active={active || undefined}>
-      <Mark player={player} size={28} stroke={10} />
+      <Mark player={player} size={28} stroke={2.5} />
       <div className="player-text">
         <div className="player-name">
           {playerName(player)}

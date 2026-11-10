@@ -2,8 +2,9 @@ import { ChevronLeft, ChevronRight, CircleQuestionMark, RotateCw, Undo2, X, type
 
 /**
  * Every icon in the app, by what it means rather than what it looks like.
- * This is the only file that imports lucide-react: a new icon is a new
- * entry here, named for its job (`newGame`, not `rotate-cw`).
+ * A new icon is a new entry here, named for its job (`newGame`, not
+ * `rotate-cw`). The only other file that imports lucide-react is Mark.tsx,
+ * for the X and O game pieces.
  */
 const GLYPHS = {
   back: ChevronLeft,

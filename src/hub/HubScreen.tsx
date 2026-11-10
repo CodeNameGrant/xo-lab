@@ -40,7 +40,7 @@ function Preview({ rows }: { rows: VariantInfo['preview'] }) {
         .split('')
         .map((cell, index) => (
           <span key={index} className="variant-preview-cell">
-            {(cell === 'X' || cell === 'O') && <Mark player={cell} size={14} stroke={12} />}
+            {(cell === 'X' || cell === 'O') && <Mark player={cell} size={14} stroke={3} />}
           </span>
         ))}
     </span>

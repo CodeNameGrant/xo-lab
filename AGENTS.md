@@ -36,9 +36,9 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade"; the values are 
 
 # Icons
 
-**Every icon is a Lucide icon, drawn as `<Icon name="…">` from `src/ui/icon.tsx`** — the only file that imports `lucide-react`. Never a hand-drawn inline `<svg>`, an SVG file, or a text character (`✕`, `←`, `+`) standing in for an icon. A new glyph is a semantic name (`newGame`, not `rotate-cw`) added to its `GLYPHS` map. Size it with the numeric `size` prop — a CSS width or height scales the stroke with it — and keep `className` for colour and layout. Icons take `currentColor` and are always decorative: the button or link carries the label (`aria-label` or visible text).
+**Every icon is a Lucide icon, drawn as `<Icon name="…">` from `src/ui/icon.tsx`**, which imports `lucide-react` for every icon but the game pieces below. Never a hand-drawn inline `<svg>`, an SVG file, or a text character (`✕`, `←`, `+`) standing in for an icon. A new glyph is a semantic name (`newGame`, not `rotate-cw`) added to its `GLYPHS` map. Size it with the numeric `size` prop — a CSS width or height scales the stroke with it — and keep `className` for colour and layout. Icons take `currentColor` and are always decorative: the button or link carries the label (`aria-label` or visible text).
 
-X and O marks are `<Mark>` from `src/ui/Mark.tsx`, never a letter.
+**The X and O game pieces are the one exception: `<Mark player="X">` from `src/ui/Mark.tsx`**, the only other file that imports `lucide-react` and the only icons exported from anywhere but `icon.tsx`. They are pieces, not controls: each takes its player's colour and a stroke weight that varies with where it is shown. They are `X` and `CircleSmall`, a pair picked so both fill the same 12-unit box; keep them a matched pair. A piece is always a `<Mark>`, never a letter.
 
 # Accessibility
 
