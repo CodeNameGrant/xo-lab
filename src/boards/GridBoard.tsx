@@ -34,8 +34,9 @@ export function GridBoard({ cells, highlight, isPlayable, onPlay }: GridBoardPro
             type="button"
             // Light: inner grid lines only (right edge of columns 1–2, bottom edge of rows 1–2).
             // Dark: every square is its own bordered tile; a winning tile's border takes the winner's colour.
+            // Winning squares are tinted in the winner's colour in light; dark keeps one shared highlight.
             // The winning highlight fades in, unless the device asks for reduced motion.
-            className="flex min-h-11 min-w-11 items-center justify-center border-grid data-win:bg-win motion-safe:transition-colors motion-safe:duration-300 dark:rounded-tile dark:border dark:bg-surface dark:data-[win=O]:border-player-o dark:data-[win=X]:border-player-x light:not-nth-[3n]:border-r-2 light:nth-[-n+6]:border-b-2"
+            className="flex min-h-11 min-w-11 items-center justify-center border-grid motion-safe:transition-colors motion-safe:duration-300 dark:rounded-tile dark:border dark:bg-surface dark:data-win:bg-win dark:data-[win=O]:border-player-o dark:data-[win=X]:border-player-x light:not-nth-[3n]:border-r-2 light:data-[win=O]:bg-tint-o light:data-[win=X]:bg-tint-x light:nth-[-n+6]:border-b-2"
             data-win={(highlight.includes(index) && cell) || undefined}
             aria-label={`Row ${row}, column ${column}, ${cell ?? 'empty'}`}
             // aria-disabled (not disabled) keeps every square reachable for screen readers.

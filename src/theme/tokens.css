@@ -36,19 +36,25 @@
   --color-line: #d9dbe0;
   --color-grid: #e3e5ea;
 
-  /* Players and the winning line */
+  /*
+   * Players and the winning line. O is the X blue turned to red: the same OKLCH
+   * lightness (0.505) at hue 22 and a little less chroma (0.17 against 0.20), so
+   * neither piece outweighs the other and the red reads as soft rather than hard.
+   */
   --color-player-x: #2457d6;
-  --color-player-o: #e0611a;
+  --color-player-o: #b12b35;
+  /* The winning squares' shared highlight. Only the dark theme uses it; light tints the
+     winning squares in the winner's own colour (the tints below). */
   --color-win: #eaf0fd;
 
-  /* The winner's player card: a soft tint of their colour behind normal text. */
+  /* The winner's tint, on their player card and their winning squares: a soft tint of
+     their colour behind normal text, the two tints at the same lightness and chroma. */
   --color-tint-x: #eaf0fd;
-  --color-tint-o: #fdefe6;
+  --color-tint-o: #feebea;
 
-  /* Text on a button filled with a player's colour (Play again). White on the light
-     orange is only 3.6:1, so Player 2's button takes dark text. */
+  /* Text on a button filled with a player's colour (Play again). */
   --color-on-player-x: #ffffff;
-  --color-on-player-o: #16181d;
+  --color-on-player-o: #ffffff;
 
   --color-link: #2457d6;
   --color-link-hover: #163c9e;
