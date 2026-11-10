@@ -23,7 +23,7 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 - **`src/game/session.ts` — a game is the first player plus the move list. Current state is never stored**; it is rebuilt by replaying the moves. The move list is what saving (#7) will persist. There is no undo (removed in #4); don't add one back without changing the spec. Don't cache or store a derived state alongside the moves.
 - **`src/variants/<id>/` — one self-contained folder per variant**: `info.ts` (`VariantInfo`), `rules.ts`, a board component, `rules.test.ts`. Variants never import from each other; what two share goes in `src/game/` (logic, e.g. `lines.ts`) or `src/boards/` (UI, e.g. `GridBoard`).
 - **`src/variants/registry.ts` — adding a variant is its folder plus one entry here.** The hub, `/play/<id>`, the game screen and the contract suite all read this list. Rules and board load through dynamic `import()` so each variant is its own chunk; `info.ts` is imported eagerly, so **`info.ts` must not import the variant's rules or board** — that would pull them into the hub's bundle.
-- **A board component receives `BoardProps` — `state`, `rules`, `onMove` — and nothing else.** It draws the state and reports moves; it never decides legality or the outcome itself, only asks `rules`. The shared shell (`src/screens/GameScreen.tsx`) owns the player cards, the status line and New game.
+- **A board component receives `BoardProps` — `state`, `rules`, `onMove` — and nothing else.** It draws the state and reports moves; it never decides legality or the outcome itself, only asks `rules`. The shared shell (`src/screens/GameScreen.tsx`) owns the player cards (whose turn, then who won or a draw), the bottom bar (New game, which becomes Play again in the winner's colour when the game ends) and the screen-reader status.
 - **`any` lives only in `src/variants/types.ts` and the registry**, where variants with different types sit side by side. Every variant's own module is fully typed.
 - **Imports carry their extension** (`'./rules.ts'`, `'./Board.tsx'`), and type-only imports use `import type` (`verbatimModuleSyntax`). `erasableSyntaxOnly` is on: no `enum`, `namespace` or constructor parameter properties.
 - The page title is set with React 19's `<title>` element inside the screen, not `document.title`.
@@ -51,13 +51,13 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade"; the values are 
 # Accessibility
 
 - **Every square is a real `<button>`** labelled with its position and contents (`Row 2, column 3, X`; Ultimate adds the small board). An unplayable square is `aria-disabled`, not `disabled`, so it stays reachable for screen readers; its click handler does nothing.
-- The status line is `aria-live="polite"`, and states the game in words: whose turn, who won, or a draw. It is visible only once the game is over (in the winner's colour); during play the player cards show the turn, and the line's text is screen-reader only.
+- **The screen-reader status is always on the page**: a visually hidden `aria-live="polite"` line that states the game in words (whose turn, who won, or a draw). It must exist before its text changes, so never render it conditionally — a live region inserted together with its text is usually not announced. There is no visible status text: on screen, the player cards carry the turn and the result.
 - **Every tap target is at least 44 px.** On Ultimate's 81-square board that is the hard constraint on layout.
 - Animation respects `prefers-reduced-motion` (#4).
 
 # Words
 
-Players are **Player 1 (X)** and **Player 2 (O)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate); its **id** is its URL slug. The buttons are **New game** and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
+Players are **Player 1 (X)** and **Player 2 (O)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate); its **id** is its URL slug. The buttons are **New game** (called **Play again** once a game is over) and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
 
 # Testing
 

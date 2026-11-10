@@ -41,10 +41,19 @@
   --color-player-o: #e0611a;
   --color-win: #eaf0fd;
 
+  /* The winner's player card: a soft tint of their colour behind normal text. */
+  --color-tint-x: #eaf0fd;
+  --color-tint-o: #fdefe6;
+
+  /* Text on a button filled with a player's colour (Play again). White on the light
+     orange is only 3.6:1, so Player 2's button takes dark text. */
+  --color-on-player-x: #ffffff;
+  --color-on-player-o: #16181d;
+
   --color-link: #2457d6;
   --color-link-hover: #163c9e;
 
-  /* The main button (New game) */
+  /* The main button (Play again after a draw) */
   --color-primary: #16181d;
   --color-on-primary: #ffffff;
 
@@ -101,6 +110,12 @@
   --color-player-x: #3de0ff;
   --color-player-o: #ff4fb0;
   --color-win: #1e2a52;
+
+  --color-tint-x: #1e2a52;
+  --color-tint-o: #34163a;
+
+  --color-on-player-x: #0b1020;
+  --color-on-player-o: #0b1020;
 
   --color-link: #3de0ff;
   --color-link-hover: #9defff;
