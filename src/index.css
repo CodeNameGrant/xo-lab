@@ -1,42 +1,25 @@
+@import 'tailwindcss';
 @import './theme/tokens.css';
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/*
+ * Page-wide defaults only. Everything else is a utility class on the
+ * element itself; nothing here should name a component.
+ */
+@layer base {
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+  }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  -webkit-font-smoothing: antialiased;
-}
+  a {
+    @apply text-link hover:text-link-hover;
+  }
 
-a {
-  color: var(--link);
-}
+  /* Tailwind gives buttons the default arrow cursor; a playable control shows the hand. */
+  button:not(:disabled, [aria-disabled='true']) {
+    @apply cursor-pointer;
+  }
 
-a:hover {
-  color: var(--link-hover);
-}
-
-button {
-  font: inherit;
-  color: inherit;
-}
-
-:focus-visible {
-  outline: 3px solid var(--x);
-  outline-offset: 2px;
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  :focus-visible {
+    @apply outline-3 outline-offset-2 outline-x;
+  }
 }

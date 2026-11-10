@@ -1,31 +1,50 @@
 /*
- * Design tokens: every colour, font and radius the app uses, as CSS custom
- * properties. Components only ever use var(--…), so the dark theme (#4) is
- * a second set of values here, not a change to any component.
+ * Design tokens: every colour, font, radius and shadow the app uses, as
+ * Tailwind theme variables. Each becomes utility classes: `--color-surface`
+ * gives `bg-surface`, `text-surface` and `border-surface`; `--radius-card`
+ * gives `rounded-card`; `--shadow-board` gives `shadow-board`.
+ *
+ * Tailwind's own colour palette is switched off (`--color-*: initial`), so
+ * a class like `bg-blue-500` doesn't exist: every colour is one of these.
+ *
+ * Tailwind writes these out as CSS variables on :root and every utility
+ * reads the variable, so the dark theme (#4) is a second set of values for
+ * the same variables, not a change to any component.
  *
  * Light = theme A "Clean minimal" from the design canvas.
  */
-:root {
-  --font: 'Inter', system-ui, sans-serif;
+@theme {
+  --color-*: initial;
+  --font-*: initial;
 
-  --bg: #f7f7f5;
-  --surface: #ffffff;
-  --text: #16181d;
-  --text-secondary: #5b606b;
-  --border: #d9dbe0;
-  --grid-line: #e3e5ea;
+  --font-sans: 'Inter', system-ui, sans-serif;
 
-  --x: #2457d6;
-  --o: #e0611a;
-  --win-bg: #eaf0fd;
+  /* Page and panels */
+  --color-page: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-backdrop: rgb(22 24 29 / 0.4);
 
-  --link: #2457d6;
-  --link-hover: #163c9e;
+  /* Text */
+  --color-ink: #16181d;
+  --color-ink-muted: #5b606b;
 
-  --primary-bg: #16181d;
-  --primary-text: #ffffff;
+  /* Lines */
+  --color-line: #d9dbe0;
+  --color-grid: #e3e5ea;
 
-  --board-shadow: 0 1px 2px rgba(22, 24, 29, 0.06), 0 8px 24px rgba(22, 24, 29, 0.06);
+  /* Players and the winning line */
+  --color-x: #2457d6;
+  --color-o: #e0611a;
+  --color-win: #eaf0fd;
+
+  --color-link: #2457d6;
+  --color-link-hover: #163c9e;
+
+  /* The main button (New game) */
+  --color-primary: #16181d;
+  --color-on-primary: #ffffff;
+
+  --shadow-board: 0 1px 2px rgb(22 24 29 / 0.06), 0 8px 24px rgb(22 24 29 / 0.06);
 
   --radius-card: 14px;
   --radius-board: 20px;

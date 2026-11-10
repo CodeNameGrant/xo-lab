@@ -1,0 +1,47 @@
+# `main` is squash-only, so the PR title — not any commit on the branch —
+# becomes the subject line in history. That makes the title the only thing
+# worth linting.
+#
+# Types are the list CONTRIBUTING.md fixes for branch prefixes; the two must agree.
+name: PR title
+
+on:
+  pull_request:
+    # `edited` is the important one — it re-runs when the title is corrected,
+    # so a failing check can be cleared without pushing a commit.
+    types: [opened, edited, reopened, synchronize]
+
+concurrency:
+  group: pr-title-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-title:
+    name: PR Title
+    runs-on: ubuntu-latest
+    # Nothing is checked out and no API call is made — the title arrives in the
+    # event payload, so the job needs no token scopes at all.
+    permissions: {}
+
+    steps:
+      - name: Check the title is a Conventional Commit subject
+        env:
+          # Passed through the environment, never interpolated into the script:
+          # a PR title is attacker-controlled text and `${{ }}` would paste it
+          # straight into the shell.
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          types='feat|fix|chore|docs|refactor|perf|test|build|ci'
+          if printf '%s' "$TITLE" | grep -Eq "^($types)(\([a-z0-9._-]+\))?!?: .+"; then
+            echo "OK: $TITLE"
+            exit 0
+          fi
+          echo "::error::PR title is not a Conventional Commit subject: $TITLE"
+          cat <<EOF
+          Expected: <type>[(scope)][!]: <description>
+          Types:    ${types//|/, }
+          Examples: feat: Infinite tic-tac-toe
+                    fix(ultimate): free choice when sent to a full board
+                    feat!: change the saved-game format
+          EOF
+          exit 1
