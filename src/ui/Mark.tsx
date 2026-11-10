@@ -6,6 +6,8 @@ interface MarkProps {
   readonly size: number
   /** Line thickness in Lucide's 24-unit box: 2 on the board, thicker on small marks so they stay legible. */
   readonly stroke?: number
+  /** For layout only, e.g. letting the board scale its pieces. */
+  readonly className?: string
 }
 
 /*
@@ -21,14 +23,14 @@ interface MarkProps {
 const GLYPHS = { X, O: CircleSmall } as const
 
 /** An X or O drawn in its player's colour. Decorative: the label lives on the button around it. */
-export function Mark({ player, size, stroke = 2 }: MarkProps) {
+export function Mark({ player, size, stroke = 2, className }: MarkProps) {
   const Glyph = GLYPHS[player]
   return (
     <Glyph
       size={size}
       strokeWidth={stroke}
-      color={player === 'X' ? 'var(--x)' : 'var(--o)'}
-      className={`mark mark-${player}`}
+      // Lucide draws in currentColor, so the player's colour is a text colour.
+      className={`${player === 'X' ? 'text-x' : 'text-o'} ${className ?? ''}`}
       aria-hidden="true"
       focusable="false"
     />

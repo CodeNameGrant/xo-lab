@@ -30,7 +30,14 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 
 # Theme
 
-Every colour, font, radius and shadow is a custom property in **`src/theme/tokens.css`**; components use only `var(--…)`. No hex value or font name appears in a component's CSS. The dark theme (#4) is a second set of values for the same tokens, not a change to any component, so a new colour is a new token.
+**Styling is Tailwind v4 utility classes, written on the element in the component.** There are no per-component stylesheets and no custom class names: a component's look is read from its JSX. `src/index.css` holds only page-wide base rules (body, links, the button cursor, the focus outline) and must never name a component. Don't use `@apply` to rebuild a component class there.
+
+- **Every colour, font, radius and shadow is a token in the `@theme` block of `src/theme/tokens.css`**, which turns each into classes (`--color-surface` → `bg-surface`, `text-surface`, `border-surface`; `--radius-card` → `rounded-card`). Tailwind's default palette is switched off, so `bg-blue-500` doesn't exist. Never an arbitrary colour (`bg-[#fff]`) or a `var(--…)` in a component: a new colour is a new token.
+- The dark theme (#4) is a second set of values for the same `--color-*` variables, not a change to any component.
+- **A class list used by two or more files is a named constant in `src/ui/classes.ts`** (`iconButton`). One used twice in the same file is a constant at the top of that file (`actionButton` in `GameScreen.tsx`). Otherwise it stays inline.
+- Spacing and sizes use Tailwind's scale (`p-2.5`, `size-11` = 44 px). A value off the scale that matches the artboard is an arbitrary value (`text-[17px]`, `w-[min(342px,100%)]`).
+- State-based styling uses variants on the attribute that already carries the meaning: `data-win:`, `disabled:`, `aria-disabled:`, `backdrop:`, `nth-*:`.
+- `prettier-plugin-tailwindcss` sorts every class list, so `npm run format` settles class order; never sort by hand.
 
 Light is theme A "Clean minimal", dark is theme B "Neon arcade"; the values are in the spec (#1) → Theme.
 

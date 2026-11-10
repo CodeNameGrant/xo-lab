@@ -3,27 +3,31 @@ import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import { variants } from '../variants/registry.ts'
 import type { VariantInfo } from '../variants/types.ts'
-import './HubScreen.css'
 
 /** The home screen: one card per registered variant. Uses only each variant's info, so nothing else loads. */
 export function HubScreen() {
   return (
-    <main className="hub">
+    <main className="mx-auto max-w-110 px-6 py-8">
       <title>XO Lab</title>
-      <header className="hub-header">
-        <h1>XO Lab</h1>
-        <p>Tic-tac-toe, and its stranger cousins. Pick a variant to play on this device.</p>
+      <header>
+        <h1 className="text-[32px] font-bold">XO Lab</h1>
+        <p className="mt-2 leading-normal text-ink-muted">
+          Tic-tac-toe, and its stranger cousins. Pick a variant to play on this device.
+        </p>
       </header>
-      <ul className="variant-list">
+      <ul className="mt-6 flex flex-col gap-3">
         {variants.map((variant) => (
           <li key={variant.id}>
-            <Link to={`/play/${variant.id}`} className="variant-card">
+            <Link
+              to={`/play/${variant.id}`}
+              className="flex min-h-11 items-center gap-4 rounded-card bg-surface px-4 py-3.5 text-ink shadow-board hover:text-ink"
+            >
               <Preview rows={variant.info.preview} />
-              <span className="variant-text">
-                <span className="variant-name">{variant.info.name}</span>
-                <span className="variant-tagline">{variant.info.tagline}</span>
+              <span className="flex grow flex-col gap-0.5">
+                <span className="text-[17px] font-semibold">{variant.info.name}</span>
+                <span className="text-sm text-ink-muted">{variant.info.tagline}</span>
               </span>
-              <Icon name="open" size={20} />
+              <Icon name="open" size={20} className="shrink-0 text-ink-muted" />
             </Link>
           </li>
         ))}
@@ -34,12 +38,16 @@ export function HubScreen() {
 
 function Preview({ rows }: { rows: VariantInfo['preview'] }) {
   return (
-    <span className="variant-preview" aria-hidden="true" style={{ gridTemplateColumns: `repeat(${rows.length}, 1fr)` }}>
+    <span
+      className="grid size-14 shrink-0 gap-0.5 rounded-[10px] bg-grid p-1"
+      aria-hidden="true"
+      style={{ gridTemplateColumns: `repeat(${rows.length}, 1fr)` }}
+    >
       {rows
         .join('')
         .split('')
         .map((cell, index) => (
-          <span key={index} className="variant-preview-cell">
+          <span key={index} className="flex items-center justify-center rounded-[3px] bg-surface">
             {(cell === 'X' || cell === 'O') && <Mark player={cell} size={14} stroke={3} />}
           </span>
         ))}
