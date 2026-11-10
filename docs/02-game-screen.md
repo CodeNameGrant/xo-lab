@@ -121,14 +121,16 @@ Every colour is a token in `src/theme/tokens.css`; components use the token, nev
 
 A piece pops in when placed (180 ms); winning squares and card changes fade (200–300 ms). Every animation is behind `motion-safe:`, so a device set to reduce motion gets none (decision D-20).
 
+Infinite adds two (decision D-27): the piece that disappears next pulses between 55 % and 20 % opacity (1.4 s each way), and a removed piece fades from 40 % to nothing while shrinking to 80 % (300 ms). With reduced motion the disappearing piece is a still 40 %, and a removed piece is simply gone.
+
 ## Per-variant differences
 
 What each variant does differently from the shared screen. All of it is inside the variant's board; the top bar, cards and bottom bar never change.
 
-| Variant      | Board                                                                                                                    | Other differences | Status        |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------ | ----------------- | ------------- |
-| **Classic**  | The shared 3×3 board (`src/boards/GridBoard.tsx`)                                                                        | None              | Built (#3)    |
-| **Infinite** | The shared 3×3 board, plus the "disappears next" fade on the mover's oldest piece and a fade-out when a piece is removed | None planned      | To build (#5) |
-| **Ultimate** | Its own nested 9×9 board: highlighted boards the player may play in, a large X or O over each won small board            | None planned      | To build (#6) |
+| Variant      | Board                                                                                                                                                                                                                                           | Other differences | Status        |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ------------- |
+| **Classic**  | The shared 3×3 board (`src/boards/GridBoard.tsx`)                                                                                                                                                                                               | None              | Built (#3)    |
+| **Infinite** | The shared 3×3 board, plus the mover's oldest piece drawn at 40 % opacity and pulsing once they have three (its square's label adds "disappears next"), and a fade-out when a piece is removed. Both in the player's own colour; no new colours | None              | Built (#5)    |
+| **Ultimate** | Its own nested 9×9 board: highlighted boards the player may play in, a large X or O over each won small board                                                                                                                                   | None planned      | To build (#6) |
 
 When #5 or #6 is built, fill in its row with what was actually built, and add the board's sizes and colours here.
