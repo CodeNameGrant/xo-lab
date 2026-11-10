@@ -36,6 +36,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-24 | 2026-11-10 | Winning squares take the winner's tint in light            | Accepted                              |
 | D-25 | 2026-11-10 | One game screen for every variant; only the board varies   | Accepted                              |
 | D-26 | 2026-11-10 | Docs are numbered files under `docs/`                      | Accepted                              |
+| D-27 | 2026-11-10 | Infinite's disappearing piece fades and pulses             | Accepted                              |
 
 ---
 
@@ -271,3 +272,13 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 **Decision.** Project docs live in `docs/` as numbered files: `01-decisions.md`, `02-game-screen.md`, and so on. A new doc takes the next number; a number is never reused or reassigned, even if a doc is retired. The README lists them. Agent configuration stays in `docs/agents/`, unnumbered.
 
 **Why.** A fixed number gives every doc a stable name, so references in PRs, issues and other docs don't get mixed up as more docs are added.
+
+### D-27 · Infinite's disappearing piece fades and pulses
+
+**Status:** Accepted
+
+**Decision.** In Infinite, once the player to move has three pieces on the board, their oldest piece is drawn at reduced opacity and pulses gently (55 % to 20 %, 1.4 s each way) until they move; its square's label ends "disappears next". When a piece is removed, it fades out from 40 % while shrinking slightly (300 ms). Both use the player's own colour token at reduced opacity, in both themes, so there is no new colour. With reduced motion, the piece is a still 40 % and a removed piece disappears at once. The fading square is still taken: a player can't play on it before it is freed.
+
+**Why.** The spec (#1) asks for the removal never to be a surprise and for removed pieces not to vanish, but there is no mockup for either state. Opacity keeps the piece readable as that player's, in both themes, without a new colour to check for contrast. Only the player to move sees their piece fade, because only their move can remove it.
+
+**Considered.** Showing the opponent's next-to-go piece too (rejected: two fading pieces make it unclear whose disappears on this move). A separate "ghost" colour token (rejected: the spec asks for the existing colours).

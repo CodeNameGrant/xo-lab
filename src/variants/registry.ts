@@ -1,4 +1,5 @@
 import { classicInfo } from './classic/info.ts'
+import { infiniteInfo } from './infinite/info.ts'
 import type { VariantEntry } from './types.ts'
 
 /**
@@ -12,6 +13,12 @@ export const variants: readonly VariantEntry[] = [
     info: classicInfo,
     loadRules: () => import('./classic/rules.ts').then((m) => m.classicRules),
     loadBoard: () => import('./classic/ClassicBoard.tsx').then((m) => m.ClassicBoard),
+  },
+  {
+    id: 'infinite',
+    info: infiniteInfo,
+    loadRules: () => import('./infinite/rules.ts').then((m) => m.infiniteRules),
+    loadBoard: () => import('./infinite/InfiniteBoard.tsx').then((m) => m.InfiniteBoard),
   },
 ]
 

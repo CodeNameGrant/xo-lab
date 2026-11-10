@@ -95,6 +95,40 @@
       transform: scale(1);
     }
   }
+
+  /*
+   * Infinite: the piece that disappears next pulses gently between two low
+   * opacities. Always `opacity-40 motion-safe:animate-fade-pulse`, so reduced
+   * motion still shows it faded, just without the pulse.
+   */
+  --animate-fade-pulse: fade-pulse 1.4s ease-in-out infinite alternate;
+
+  @keyframes fade-pulse {
+    from {
+      opacity: 0.55;
+    }
+    to {
+      opacity: 0.2;
+    }
+  }
+
+  /*
+   * Infinite: a removed piece fades out from where the pulse left it. Always
+   * `opacity-0 motion-safe:animate-fade-out`, so with reduced motion it is
+   * simply gone.
+   */
+  --animate-fade-out: fade-out 300ms ease-out;
+
+  @keyframes fade-out {
+    from {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
 }
 
 /* Theme B · Neon arcade: the same variables, new values. */
