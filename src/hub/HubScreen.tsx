@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { ChevronRightIcon } from '../ui/icons.tsx'
+import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import { variants } from '../variants/registry.ts'
 import type { VariantInfo } from '../variants/types.ts'
@@ -23,7 +23,7 @@ export function HubScreen() {
                 <span className="variant-name">{variant.info.name}</span>
                 <span className="variant-tagline">{variant.info.tagline}</span>
               </span>
-              <ChevronRightIcon />
+              <Icon name="open" size={20} />
             </Link>
           </li>
         ))}

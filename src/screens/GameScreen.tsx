@@ -2,7 +2,7 @@ import { use, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { playerName, type Player } from '../game/rules.ts'
 import { canUndo, currentState, newGame, playMove, startGame, undoMove } from '../game/session.ts'
-import { BackIcon, NewGameIcon, UndoIcon } from '../ui/icons.tsx'
+import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import type { AnyBoard, AnyRules, VariantEntry } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
@@ -52,7 +52,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
 
       <header className="top-bar">
         <Link to="/" className="icon-button" aria-label="Back to all variants">
-          <BackIcon />
+          <Icon name="back" />
         </Link>
         <div className="top-bar-title">
           <div className="top-bar-label">Variant</div>
@@ -82,11 +82,11 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
 
       <div className="game-actions">
         <button type="button" className="action-button" disabled={!canUndo(game)} onClick={() => setGame(undoMove)}>
-          <UndoIcon />
+          <Icon name="undo" size={20} />
           Undo
         </button>
         <button type="button" className="action-button primary" onClick={() => setGame(newGame)}>
-          <NewGameIcon />
+          <Icon name="newGame" size={20} />
           New game
         </button>
       </div>

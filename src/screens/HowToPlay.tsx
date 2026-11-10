@@ -1,6 +1,6 @@
 import { useId, useRef } from 'react'
 import type { VariantInfo } from '../variants/types.ts'
-import { CloseIcon, HelpIcon } from '../ui/icons.tsx'
+import { Icon } from '../ui/icon.tsx'
 
 /** The top bar's "?" button and the panel it opens, using the browser's built-in modal dialog. */
 export function HowToPlay({ info }: { info: VariantInfo }) {
@@ -15,7 +15,7 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
         aria-label="How to play"
         onClick={() => dialog.current?.showModal()}
       >
-        <HelpIcon />
+        <Icon name="help" />
       </button>
       <dialog
         ref={dialog}
@@ -28,7 +28,7 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
           <div className="how-to-play-header">
             <h2 id={titleId}>How to play {info.name}</h2>
             <button type="button" className="icon-button" aria-label="Close" onClick={() => dialog.current?.close()}>
-              <CloseIcon />
+              <Icon name="close" />
             </button>
           </div>
           {info.howToPlay.map((paragraph) => (
