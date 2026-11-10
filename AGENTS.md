@@ -1,6 +1,6 @@
 # AGENTS.md
 
-XO Lab: a mobile-first hub for tic-tac-toe variants (Classic, Infinite, Ultimate), two players on one device. Vite + React 19 + TypeScript, deployed on Vercel. The spec is GitHub issue #1.
+XO Lab: a mobile-first hub for tic-tac-toe variants (Classic, Infinite, Ultimate), two players on one device. Vite + React 19 + TypeScript, deployed on Vercel. The spec is GitHub issue #1. The project docs are numbered files in `docs/`, listed in `README.md`: every decision is in `docs/01-decisions.md`, and the game screen's layout and colours are in `docs/02-game-screen.md`.
 
 # Commands
 
@@ -20,10 +20,11 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 
 - **`src/game/rules.ts` — the `VariantRules` contract is the one seam the app is built around.** Every variant implements it for its own `State` and `Move`. Rules are pure TypeScript: no React, no browser APIs, no hidden state, no clock, no randomness. `applyMove` never modifies its input and throws `IllegalMoveError` for an illegal move. States and moves are plain JSON-serialisable data. A future computer opponent drives variants through this interface, so nothing variant-specific belongs outside it.
 - **`selectors` are for the variant's own board only.** Shared code (the game screen, the session, the contract suite) never calls them; anything it needs belongs on the contract itself.
-- **`src/game/session.ts` — a game is the first player plus the move list. Current state is never stored**; it is rebuilt by replaying the moves. That is what makes undo exact (including Infinite's removed marks) and what saving (#7) will persist. Don't cache or store a derived state alongside the moves.
+- **`src/game/session.ts` — a game is the first player plus the move list. Current state is never stored**; it is rebuilt by replaying the moves. The move list is what saving (#7) will persist. There is no undo (removed in #4); don't add one back without changing the spec. Don't cache or store a derived state alongside the moves.
 - **`src/variants/<id>/` — one self-contained folder per variant**: `info.ts` (`VariantInfo`), `rules.ts`, a board component, `rules.test.ts`. Variants never import from each other; what two share goes in `src/game/` (logic, e.g. `lines.ts`) or `src/boards/` (UI, e.g. `GridBoard`).
 - **`src/variants/registry.ts` — adding a variant is its folder plus one entry here.** The hub, `/play/<id>`, the game screen and the contract suite all read this list. Rules and board load through dynamic `import()` so each variant is its own chunk; `info.ts` is imported eagerly, so **`info.ts` must not import the variant's rules or board** — that would pull them into the hub's bundle.
-- **A board component receives `BoardProps` — `state`, `rules`, `onMove` — and nothing else.** It draws the state and reports moves; it never decides legality or the outcome itself, only asks `rules`. The shared shell (`src/screens/GameScreen.tsx`) owns the player cards, status line, Undo and New game.
+- **A board component receives `BoardProps` — `state`, `rules`, `onMove` — and nothing else.** It draws the state and reports moves; it never decides legality or the outcome itself, only asks `rules`. The shared shell (`src/screens/GameScreen.tsx`) owns the player cards (whose turn, then who won or a draw), the bottom bar (New game, which becomes Play again in the winner's colour when the game ends) and the screen-reader status.
+- **Every variant uses the same game screen; only its board differs** (decision D-25). Top bar, player cards, board, bottom bar, in that order, with the sizes, colours and words in `docs/02-game-screen.md`. A variant never restyles the shared parts. Anything it does differently lives in its board and is recorded in that doc's per-variant table; changing a shared part for one variant means changing the doc first.
 - **`any` lives only in `src/variants/types.ts` and the registry**, where variants with different types sit side by side. Every variant's own module is fully typed.
 - **Imports carry their extension** (`'./rules.ts'`, `'./Board.tsx'`), and type-only imports use `import type` (`verbatimModuleSyntax`). `erasableSyntaxOnly` is on: no `enum`, `namespace` or constructor parameter properties.
 - The page title is set with React 19's `<title>` element inside the screen, not `document.title`.
@@ -33,13 +34,14 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 **Styling is Tailwind v4 utility classes, written on the element in the component.** There are no per-component stylesheets and no custom class names: a component's look is read from its JSX. `src/index.css` holds only page-wide base rules (body, links, the button cursor, the focus outline) and must never name a component. Don't use `@apply` to rebuild a component class there.
 
 - **Every colour, font, radius and shadow is a token in the `@theme` block of `src/theme/tokens.css`**, which turns each into classes (`--color-surface` → `bg-surface`, `text-surface`, `border-surface`; `--radius-card` → `rounded-card`). Tailwind's default palette is switched off, so `bg-blue-500` doesn't exist. Never an arbitrary colour (`bg-[#fff]`) or a `var(--…)` in a component: a new colour is a new token.
-- The dark theme (#4) is a second set of values for the same `--color-*` variables, not a change to any component.
-- **A class list used by two or more files is a named constant in `src/ui/classes.ts`** (`iconButton`). One used twice in the same file is a constant at the top of that file (`actionButton` in `GameScreen.tsx`). Otherwise it stays inline.
+- **The theme is `<html data-theme="light|dark">`**, set by `src/theme/theme.ts` (and an inline script in `index.html` before first paint). Dark is a second set of values for the same variables, in the `:root[data-theme='dark']` block of `tokens.css` — a colour difference between the themes is never a component change. Only where the themes differ in shape (the dark board's separate tiles, glows, uppercase type) does a component carry `dark:` or `light:` classes; both variants follow `data-theme`, so they obey the theme toggle.
+- **A token name must not collide with a Tailwind utility.** `--color-x` would make `border-x` also set the left and right border widths; the players' colours are `--color-player-x` and `--color-player-o` for that reason.
+- **A class list used by two or more files is a named constant in `src/ui/classes.ts`** (`iconButton`). One used twice in the same file is a constant at the top of that file. Otherwise it stays inline.
 - Spacing and sizes use Tailwind's scale (`p-2.5`, `size-11` = 44 px). A value off the scale that matches the artboard is an arbitrary value (`text-[17px]`, `w-[min(342px,100%)]`).
 - State-based styling uses variants on the attribute that already carries the meaning: `data-win:`, `disabled:`, `aria-disabled:`, `backdrop:`, `nth-*:`.
 - `prettier-plugin-tailwindcss` sorts every class list, so `npm run format` settles class order; never sort by hand.
 
-Light is theme A "Clean minimal", dark is theme B "Neon arcade"; the values are in the spec (#1) → Theme.
+Light is theme A "Clean minimal", dark is theme B "Neon arcade". The current values are in `docs/02-game-screen.md` → Colours, which supersedes the spec's Theme section where they differ (the light O is `#B12B35`, not the spec's `#E0611A`: decision D-23).
 
 # Icons
 
@@ -50,13 +52,13 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade"; the values are 
 # Accessibility
 
 - **Every square is a real `<button>`** labelled with its position and contents (`Row 2, column 3, X`; Ultimate adds the small board). An unplayable square is `aria-disabled`, not `disabled`, so it stays reachable for screen readers; its click handler does nothing.
-- The status line is `aria-live="polite"`, and states the game in words: whose turn, who won, or a draw.
+- **The screen-reader status is always on the page**: a visually hidden `aria-live="polite"` line that states the game in words (whose turn, who won, or a draw). It must exist before its text changes, so never render it conditionally — a live region inserted together with its text is usually not announced. There is no visible status text: on screen, the player cards carry the turn and the result.
 - **Every tap target is at least 44 px.** On Ultimate's 81-square board that is the hard constraint on layout.
 - Animation respects `prefers-reduced-motion` (#4).
 
 # Words
 
-Players are **Player 1 (X)** and **Player 2 (O)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate); its **id** is its URL slug. The buttons are **Undo**, **New game** and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
+Players are **Player 1 (X)** and **Player 2 (O)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate); its **id** is its URL slug. The buttons are **New game** (called **Play again** once a game is over) and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
 
 # Testing
 
@@ -81,4 +83,4 @@ The default label vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `
 
 ### Domain docs
 
-Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root, both created lazily by `/domain-modeling`. See `docs/agents/domain.md`.
+Single-context: one `CONTEXT.md` at the repo root (created lazily by `/domain-modeling`), and every decision in `docs/01-decisions.md`, not an ADR folder. See `docs/agents/domain.md`.

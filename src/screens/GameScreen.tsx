@@ -1,16 +1,13 @@
 import { use, useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { playerName, type Player } from '../game/rules.ts'
-import { canUndo, currentState, newGame, playMove, startGame, undoMove } from '../game/session.ts'
+import { playerName, type Outcome, type Player } from '../game/rules.ts'
+import { currentState, newGame, playMove, startGame } from '../game/session.ts'
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
+import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import type { AnyBoard, AnyRules, VariantEntry } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
-
-/** Undo and New game: the same shape, each adds its own colours. */
-const actionButton =
-  'flex h-13 items-center justify-center gap-2 rounded-card text-base font-semibold disabled:opacity-45'
 
 interface LoadedVariant {
   readonly rules: AnyRules
@@ -31,7 +28,9 @@ function loadVariant(entry: VariantEntry): Promise<LoadedVariant> {
 
 /**
  * The shared game screen, the same for every variant: top bar, player
- * cards, the variant's own board, status line, Undo and New game.
+ * cards, the variant's own board and the bottom bar. The player cards show
+ * whose turn it is and, at the end, who won or that it's a draw; the bottom
+ * bar's New game then becomes Play again.
  * Must be rendered inside <Suspense>, which shows while the variant loads.
  */
 export function GameScreen({ entry }: { entry: VariantEntry }) {
@@ -42,6 +41,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
   const outcome = rules.outcome(state)
   const turn = rules.currentPlayer(state)
   const over = outcome.kind !== 'in-progress'
+  const winner = outcome.kind === 'won' ? outcome.winner : null
 
   const status =
     outcome.kind === 'won'
@@ -54,15 +54,23 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
     <main className="mx-auto flex min-h-dvh max-w-110 flex-col gap-6 px-6 pt-4 pb-8">
       <title>{`${entry.info.name} · XO Lab`}</title>
 
-      <header className="flex h-12 items-center justify-between">
-        <Link to="/" className={iconButton} aria-label="Back to all variants">
+      {/* Equal outer columns keep the variant name centred, with one button on the left and two on the right. */}
+      <header className="grid h-12 grid-cols-[1fr_auto_1fr] items-center">
+        <Link to="/" className={`${iconButton} justify-self-start`} aria-label="Back to all variants">
           <Icon name="back" />
         </Link>
         <div className="text-center">
-          <div className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase">Variant</div>
-          <h1 className="text-lg font-semibold">{entry.info.name}</h1>
+          <div className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase dark:tracking-[0.2em]">
+            Variant
+          </div>
+          <h1 className="text-lg font-semibold dark:text-xl dark:font-bold dark:tracking-[0.12em] dark:uppercase">
+            {entry.info.name}
+          </h1>
         </div>
-        <HowToPlay info={entry.info} />
+        <div className="flex gap-1 justify-self-end">
+          <HowToPlay info={entry.info} />
+          <ThemeToggle />
+        </div>
       </header>
 
       <div className="grid grid-cols-2 gap-3">
@@ -70,7 +78,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
           <PlayerCard
             key={player}
             player={player}
-            active={!over && turn === player}
+            look={cardLook(player, outcome, turn)}
             first={game.firstPlayer === player}
           />
         ))}
@@ -80,46 +88,90 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         <Board state={state} rules={rules} onMove={(move: unknown) => setGame((g) => playMove(rules, g, move))} />
       </div>
 
-      <p className="text-center text-xl font-semibold" aria-live="polite">
-        {status}
-      </p>
-
-      <div className="grid grid-cols-2 gap-3">
+      {/*
+        The bottom bar. During play it is a quiet New game button; once the game is over it
+        becomes Play again, in the winner's colour. The result itself shows on the player cards.
+      */}
+      {over ? (
         <button
           type="button"
-          className={`${actionButton} border border-line bg-surface text-ink`}
-          disabled={!canUndo(game)}
-          onClick={() => setGame(undoMove)}
+          className={`${barButton} ${PLAY_AGAIN[winner ?? 'draw']}`}
+          onClick={() => setGame(newGame)}
         >
-          <Icon name="undo" size={20} />
-          Undo
+          <Icon name="newGame" size={20} />
+          Play again
         </button>
-        <button type="button" className={`${actionButton} bg-primary text-on-primary`} onClick={() => setGame(newGame)}>
+      ) : (
+        <button
+          type="button"
+          className={`${barButton} border border-line bg-surface text-ink dark:bg-transparent`}
+          onClick={() => setGame(newGame)}
+        >
           <Icon name="newGame" size={20} />
           New game
         </button>
-      </div>
+      )}
+
+      {/*
+        Never shown: the player cards carry the turn and the result. Always on the page, so
+        screen readers hear every turn and the result as they change.
+      */}
+      <p className="sr-only" aria-live="polite">
+        {status}
+      </p>
     </main>
   )
 }
 
-function PlayerCard({ player, active, first }: { player: Player; active: boolean; first: boolean }) {
+/** New game and Play again: the bottom bar's button in both of its states. */
+const barButton = 'flex h-13 w-full items-center justify-center gap-2 rounded-card text-base font-semibold'
+
+/** Play again takes the winner's colour (and glow in the dark theme); after a draw it is the usual primary button. */
+const PLAY_AGAIN = {
+  X: 'bg-player-x text-on-player-x dark:font-bold dark:shadow-glow-x',
+  O: 'bg-player-o text-on-player-o dark:font-bold dark:shadow-glow-o',
+  draw: 'bg-primary text-on-primary dark:font-bold dark:shadow-glow-primary',
+} as const
+
+/** How a player card reads right now: its player's turn, waiting, the winner, beaten, or a draw. */
+type CardLook = 'turn' | 'waiting' | 'won' | 'lost' | 'draw'
+
+function cardLook(player: Player, outcome: Outcome, turn: Player): CardLook {
+  if (outcome.kind === 'draw') return 'draw'
+  if (outcome.kind === 'won') return outcome.winner === player ? 'won' : 'lost'
+  return turn === player ? 'turn' : 'waiting'
+}
+
+/**
+ * Card colours per look. The current player and the winner get a border in their colour
+ * (and a glow in the dark theme); the winner's card is also tinted. The beaten card fades;
+ * a draw turns both cards grey. Text stays in the normal colours so it keeps its contrast.
+ */
+const CARD = {
+  turn: { X: 'border-player-x bg-surface dark:shadow-glow-x', O: 'border-player-o bg-surface dark:shadow-glow-o' },
+  waiting: { X: 'border-surface bg-surface dark:border-grid', O: 'border-surface bg-surface dark:border-grid' },
+  won: { X: 'border-player-x bg-tint-x dark:shadow-glow-x', O: 'border-player-o bg-tint-o dark:shadow-glow-o' },
+  lost: {
+    X: 'border-surface bg-surface opacity-40 dark:border-grid',
+    O: 'border-surface bg-surface opacity-40 dark:border-grid',
+  },
+  draw: { X: 'border-grid bg-page', O: 'border-grid bg-page' },
+} as const
+
+function PlayerCard({ player, look, first }: { player: Player; look: CardLook; first: boolean }) {
+  const role = player === 'X' ? 'Crosses' : 'Noughts'
+  const detail = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : first ? `${role} · first move` : role
   return (
     <div
-      className={`flex items-center gap-3 rounded-card border-2 bg-surface px-3.5 py-3 ${
-        !active ? 'border-surface' : player === 'X' ? 'border-x' : 'border-o'
-      }`}
+      className={`flex items-center gap-3 rounded-card border-2 px-3.5 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${CARD[look][player]}`}
     >
       <Mark player={player} size={28} stroke={2.5} className="shrink-0" />
       <div className="min-w-0">
         <div className="text-[15px] font-semibold">
           {playerName(player)}
-          {active && <span className="sr-only"> (to move)</span>}
+          {look === 'turn' && <span className="sr-only"> (to move)</span>}
         </div>
-        <div className="text-[13px] text-ink-muted">
-          {player === 'X' ? 'Crosses' : 'Noughts'}
-          {first && ' · first move'}
-        </div>
+        <div className={`text-[13px] ${look === 'won' ? 'font-semibold text-ink' : 'text-ink-muted'}`}>{detail}</div>
       </div>
     </div>
   )

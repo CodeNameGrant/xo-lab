@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import './index.css'
 import { AppRoutes } from './AppRoutes.tsx'
+import { startThemeSync } from './theme/theme.ts'
+
+startThemeSync()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
