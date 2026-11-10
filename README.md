@@ -6,11 +6,11 @@ XO Lab is a hub: the home screen lists each variant as a card, and tapping one o
 
 ## Variants
 
-| Variant      | How it plays                                                                                         | Status           |
-| ------------ | ---------------------------------------------------------------------------------------------------- | ---------------- |
-| **Classic**  | The standard 3×3 game. Three in a row wins; a full board with no line is a draw.                     | Playable         |
-| **Infinite** | Each player keeps at most three pieces; placing a fourth removes their oldest. There is no draw.     | Planned, M2 (#5) |
-| **Ultimate** | A 3×3 grid of 3×3 boards. The square you play in decides which small board your opponent plays next. | Planned, M3 (#6) |
+| Variant      | How it plays                                                                                         | Status   |
+| ------------ | ---------------------------------------------------------------------------------------------------- | -------- |
+| **Classic**  | The standard 3×3 game. Three in a row wins; a full board with no line is a draw.                     | Playable |
+| **Infinite** | Each player keeps at most three pieces; placing a fourth removes their oldest. There is no draw.     | Playable |
+| **Ultimate** | A 3×3 grid of 3×3 boards. The square you play in decides which small board your opponent plays next. | Playable |
 
 Saving each variant's game in progress on the device is planned for M4 (#7). The full plan is the spec, issue #1.
 

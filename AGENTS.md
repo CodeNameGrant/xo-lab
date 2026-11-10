@@ -53,7 +53,7 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade". The current val
 
 - **Every square is a real `<button>`** labelled with its position and contents (`Row 2, column 3, X`; Ultimate adds the small board). An unplayable square is `aria-disabled`, not `disabled`, so it stays reachable for screen readers; its click handler does nothing.
 - **The screen-reader status is always on the page**: a visually hidden `aria-live="polite"` line that states the game in words (whose turn, who won, or a draw). It must exist before its text changes, so never render it conditionally — a live region inserted together with its text is usually not announced. There is no visible status text: on screen, the player cards carry the turn and the result.
-- **Every tap target is at least 44 px.** On Ultimate's 81-square board that is the hard constraint on layout.
+- **Every tap target is at least 44 px**, with one exception: Ultimate's 81 squares, about 38 px on a 390 px phone, where the board reaches past the column's side padding to 6 px from the screen edge (decision D-31). Never shrink them further, and never shrink anything else below 44 px.
 - Animation respects `prefers-reduced-motion` (#4).
 
 # Words

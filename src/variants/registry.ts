@@ -1,6 +1,7 @@
 import { classicInfo } from './classic/info.ts'
 import { infiniteInfo } from './infinite/info.ts'
 import type { VariantEntry } from './types.ts'
+import { ultimateInfo } from './ultimate/info.ts'
 
 /**
  * Every playable variant, in hub order. Adding a variant means adding its
@@ -19,6 +20,12 @@ export const variants: readonly VariantEntry[] = [
     info: infiniteInfo,
     loadRules: () => import('./infinite/rules.ts').then((m) => m.infiniteRules),
     loadBoard: () => import('./infinite/InfiniteBoard.tsx').then((m) => m.InfiniteBoard),
+  },
+  {
+    id: 'ultimate',
+    info: ultimateInfo,
+    loadRules: () => import('./ultimate/rules.ts').then((m) => m.ultimateRules),
+    loadBoard: () => import('./ultimate/UltimateBoard.tsx').then((m) => m.UltimateBoard),
   },
 ]
 
