@@ -37,6 +37,8 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-25 | 2026-11-10 | One game screen for every variant; only the board varies   | Accepted                              |
 | D-26 | 2026-11-10 | Docs are numbered files under `docs/`                      | Accepted                              |
 | D-27 | 2026-11-10 | Infinite's disappearing piece fades and pulses             | Accepted                              |
+| D-28 | 2026-11-10 | The light 3×3 board is tiles, like the dark one            | Accepted                              |
+| D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                  | Accepted                              |
 
 ---
 
@@ -282,3 +284,26 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 **Why.** The spec (#1) asks for the removal never to be a surprise and for removed pieces not to vanish, but there is no mockup for either state. Opacity keeps the piece readable as that player's, in both themes, without a new colour to check for contrast. Only the player to move sees their piece fade, because only their move can remove it.
 
 **Considered.** Showing the opponent's next-to-go piece too (rejected: two fading pieces make it unclear whose disappears on this move). A separate "ghost" colour token (rejected: the spec asks for the existing colours).
+
+### D-28 · The light 3×3 board is tiles, like the dark one
+
+**Status:** Accepted
+
+**Decision.** In light, the 3×3 board (Classic, Infinite) is no longer one white panel with inner grid lines. It is drawn like the dark board: nine separate tiles, 10 px apart, radius 16 px, each with a 1 px border, and pieces at 60 px in both themes. Only the colours differ: light tiles are white with a light grey border on the off-white page. Winning tiles keep the winner's tint in light (D-24) and now take a border in the winner's colour in both themes, as dark already did.
+
+**Why.** Grant chose this while reviewing the Ultimate mockups (#6). Ultimate's nested board is tiled in both themes, and Grant wanted every board in the app to share one shape, so that the themes differ only in colour.
+
+**Considered.** Keeping the classic panel in light and drawing Ultimate as nested panels with grid lines (rejected: the two themes would keep two shapes for every board).
+
+### D-29 · Ultimate's squares are smaller than 44 px
+
+**Status:** Accepted
+
+**Decision.** Ultimate's board stays inside the game screen's normal 24 px side padding, so on the 390 px reference phone it is 342 px wide, and its 81 squares come out at about 34 px. That is the one exception to the rule that every tap target is at least 44 px. Every other control on the Ultimate screen, and every square on the other boards, stays at 44 px or more. The squares still clear WCAG 2.2's 24 px minimum target size (level AA).
+
+**Why.** Nine 44 px squares need 396 px before any gaps, more than a 390 px phone has, so no plain 9×9 board can meet the rule. Grant compared mockups of the board inside the padding (34 px squares) and out to 4 px from the screen edge (about 38 px), and chose to keep the shared screen unchanged (D-25) over gaining 4 px per square. Most turns send the player to one small board, which is highlighted, so a turn is usually a choice among at most nine squares.
+
+**Considered.**
+
+- **The board breaking out of the side padding** to 4 px from the edge (rejected: about 38 px, still under 44, and the board would be wider than the cards and the button, a change to the shared screen for one variant).
+- **Tapping a small board to zoom in** and playing on 44 px squares (rejected for now: an extra tap on every move, and a harder board to build).

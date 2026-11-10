@@ -62,9 +62,9 @@ Names and detail text always stay in the normal text colours, never the player's
 
 - Centred, horizontally and vertically, in all the height left between the cards and the bottom bar.
 - It is the variant's own component (see [Per-variant differences](#per-variant-differences)). It receives the state, the rules and a "play this move" callback, and nothing else.
-- Every square is a real button at least **44 px** square, labelled with its position and contents ("Row 2, column 3, X").
+- Every square is a real button at least **44 px** square, labelled with its position and contents ("Row 2, column 3, X"). The one exception is Ultimate, whose 81 squares are about 34 px on the 390 px reference phone (decision D-29).
 - The winning line is highlighted: in light, the winning squares take **the winner's tint**; in dark, they take the shared win highlight with a 1 px border in the winner's colour.
-- The 3×3 board (Classic, Infinite) is **342 px** wide at most. In light it is one white panel, radius 20 px, padding 10 px, with 2 px inner grid lines and a soft shadow; pieces are 64 px. In dark it is nine separate tiles, 10 px apart, radius 16 px, each with a 1 px border; pieces are 60 px.
+- The 3×3 board (Classic, Infinite) is **342 px** wide at most: nine separate tiles, 10 px apart, radius 16 px, each with a 1 px `grid` border on `surface`, and no panel behind them; pieces are 60 px. It is the same shape in both themes and only the colours change (decision D-28). A winning tile's border takes the winner's colour in both themes.
 
 ### 4 · Bottom bar
 
