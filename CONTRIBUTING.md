@@ -29,15 +29,17 @@ e.g. `feat/5-infinite`.
 
 One `/`, after the type. `main` is squash-only and the PR title becomes the commit subject, so a branch name never reaches history — it's a working label, so optimise it for scanning `git branch`. GitHub deletes the branch on merge.
 
-## The three gates
+## The four gates
 
-There is no CI yet: nothing checks a PR except Vercel's build of the preview. These three are the whole bar, so run them yourself before opening a PR.
+There is no CI yet: nothing checks a PR except Vercel's build of the preview. These four are the whole bar, so run them yourself before opening a PR.
 
-**Once per branch, not once per commit.** Reach for a single gate on its own while working if something needs checking, and run all three when the branch is ready.
+**Once per branch, not once per commit.** Reach for a single gate on its own while working if something needs checking, and run all four when the branch is ready.
 
 ```bash
-npm run lint && npm run test && npm run build
+npm run lint && npm run format:check && npm run test && npm run build
 ```
+
+`format:check` fails on anything Prettier would change; `npm run format` rewrites the files. Style is Prettier's alone (`.prettierrc.json`) — oxlint checks correctness, not layout, so the two never disagree. Line endings are LF on every OS (`.gitattributes`); a Windows clone made before that file existed needs `git rm --cached -r . && git reset --hard` once to re-check out with LF.
 
 `build` is also the type check (`tsc -b` before `vite build`), and the only gate that type-checks the test files, because Vitest strips types without checking them. A green `npm run test` says nothing about types.
 

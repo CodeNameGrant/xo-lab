@@ -26,11 +26,7 @@ export function currentState<State, Move>(rules: VariantRules<State, Move>, game
  * The game with `move` added, or the same game object if the move is
  * illegal or the game is already over.
  */
-export function playMove<State, Move>(
-  rules: VariantRules<State, Move>,
-  game: Game<Move>,
-  move: Move,
-): Game<Move> {
+export function playMove<State, Move>(rules: VariantRules<State, Move>, game: Game<Move>, move: Move): Game<Move> {
   const state = currentState(rules, game)
   if (rules.outcome(state).kind !== 'in-progress') return game
   try {

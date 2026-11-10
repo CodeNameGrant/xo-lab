@@ -81,12 +81,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
       </p>
 
       <div className="game-actions">
-        <button
-          type="button"
-          className="action-button"
-          disabled={!canUndo(game)}
-          onClick={() => setGame(undoMove)}
-        >
+        <button type="button" className="action-button" disabled={!canUndo(game)} onClick={() => setGame(undoMove)}>
           <UndoIcon />
           Undo
         </button>

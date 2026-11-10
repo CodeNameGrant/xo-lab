@@ -35,11 +35,14 @@ export function HubScreen() {
 function Preview({ rows }: { rows: VariantInfo['preview'] }) {
   return (
     <span className="variant-preview" aria-hidden="true" style={{ gridTemplateColumns: `repeat(${rows.length}, 1fr)` }}>
-      {rows.join('').split('').map((cell, index) => (
-        <span key={index} className="variant-preview-cell">
-          {(cell === 'X' || cell === 'O') && <Mark player={cell} size={14} stroke={12} />}
-        </span>
-      ))}
+      {rows
+        .join('')
+        .split('')
+        .map((cell, index) => (
+          <span key={index} className="variant-preview-cell">
+            {(cell === 'X' || cell === 'O') && <Mark player={cell} size={14} stroke={12} />}
+          </span>
+        ))}
     </span>
   )
 }

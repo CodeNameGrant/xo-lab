@@ -1,0 +1,2 @@
+# Check out text files with LF on every OS, so Prettier's endOfLine check agrees with Windows clones.
+* text=auto eol=lf

@@ -9,7 +9,12 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
 
   return (
     <>
-      <button type="button" className="icon-button" aria-label="How to play" onClick={() => dialog.current?.showModal()}>
+      <button
+        type="button"
+        className="icon-button"
+        aria-label="How to play"
+        onClick={() => dialog.current?.showModal()}
+      >
         <HelpIcon />
       </button>
       <dialog

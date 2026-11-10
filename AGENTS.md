@@ -4,8 +4,9 @@ XO Lab: a mobile-first hub for tic-tac-toe variants (Classic, Infinite, Ultimate
 
 # Commands
 
-- `npm run dev` (port 5173), `npm run test`, `npm run test:watch`, `npm run lint` (oxlint), `npm run build`.
-- **Run the three gates once, when the branch is ready for a PR — not before each commit.** The list is in `CONTRIBUTING.md` → The three gates. There is no `typecheck` script: `build` runs `tsc -b`, and it is the only gate that type-checks the test files.
+- `npm run dev` (port 5173), `npm run test`, `npm run test:watch`, `npm run lint` (oxlint), `npm run format` / `format:check` (Prettier), `npm run build`.
+- **Run `npm run format` after editing**, so the diff carries no style noise; never hand-format against `.prettierrc.json`.
+- **Run the four gates once, when the branch is ready for a PR — not before each commit.** The list is in `CONTRIBUTING.md` → The four gates. There is no `typecheck` script: `build` runs `tsc -b`, and it is the only gate that type-checks the test files.
 
 # Process
 
