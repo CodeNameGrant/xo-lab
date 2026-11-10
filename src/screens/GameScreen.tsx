@@ -61,7 +61,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         </Link>
         <div className="text-center">
           <div className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase dark:tracking-[0.2em]">
-            Variant
+            Tic-Tac-Toe
           </div>
           <h1 className="text-lg font-semibold dark:text-xl dark:font-bold dark:tracking-[0.12em] dark:uppercase">
             {entry.info.name}

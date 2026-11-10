@@ -36,7 +36,7 @@ The reference size is a 390 px-wide phone held upright.
 
 - **48 px** tall, three columns. The outer two are equal, so the name stays centred whatever buttons sit either side.
 - **Left:** back to the hub, a chevron icon button labelled "Back to all variants".
-- **Centre:** the label "VARIANT" over the variant's name.
+- **Centre:** the label "Tic-Tac-Toe" (shown in capitals) over the variant's name.
 - **Right:** How to play (question-mark icon), then the theme toggle (moon in light, sun in dark), 4 px apart.
 - Icon buttons are **44 × 44 px**, radius 12 px, icons 24 px. In dark they get a 1 px border and 22 px icons.
 
