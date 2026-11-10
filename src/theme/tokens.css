@@ -81,6 +81,9 @@
   --radius-card: 14px;
   --radius-tile: 16px;
   --radius-board: 20px;
+  /* Ultimate's small squares, and the ring around a small board you may play in. */
+  --radius-tile-sm: 6px;
+  --radius-board-sm: 10px;
 
   /* A piece pops in when placed. Always used as `motion-safe:animate-place`. */
   --animate-place: place 180ms cubic-bezier(0.2, 0.8, 0.3, 1.2);

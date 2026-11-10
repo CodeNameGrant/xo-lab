@@ -38,7 +38,9 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-26 | 2026-11-10 | Docs are numbered files under `docs/`                      | Accepted                              |
 | D-27 | 2026-11-10 | Infinite's disappearing piece fades and pulses             | Accepted                              |
 | D-28 | 2026-11-10 | The light 3×3 board is tiles, like the dark one            | Accepted                              |
-| D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                  | Accepted                              |
+| D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                  | Superseded by D-31                    |
+| D-30 | 2026-11-10 | Ultimate's board: rings, tints and a large mark            | Accepted                              |
+| D-31 | 2026-11-10 | Ultimate's board reaches to 6 px from the screen edge      | Accepted                              |
 
 ---
 
@@ -297,7 +299,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 
 ### D-29 · Ultimate's squares are smaller than 44 px
 
-**Status:** Accepted
+**Status:** Superseded by D-31
 
 **Decision.** Ultimate's board stays inside the game screen's normal 24 px side padding, so on the 390 px reference phone it is 342 px wide, and its 81 squares come out at about 34 px. That is the one exception to the rule that every tap target is at least 44 px. Every other control on the Ultimate screen, and every square on the other boards, stays at 44 px or more. The squares still clear WCAG 2.2's 24 px minimum target size (level AA).
 
@@ -307,3 +309,21 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 
 - **The board breaking out of the side padding** to 4 px from the edge (rejected: about 38 px, still under 44, and the board would be wider than the cards and the button, a change to the shared screen for one variant).
 - **Tapping a small board to zoom in** and playing on 44 px squares (rejected for now: an extra tap on every move, and a harder board to build).
+
+### D-30 · Ultimate's board: rings, tints and a large mark
+
+**Status:** Accepted
+
+**Decision.** Ultimate's board uses the tile shape of D-28 at a smaller size. The small boards the player to move may play in get a 2 px ring in that player's colour, set 3 px outside the tiles (with the glow in dark). A won small board takes the winner's tint, fades its pieces to 25 % and shows the winner's mark over the whole board. A small board that fills with no winner fades its pieces to 40 % and shows nothing over it. When the game is won, the winning line of small boards takes the same ring in the winner's colour. No new colours: everything comes from the player colours and tints already in the theme. It adds two radius tokens, `tile-sm` (6 px) and `board-sm` (10 px).
+
+**Why.** There is no mockup for Ultimate (#6); this follows the mockups Grant reviewed for D-29. A ring rather than a fill keeps the pieces inside the allowed board readable, and it reuses the player's colour as the ticket asks. Using the winner's tint for won boards matches the winning squares on the 3×3 board (D-24). The drawn board is faded so it reads as closed, but without a mark, because it counts for nobody.
+
+### D-31 · Ultimate's board reaches to 6 px from the screen edge
+
+**Status:** Accepted (supersedes D-29)
+
+**Decision.** Ultimate's board is wider than the game screen's column: it reaches 18 px into the 24 px side padding on each side, to 6 px from the screen edge. On the 390 px reference phone it is 378 px wide and each of its 81 squares is about 38 px, up from 34 px; on a wider screen it stops at 400 px. Pieces grow from 20 px to 22 px. The player cards, top bar and bottom bar keep the normal padding, so the board is the one part of any screen wider than them. The squares remain the one exception to the 44 px tap-target rule, and still clear WCAG 2.2's 24 px minimum (level AA).
+
+**Why.** After playing D-29's board, Grant found the 34 px squares small and cramped and asked for the board to go to the screen edges. 6 px, not 4 px as in the mockup, leaves room for the 5 px ring around an edge board so the screen edge doesn't cut it off. D-25 allows a change to the shared screen for one variant only through [02-game-screen.md](02-game-screen.md), which now records it.
+
+**Considered.** Narrower gaps between squares and boards instead (rejected: more room per square, but the board would look more cramped, not less). Zooming into a small board to play (still rejected, as in D-29).
