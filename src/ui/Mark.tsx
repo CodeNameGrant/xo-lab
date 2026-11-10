@@ -22,15 +22,25 @@ interface MarkProps {
  */
 const GLYPHS = { X, O: CircleSmall } as const
 
+/** Lucide draws in currentColor, so the player's colour is a text colour. */
+const COLOUR = { X: 'text-player-x', O: 'text-player-o' } as const
+
+/** The neon glow in the dark theme: 6 px on the board, 4 px on small pieces (artboard B). */
+const GLOW = { X: 'dark:drop-shadow-glow-x', O: 'dark:drop-shadow-glow-o' } as const
+const SMALL_GLOW = { X: 'dark:drop-shadow-glow-x-sm', O: 'dark:drop-shadow-glow-o-sm' } as const
+
+/** At or below this size a piece counts as small. */
+const SMALL = 28
+
 /** An X or O drawn in its player's colour. Decorative: the label lives on the button around it. */
 export function Mark({ player, size, stroke = 2, className }: MarkProps) {
   const Glyph = GLYPHS[player]
+  const glow = size <= SMALL ? SMALL_GLOW[player] : GLOW[player]
   return (
     <Glyph
       size={size}
       strokeWidth={stroke}
-      // Lucide draws in currentColor, so the player's colour is a text colour.
-      className={`${player === 'X' ? 'text-x' : 'text-o'} ${className ?? ''}`}
+      className={`${COLOUR[player]} ${glow} ${className ?? ''}`}
       aria-hidden="true"
       focusable="false"
     />

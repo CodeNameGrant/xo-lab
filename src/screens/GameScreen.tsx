@@ -5,6 +5,7 @@ import { canUndo, currentState, newGame, playMove, startGame, undoMove } from '.
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
+import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import type { AnyBoard, AnyRules, VariantEntry } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
 
@@ -54,15 +55,23 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
     <main className="mx-auto flex min-h-dvh max-w-110 flex-col gap-6 px-6 pt-4 pb-8">
       <title>{`${entry.info.name} · XO Lab`}</title>
 
-      <header className="flex h-12 items-center justify-between">
-        <Link to="/" className={iconButton} aria-label="Back to all variants">
+      {/* Equal outer columns keep the variant name centred, with one button on the left and two on the right. */}
+      <header className="grid h-12 grid-cols-[1fr_auto_1fr] items-center">
+        <Link to="/" className={`${iconButton} justify-self-start`} aria-label="Back to all variants">
           <Icon name="back" />
         </Link>
         <div className="text-center">
-          <div className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase">Variant</div>
-          <h1 className="text-lg font-semibold">{entry.info.name}</h1>
+          <div className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase dark:tracking-[0.2em]">
+            Variant
+          </div>
+          <h1 className="text-lg font-semibold dark:text-xl dark:font-bold dark:tracking-[0.12em] dark:uppercase">
+            {entry.info.name}
+          </h1>
         </div>
-        <HowToPlay info={entry.info} />
+        <div className="flex gap-1 justify-self-end">
+          <HowToPlay info={entry.info} />
+          <ThemeToggle />
+        </div>
       </header>
 
       <div className="grid grid-cols-2 gap-3">
@@ -80,21 +89,25 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         <Board state={state} rules={rules} onMove={(move: unknown) => setGame((g) => playMove(rules, g, move))} />
       </div>
 
-      <p className="text-center text-xl font-semibold" aria-live="polite">
+      <p className="text-center text-xl font-semibold dark:tracking-[0.06em] dark:uppercase" aria-live="polite">
         {status}
       </p>
 
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          className={`${actionButton} border border-line bg-surface text-ink`}
+          className={`${actionButton} border border-line bg-surface text-ink dark:bg-transparent`}
           disabled={!canUndo(game)}
           onClick={() => setGame(undoMove)}
         >
           <Icon name="undo" size={20} />
           Undo
         </button>
-        <button type="button" className={`${actionButton} bg-primary text-on-primary`} onClick={() => setGame(newGame)}>
+        <button
+          type="button"
+          className={`${actionButton} bg-primary text-on-primary dark:font-bold dark:shadow-glow-primary`}
+          onClick={() => setGame(newGame)}
+        >
           <Icon name="newGame" size={20} />
           New game
         </button>
@@ -103,11 +116,18 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
   )
 }
 
+/** The current player's card border; in the dark theme it glows too. Inactive: light hides the border, dark shows a dim one. */
+const CARD_BORDER = {
+  X: 'border-player-x dark:shadow-glow-x',
+  O: 'border-player-o dark:shadow-glow-o',
+  inactive: 'border-surface dark:border-grid',
+} as const
+
 function PlayerCard({ player, active, first }: { player: Player; active: boolean; first: boolean }) {
   return (
     <div
-      className={`flex items-center gap-3 rounded-card border-2 bg-surface px-3.5 py-3 ${
-        !active ? 'border-surface' : player === 'X' ? 'border-x' : 'border-o'
+      className={`flex items-center gap-3 rounded-card border-2 bg-surface px-3.5 py-3 motion-safe:transition-[border-color,box-shadow] motion-safe:duration-200 ${
+        CARD_BORDER[active ? player : 'inactive']
       }`}
     >
       <Mark player={player} size={28} stroke={2.5} className="shrink-0" />

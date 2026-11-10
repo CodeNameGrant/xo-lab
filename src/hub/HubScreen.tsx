@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { Icon } from '../ui/icon.tsx'
+import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import { variants } from '../variants/registry.ts'
 import type { VariantInfo } from '../variants/types.ts'
@@ -10,7 +11,10 @@ export function HubScreen() {
     <main className="mx-auto max-w-110 px-6 py-8">
       <title>XO Lab</title>
       <header>
-        <h1 className="text-[32px] font-bold">XO Lab</h1>
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="text-[32px] font-bold">XO Lab</h1>
+          <ThemeToggle />
+        </div>
         <p className="mt-2 leading-normal text-ink-muted">
           Tic-tac-toe, and its stranger cousins. Pick a variant to play on this device.
         </p>
@@ -20,7 +24,8 @@ export function HubScreen() {
           <li key={variant.id}>
             <Link
               to={`/play/${variant.id}`}
-              className="flex min-h-11 items-center gap-4 rounded-card bg-surface px-4 py-3.5 text-ink shadow-board hover:text-ink"
+              // Dark has no panel shadows (artboard B), so the card gets a dim border instead.
+              className="flex min-h-11 items-center gap-4 rounded-card bg-surface px-4 py-3.5 text-ink shadow-board hover:text-ink dark:border dark:border-grid"
             >
               <Preview rows={variant.info.preview} />
               <span className="flex grow flex-col gap-0.5">

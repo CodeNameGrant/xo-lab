@@ -1,4 +1,14 @@
-import { ChevronLeft, ChevronRight, CircleQuestionMark, RotateCw, Undo2, X, type LucideIcon } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  CircleQuestionMark,
+  Moon,
+  RotateCw,
+  Sun,
+  Undo2,
+  X,
+  type LucideIcon,
+} from 'lucide-react'
 
 /**
  * Every icon in the app, by what it means rather than what it looks like.
@@ -13,6 +23,9 @@ const GLYPHS = {
   undo: Undo2,
   newGame: RotateCw,
   close: X,
+  /** The theme toggle shows the theme it switches to. */
+  lightTheme: Sun,
+  darkTheme: Moon,
 } satisfies Record<string, LucideIcon>
 
 export type IconName = keyof typeof GLYPHS
