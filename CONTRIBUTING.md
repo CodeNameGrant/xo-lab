@@ -31,7 +31,7 @@ One `/`, after the type. `main` is squash-only and the PR title becomes the comm
 
 ## The four gates
 
-There is no CI yet: nothing checks a PR except Vercel's build of the preview. These four are the whole bar, so run them yourself before opening a PR.
+CI doesn't run these yet: a PR is checked only for its title (`pr-title.yml`) and by Vercel's build of the preview. These four are the whole bar, so run them yourself before opening a PR.
 
 **Once per branch, not once per commit.** Reach for a single gate on its own while working if something needs checking, and run all four when the branch is ready.
 
@@ -51,7 +51,7 @@ npm run lint && npm run format:check && npm run test && npm run build
 <type>[(scope)][!]: <description>
 ```
 
-Lowercase type from the list above, optional parenthesised scope (a variant id is the natural one: `feat(ultimate): …`), optional `!`, then a colon _and a space_, then a description. Nothing enforces this yet, so get it right by hand: squash-merge makes it the permanent subject line in `git log`.
+Lowercase type from the list above, optional parenthesised scope (a variant id is the natural one: `feat(ultimate): …`), optional `!`, then a colon _and a space_, then a description. `.github/workflows/pr-title.yml` enforces the grammar, and only the grammar: the title still has to describe the change, because squash-merge makes it the permanent subject line in `git log`. A rejected title can be fixed in the GitHub UI; editing it re-runs the check without a push.
 
 **Put `Closes #<n>` in the PR body whenever an issue exists.** Merging then closes the issue; a PR without the link leaves it open.
 
