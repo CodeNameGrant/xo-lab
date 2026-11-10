@@ -72,7 +72,9 @@ Lowercase type from the list above, optional parenthesised scope (a variant id i
 Keeping the docs true is part of the work:
 
 - A PR that settles or sharpens a domain term updates `CONTEXT.md` (created by `/domain-modeling` the first time one is needed).
-- A PR that makes a design decision worth defending later records it as an ADR in `docs/adr/`.
+- A PR that makes a decision worth defending later adds a dated entry to `docs/01-decisions.md` (instructions at the top of that file). A decision that replaces an earlier one marks the old entry superseded rather than rewriting it.
+- A PR that changes the game screen's layout, sizes or colours, or builds a variant's board, updates `docs/02-game-screen.md` (its per-variant table for a board).
+- A new doc goes in `docs/` with the next number (`03-…`), never a reused one, and gets a line in the README's Docs table.
 - A PR that changes how a module works updates the comment at its top. The header comments in `src/game/rules.ts`, `session.ts` and `src/variants/registry.ts` are the architecture docs; a stale one misleads more than a missing one.
 
 ## What happens on merge

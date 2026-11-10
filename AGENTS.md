@@ -1,6 +1,6 @@
 # AGENTS.md
 
-XO Lab: a mobile-first hub for tic-tac-toe variants (Classic, Infinite, Ultimate), two players on one device. Vite + React 19 + TypeScript, deployed on Vercel. The spec is GitHub issue #1.
+XO Lab: a mobile-first hub for tic-tac-toe variants (Classic, Infinite, Ultimate), two players on one device. Vite + React 19 + TypeScript, deployed on Vercel. The spec is GitHub issue #1. The project docs are numbered files in `docs/`, listed in `README.md`: every decision is in `docs/01-decisions.md`, and the game screen's layout and colours are in `docs/02-game-screen.md`.
 
 # Commands
 
@@ -24,6 +24,7 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 - **`src/variants/<id>/` — one self-contained folder per variant**: `info.ts` (`VariantInfo`), `rules.ts`, a board component, `rules.test.ts`. Variants never import from each other; what two share goes in `src/game/` (logic, e.g. `lines.ts`) or `src/boards/` (UI, e.g. `GridBoard`).
 - **`src/variants/registry.ts` — adding a variant is its folder plus one entry here.** The hub, `/play/<id>`, the game screen and the contract suite all read this list. Rules and board load through dynamic `import()` so each variant is its own chunk; `info.ts` is imported eagerly, so **`info.ts` must not import the variant's rules or board** — that would pull them into the hub's bundle.
 - **A board component receives `BoardProps` — `state`, `rules`, `onMove` — and nothing else.** It draws the state and reports moves; it never decides legality or the outcome itself, only asks `rules`. The shared shell (`src/screens/GameScreen.tsx`) owns the player cards (whose turn, then who won or a draw), the bottom bar (New game, which becomes Play again in the winner's colour when the game ends) and the screen-reader status.
+- **Every variant uses the same game screen; only its board differs** (decision D-25). Top bar, player cards, board, bottom bar, in that order, with the sizes, colours and words in `docs/02-game-screen.md`. A variant never restyles the shared parts. Anything it does differently lives in its board and is recorded in that doc's per-variant table; changing a shared part for one variant means changing the doc first.
 - **`any` lives only in `src/variants/types.ts` and the registry**, where variants with different types sit side by side. Every variant's own module is fully typed.
 - **Imports carry their extension** (`'./rules.ts'`, `'./Board.tsx'`), and type-only imports use `import type` (`verbatimModuleSyntax`). `erasableSyntaxOnly` is on: no `enum`, `namespace` or constructor parameter properties.
 - The page title is set with React 19's `<title>` element inside the screen, not `document.title`.
@@ -40,7 +41,7 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 - State-based styling uses variants on the attribute that already carries the meaning: `data-win:`, `disabled:`, `aria-disabled:`, `backdrop:`, `nth-*:`.
 - `prettier-plugin-tailwindcss` sorts every class list, so `npm run format` settles class order; never sort by hand.
 
-Light is theme A "Clean minimal", dark is theme B "Neon arcade"; the values are in the spec (#1) → Theme.
+Light is theme A "Clean minimal", dark is theme B "Neon arcade". The current values are in `docs/02-game-screen.md` → Colours, which supersedes the spec's Theme section where they differ (the light O is `#B12B35`, not the spec's `#E0611A`: decision D-23).
 
 # Icons
 
@@ -82,4 +83,4 @@ The default label vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `
 
 ### Domain docs
 
-Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root, both created lazily by `/domain-modeling`. See `docs/agents/domain.md`.
+Single-context: one `CONTEXT.md` at the repo root (created lazily by `/domain-modeling`), and every decision in `docs/01-decisions.md`, not an ADR folder. See `docs/agents/domain.md`.
