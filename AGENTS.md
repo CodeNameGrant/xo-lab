@@ -20,10 +20,10 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 
 - **`src/game/rules.ts` — the `VariantRules` contract is the one seam the app is built around.** Every variant implements it for its own `State` and `Move`. Rules are pure TypeScript: no React, no browser APIs, no hidden state, no clock, no randomness. `applyMove` never modifies its input and throws `IllegalMoveError` for an illegal move. States and moves are plain JSON-serialisable data. A future computer opponent drives variants through this interface, so nothing variant-specific belongs outside it.
 - **`selectors` are for the variant's own board only.** Shared code (the game screen, the session, the contract suite) never calls them; anything it needs belongs on the contract itself.
-- **`src/game/session.ts` — a game is the first player plus the move list. Current state is never stored**; it is rebuilt by replaying the moves. That is what makes undo exact (including Infinite's removed marks) and what saving (#7) will persist. Don't cache or store a derived state alongside the moves.
+- **`src/game/session.ts` — a game is the first player plus the move list. Current state is never stored**; it is rebuilt by replaying the moves. The move list is what saving (#7) will persist. There is no undo (removed in #4); don't add one back without changing the spec. Don't cache or store a derived state alongside the moves.
 - **`src/variants/<id>/` — one self-contained folder per variant**: `info.ts` (`VariantInfo`), `rules.ts`, a board component, `rules.test.ts`. Variants never import from each other; what two share goes in `src/game/` (logic, e.g. `lines.ts`) or `src/boards/` (UI, e.g. `GridBoard`).
 - **`src/variants/registry.ts` — adding a variant is its folder plus one entry here.** The hub, `/play/<id>`, the game screen and the contract suite all read this list. Rules and board load through dynamic `import()` so each variant is its own chunk; `info.ts` is imported eagerly, so **`info.ts` must not import the variant's rules or board** — that would pull them into the hub's bundle.
-- **A board component receives `BoardProps` — `state`, `rules`, `onMove` — and nothing else.** It draws the state and reports moves; it never decides legality or the outcome itself, only asks `rules`. The shared shell (`src/screens/GameScreen.tsx`) owns the player cards, status line, Undo and New game.
+- **A board component receives `BoardProps` — `state`, `rules`, `onMove` — and nothing else.** It draws the state and reports moves; it never decides legality or the outcome itself, only asks `rules`. The shared shell (`src/screens/GameScreen.tsx`) owns the player cards, the status line and New game.
 - **`any` lives only in `src/variants/types.ts` and the registry**, where variants with different types sit side by side. Every variant's own module is fully typed.
 - **Imports carry their extension** (`'./rules.ts'`, `'./Board.tsx'`), and type-only imports use `import type` (`verbatimModuleSyntax`). `erasableSyntaxOnly` is on: no `enum`, `namespace` or constructor parameter properties.
 - The page title is set with React 19's `<title>` element inside the screen, not `document.title`.
@@ -35,7 +35,7 @@ Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the ga
 - **Every colour, font, radius and shadow is a token in the `@theme` block of `src/theme/tokens.css`**, which turns each into classes (`--color-surface` → `bg-surface`, `text-surface`, `border-surface`; `--radius-card` → `rounded-card`). Tailwind's default palette is switched off, so `bg-blue-500` doesn't exist. Never an arbitrary colour (`bg-[#fff]`) or a `var(--…)` in a component: a new colour is a new token.
 - **The theme is `<html data-theme="light|dark">`**, set by `src/theme/theme.ts` (and an inline script in `index.html` before first paint). Dark is a second set of values for the same variables, in the `:root[data-theme='dark']` block of `tokens.css` — a colour difference between the themes is never a component change. Only where the themes differ in shape (the dark board's separate tiles, glows, uppercase type) does a component carry `dark:` or `light:` classes; both variants follow `data-theme`, so they obey the theme toggle.
 - **A token name must not collide with a Tailwind utility.** `--color-x` would make `border-x` also set the left and right border widths; the players' colours are `--color-player-x` and `--color-player-o` for that reason.
-- **A class list used by two or more files is a named constant in `src/ui/classes.ts`** (`iconButton`). One used twice in the same file is a constant at the top of that file (`actionButton` in `GameScreen.tsx`). Otherwise it stays inline.
+- **A class list used by two or more files is a named constant in `src/ui/classes.ts`** (`iconButton`). One used twice in the same file is a constant at the top of that file. Otherwise it stays inline.
 - Spacing and sizes use Tailwind's scale (`p-2.5`, `size-11` = 44 px). A value off the scale that matches the artboard is an arbitrary value (`text-[17px]`, `w-[min(342px,100%)]`).
 - State-based styling uses variants on the attribute that already carries the meaning: `data-win:`, `disabled:`, `aria-disabled:`, `backdrop:`, `nth-*:`.
 - `prettier-plugin-tailwindcss` sorts every class list, so `npm run format` settles class order; never sort by hand.
@@ -51,13 +51,13 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade"; the values are 
 # Accessibility
 
 - **Every square is a real `<button>`** labelled with its position and contents (`Row 2, column 3, X`; Ultimate adds the small board). An unplayable square is `aria-disabled`, not `disabled`, so it stays reachable for screen readers; its click handler does nothing.
-- The status line is `aria-live="polite"`, and states the game in words: whose turn, who won, or a draw.
+- The status line is `aria-live="polite"`, and states the game in words: whose turn, who won, or a draw. It is visible only once the game is over (in the winner's colour); during play the player cards show the turn, and the line's text is screen-reader only.
 - **Every tap target is at least 44 px.** On Ultimate's 81-square board that is the hard constraint on layout.
 - Animation respects `prefers-reduced-motion` (#4).
 
 # Words
 
-Players are **Player 1 (X)** and **Player 2 (O)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate); its **id** is its URL slug. The buttons are **Undo**, **New game** and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
+Players are **Player 1 (X)** and **Player 2 (O)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate); its **id** is its URL slug. The buttons are **New game** and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
 
 # Testing
 

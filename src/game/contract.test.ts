@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { variants } from '../variants/registry.ts'
 import type { AnyRules } from '../variants/types.ts'
 import type { Player } from './rules.ts'
-import { currentState, playMove, startGame, undoMove, type Game } from './session.ts'
+import { currentState, playMove, startGame, type Game } from './session.ts'
 
 const loaded = await Promise.all(variants.map(async (entry) => [entry.id, await entry.loadRules()] as const))
 
@@ -87,17 +87,6 @@ describe.each(loaded)('%s follows the rules contract', (_, rules) => {
   it.each(SEEDS)('the same moves always give the same result (game %i)', (seed) => {
     const game = randomGame(rules, seed)
     expect(currentState(rules, game)).toEqual(currentState(rules, structuredClone(game)))
-  })
-
-  it.each(SEEDS)('undo returns exactly the earlier state (game %i)', (seed) => {
-    let game = randomGame(rules, seed, seed % 2 ? 'X' : 'O')
-    const history = game.moves.map((_, n) => currentState(rules, { ...game, moves: game.moves.slice(0, n) }))
-    while (history.length > 0) {
-      game = undoMove(game)
-      const expected = history.pop()
-      expect(currentState(rules, game)).toEqual(expected)
-      expect(rules.outcome(currentState(rules, game))).toEqual({ kind: 'in-progress' })
-    }
   })
 
   it.each(SEEDS)('random play never errors and states stay plain data (game %i)', (seed) => {

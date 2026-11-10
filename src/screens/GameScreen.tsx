@@ -1,17 +1,13 @@
 import { use, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { playerName, type Player } from '../game/rules.ts'
-import { canUndo, currentState, newGame, playMove, startGame, undoMove } from '../game/session.ts'
+import { currentState, newGame, playMove, startGame } from '../game/session.ts'
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import type { AnyBoard, AnyRules, VariantEntry } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
-
-/** Undo and New game: the same shape, each adds its own colours. */
-const actionButton =
-  'flex h-13 items-center justify-center gap-2 rounded-card text-base font-semibold disabled:opacity-45'
 
 interface LoadedVariant {
   readonly rules: AnyRules
@@ -32,7 +28,8 @@ function loadVariant(entry: VariantEntry): Promise<LoadedVariant> {
 
 /**
  * The shared game screen, the same for every variant: top bar, player
- * cards, the variant's own board, status line, Undo and New game.
+ * cards, the variant's own board, the result line and New game. Whose turn
+ * it is shows on the player cards; the result line appears when the game ends.
  * Must be rendered inside <Suspense>, which shows while the variant loads.
  */
 export function GameScreen({ entry }: { entry: VariantEntry }) {
@@ -89,32 +86,36 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         <Board state={state} rules={rules} onMove={(move: unknown) => setGame((g) => playMove(rules, g, move))} />
       </div>
 
-      <p className="text-center text-xl font-semibold dark:tracking-[0.06em] dark:uppercase" aria-live="polite">
-        {status}
-      </p>
+      {/*
+        Shown only once the game is over, in the winner's colour; during play the player cards
+        show whose turn it is. The line keeps its height either way so the board doesn't jump,
+        and screen readers hear every turn from it.
+      */}
+      {over ? (
+        <p
+          className={`min-h-7 text-center text-xl font-semibold dark:tracking-[0.06em] dark:uppercase ${STATUS_COLOUR[outcome.kind === 'won' ? outcome.winner : 'none']}`}
+          aria-live="polite"
+        >
+          {status}
+        </p>
+      ) : (
+        <span className="sr-only">{status}</span>
+      )}
 
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          className={`${actionButton} border border-line bg-surface text-ink dark:bg-transparent`}
-          disabled={!canUndo(game)}
-          onClick={() => setGame(undoMove)}
-        >
-          <Icon name="undo" size={20} />
-          Undo
-        </button>
-        <button
-          type="button"
-          className={`${actionButton} bg-primary text-on-primary dark:font-bold dark:shadow-glow-primary`}
-          onClick={() => setGame(newGame)}
-        >
-          <Icon name="newGame" size={20} />
-          New game
-        </button>
-      </div>
+      <button
+        type="button"
+        className="flex h-13 w-full items-center justify-center gap-2 rounded-card bg-primary text-base font-semibold text-on-primary dark:font-bold dark:shadow-glow-primary"
+        onClick={() => setGame(newGame)}
+      >
+        <Icon name="newGame" size={20} />
+        New game
+      </button>
     </main>
   )
 }
+
+/** The result's colour: the winner's, or plain text for a draw. */
+const STATUS_COLOUR = { X: 'text-player-x', O: 'text-player-o', none: 'text-ink' } as const
 
 /** The current player's card border; in the dark theme it glows too. Inactive: light hides the border, dark shows a dim one. */
 const CARD_BORDER = {
