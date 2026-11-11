@@ -47,6 +47,8 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-35 | 2026-11-11 | A variant has two or three players, fixed per variant      | Accepted                              |
 | D-36 | 2026-11-11 | Player 3 is a gold star                                    | Accepted                              |
 | D-37 | 2026-11-11 | Player 3's card is centred on a second row                 | Accepted                              |
+| D-38 | 2026-11-11 | Trio is played on a 5×5 board                              | Superseded by D-39                    |
+| D-39 | 2026-11-11 | Trio is played on a 4×4 board                              | Accepted                              |
 
 ---
 
@@ -395,3 +397,25 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 **Why.** Grant compared three layouts at the 342 px phone column. All three cards the same size means no player looks more or less important, and it costs no more height than a full-width third card; stacking all three costs about 78 px of the board's height.
 
 **Considered.** A full-width third card (the fallback if A looks wrong on a phone). All three cards stacked (rejected: too much height).
+
+### D-38 · Trio is played on a 5×5 board
+
+**Status:** Superseded by D-39
+
+**Decision.** Trio (#16), the three-player variant, is played on a 5×5 board, first to three in a row, and is a draw as soon as no line can be won (D-33). It uses the shared grid board, which now takes a `size` of 3 or 5.
+
+**Why.** Between your turns two opponents each move, so an open two (a pair with both ends free) is blocked twice before you play again, and a forced win needs several threats at once. On 4×4 (16 squares, 24 lines) the board would fill before anyone could set that up, and most games would be draws; 5×5 (25 squares, 48 lines) leaves room to build threats in more than one place. Grant chose 5×5 without prototyping 4×4.
+
+**Considered.** 4×4 (rejected, above). Prototyping both sizes first (skipped).
+
+**Open concern (Grant, 2026-11-11).** After playing it, Grant thinks 5×5 is too big: with this much room the player who starts finds it too easy to win, because the other two can't block every threat. The first move rotates between new games, which spreads the advantage across a session but doesn't remove it from any one game. To revisit with more play: a smaller board (4×4, the size this decision rejected), or a rule that limits the starter (for example, no first move in the centre).
+
+### D-39 · Trio is played on a 4×4 board
+
+**Status:** Accepted (supersedes D-38)
+
+**Decision.** Trio is played on a 4×4 board (16 squares, 24 lines of three), still first to three in a row, with the draw as soon as no line can be won (D-33). The shared grid board takes a `size` of 3 or 4; on the 390 px phone Trio's tiles are about 80 px and its pieces 48 px.
+
+**Why.** After playing the 5×5 board, Grant found it too big: the player who starts wins too easily, because with that much room the other two can't block every threat (D-38's open concern). A smaller board gives the two opponents a better chance to block. D-38 expected 4×4 to end in many draws; whether it does is for play to tell.
+
+**Considered.** Keeping 5×5 with a rule that limits the starter, such as no first move in the centre (not tried: a smaller board is the simpler change).

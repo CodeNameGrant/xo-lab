@@ -138,6 +138,7 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Infinite** | The shared 3×3 board, plus the mover's oldest piece drawn at 40 % opacity and pulsing once they have three (its square's label adds "disappears next"), and a fade-out when a piece is removed. Both in the player's own colour; no new colours | None                                                                    | Built (#5)  |
 | **Ultimate** | Its own nested board (`src/variants/ultimate/UltimateBoard.tsx`), described below                                                                                                                                                               | The board is wider than the column, to 6 px from the screen edge (D-31) | Built (#6)  |
 | **Shift**    | Its own 5×5 field (`src/variants/shift/ShiftBoard.tsx`), described below                                                                                                                                                                        | None                                                                    | Built (#14) |
+| **Trio**     | The shared grid board at 4×4 (`src/boards/GridBoard.tsx` with `size={4}`): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px                                                                                                   | Three player cards, Player 3 centred on a second row (D-37)             | Built (#16) |
 
 ### Ultimate's board
 

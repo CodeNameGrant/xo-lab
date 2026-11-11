@@ -41,19 +41,24 @@ export function HubScreen() {
   )
 }
 
+/** The hub card's picture is 56 px whatever the board, so pieces shrink as the board grows: 14 px on 3×3, 9 on 4×4, 7 on 5×5. */
 function Preview({ rows }: { rows: VariantInfo['preview'] }) {
+  const piece = rows.length >= 5 ? 7 : rows.length === 4 ? 9 : 14
   return (
     <span
       className="grid size-14 shrink-0 gap-0.5 rounded-[10px] bg-grid p-1"
       aria-hidden="true"
-      style={{ gridTemplateColumns: `repeat(${rows.length}, 1fr)` }}
+      style={{
+        gridTemplateColumns: `repeat(${rows.length}, minmax(0, 1fr))`,
+        gridTemplateRows: `repeat(${rows.length}, minmax(0, 1fr))`,
+      }}
     >
       {rows
         .join('')
         .split('')
         .map((cell, index) => (
           <span key={index} className="flex items-center justify-center rounded-[3px] bg-surface">
-            {(cell === 'X' || cell === 'O' || cell === 'S') && <Mark player={cell} size={14} stroke={3} />}
+            {(cell === 'X' || cell === 'O' || cell === 'S') && <Mark player={cell} size={piece} stroke={3} />}
           </span>
         ))}
     </span>
