@@ -2,6 +2,7 @@ import type { VariantInfo } from '../types.ts'
 
 export const ultimateInfo: VariantInfo = {
   name: 'Ultimate',
+  players: 2,
   tagline: 'Nine boards in one. Where you play decides where your opponent plays next.',
   howToPlay: [
     'The board is nine small tic-tac-toe boards, set out in a 3×3 grid. Player 1 is X, Player 2 is O.',

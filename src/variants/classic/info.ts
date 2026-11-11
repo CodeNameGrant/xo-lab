@@ -2,6 +2,7 @@ import type { VariantInfo } from '../types.ts'
 
 export const classicInfo: VariantInfo = {
   name: 'Classic',
+  players: 2,
   tagline: 'The original 3×3 game. Three in a row wins.',
   howToPlay: [
     'Players take turns placing their mark in an empty square. Player 1 is X, Player 2 is O.',

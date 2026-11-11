@@ -10,11 +10,17 @@ describe('game session', () => {
 
   it('alternates the starting player with each new game', () => {
     const first = startGame<number>()
-    const second = newGame(playMove(rules, first, 4))
-    const third = newGame(second)
+    const second = newGame(playMove(rules, first, 4), 2)
+    const third = newGame(second, 2)
     expect([first, second, third].map((game) => game.firstPlayer)).toEqual(['X', 'O', 'X'])
     expect(second.moves).toEqual([])
     expect(rules.currentPlayer(currentState(rules, second))).toBe('O')
+  })
+
+  it('rotates the starting player through all three players in a three-player variant', () => {
+    const starts = [startGame<number>()]
+    for (let i = 0; i < 3; i++) starts.push(newGame(starts[starts.length - 1], 3))
+    expect(starts.map((game) => game.firstPlayer)).toEqual(['X', 'O', 'S', 'X'])
   })
 
   it('ignores an illegal move', () => {

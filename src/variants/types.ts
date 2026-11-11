@@ -4,11 +4,13 @@ import type { VariantRules } from '../game/rules.ts'
 /** What the hub and the game screen show about a variant, without loading its rules. */
 export interface VariantInfo {
   readonly name: string
+  /** How many players the variant has, always the same: 2, or 3 for a three-player variant. */
+  readonly players: 2 | 3
   /** One line for the hub card. */
   readonly tagline: string
   /** The "How to play" panel, one paragraph per entry. */
   readonly howToPlay: readonly string[]
-  /** A small static picture for the hub card: rows of "X", "O" and "." (empty). */
+  /** A small static picture for the hub card: rows of "X", "O", "S" (a star) and "." (empty). */
   readonly preview: readonly string[]
 }
 

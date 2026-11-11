@@ -44,6 +44,11 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-32 | 2026-11-11 | Shift: a 3×3 window that moves over a 5×5 field            | Accepted                              |
 | D-33 | 2026-11-11 | A draw as soon as no line can be won                       | Accepted                              |
 | D-34 | 2026-11-11 | Shift's window moves only by dragging it                   | Accepted                              |
+| D-35 | 2026-11-11 | A variant has two or three players, fixed per variant      | Accepted                              |
+| D-36 | 2026-11-11 | Player 3 is a gold star                                    | Accepted                              |
+| D-37 | 2026-11-11 | Player 3's card is centred on a second row                 | Accepted                              |
+| D-38 | 2026-11-11 | Trio is played on a 5×5 board                              | Superseded by D-39                    |
+| D-39 | 2026-11-11 | Trio is played on a 4×4 board                              | Accepted                              |
 
 ---
 
@@ -362,3 +367,55 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 **Why.** Grant pictured moving the board by dragging and compared playable mockups. The first build let only the grid lines be grabbed, to keep a press on a tile always meaning "place here", but on a phone the lines were hard to grab at 8 px and still at 14 px, with the field widened to the screen edge to make room. Grabbing anywhere in the window gives a target the size of the whole window. The movement threshold keeps the two apart, and a press that moves never places a mark, so a drag can't spend the turn on one by mistake, which matters because there is no undo. Accessibility was set aside for now by Grant's choice.
 
 **Considered.** Tapping a tile outside the window to move one step towards it (kept as the likely way to close the accessibility gap). Eight arrow buttons around the board (rejected: they shrink the tiles to about 40 px). Grabbing by the grid lines only, at 8 px and then at 14 px with the field out to 6 px from the screen edge (both built and rejected after test-playing the preview on a phone: the lines were hard to grab).
+
+### D-35 · A variant has two or three players, fixed per variant
+
+**Status:** Accepted
+
+**Decision.** `Player` has a third value, `S`, for Player 3. Each variant's `VariantInfo` says how many players it has, 2 or 3, and that never changes: there is no choice of player count. Turns go Player 1 → Player 2 → Player 3, and each new game passes the first move one place along that order (`nextPlayer` in `src/game/rules.ts`, used by `newGame` in the session); with two players that is the alternation there was before. The contract suite takes each variant's players from its `VariantInfo` and checks that every move passes the turn to the next player. The game screen draws one card per player. This amends the shared screen of D-25: a three-player variant has a third card.
+
+**Why.** Trio (#16) is a three-player game, and the spec's two-player contract had `'X' | 'O'` built in. Fixing the count per variant keeps every existing variant exactly as it was and keeps the change to what Trio needs; Grant chose it over offering three players in every variant.
+
+**Considered.** A player-count choice per game (rejected: a second setting for every variant, and their rules assume two players). A generic player type per variant (rejected for now: it spreads type parameters through the session and every caller for little gain; two-player variants simply never receive `S`).
+
+### D-36 · Player 3 is a gold star
+
+**Status:** Accepted
+
+**Decision.** Player 3 plays a star, Lucide's `Star`, in gold: `player-s` is `#946800` in light and `#FFC93C` in dark, with `tint-s` `#FBF1DA` / `#352C14` and `on-player-s` white / `#0B1020`, and glows built like X's and O's. The star is 20 of Lucide's 24 units across, against 12 for X and O, so `<Mark>` draws it at 60 % (the `scale` property, which leaves the pop-in's `transform` alone) with its stroke widened by the same factor, so it fills the same box with lines as heavy.
+
+**Why.** Grant compared mockups of a bright yellow, a gold and a purple beside X and O in both themes. Bright yellow is about 2:1 on white and washes out in light; the dark gold reads at about 4.6:1 and is the yellow Grant wanted in dark. It is also the colour furthest from blue/cyan X and red/pink O in both themes, where purple sits near the pink O in dark.
+
+**Considered.** Bright yellow (rejected: too faint in light). Purple (rejected: close to O in dark). A glyph already 12 units across, such as a triangle (rejected: Grant wanted a star).
+
+### D-37 · Player 3's card is centred on a second row
+
+**Status:** Accepted
+
+**Decision.** With three players, Players 1 and 2 keep their cards side by side and Player 3's card wraps to a second row, the same width as theirs and centred (layout A).
+
+**Why.** Grant compared three layouts at the 342 px phone column. All three cards the same size means no player looks more or less important, and it costs no more height than a full-width third card; stacking all three costs about 78 px of the board's height.
+
+**Considered.** A full-width third card (the fallback if A looks wrong on a phone). All three cards stacked (rejected: too much height).
+
+### D-38 · Trio is played on a 5×5 board
+
+**Status:** Superseded by D-39
+
+**Decision.** Trio (#16), the three-player variant, is played on a 5×5 board, first to three in a row, and is a draw as soon as no line can be won (D-33). It uses the shared grid board, which now takes a `size` of 3 or 5.
+
+**Why.** Between your turns two opponents each move, so an open two (a pair with both ends free) is blocked twice before you play again, and a forced win needs several threats at once. On 4×4 (16 squares, 24 lines) the board would fill before anyone could set that up, and most games would be draws; 5×5 (25 squares, 48 lines) leaves room to build threats in more than one place. Grant chose 5×5 without prototyping 4×4.
+
+**Considered.** 4×4 (rejected, above). Prototyping both sizes first (skipped).
+
+**Open concern (Grant, 2026-11-11).** After playing it, Grant thinks 5×5 is too big: with this much room the player who starts finds it too easy to win, because the other two can't block every threat. The first move rotates between new games, which spreads the advantage across a session but doesn't remove it from any one game. To revisit with more play: a smaller board (4×4, the size this decision rejected), or a rule that limits the starter (for example, no first move in the centre).
+
+### D-39 · Trio is played on a 4×4 board
+
+**Status:** Accepted (supersedes D-38)
+
+**Decision.** Trio is played on a 4×4 board (16 squares, 24 lines of three), still first to three in a row, with the draw as soon as no line can be won (D-33). The shared grid board takes a `size` of 3 or 4; on the 390 px phone Trio's tiles are about 80 px and its pieces 48 px.
+
+**Why.** After playing the 5×5 board, Grant found it too big: the player who starts wins too easily, because with that much room the other two can't block every threat (D-38's open concern). A smaller board gives the two opponents a better chance to block. D-38 expected 4×4 to end in many draws; whether it does is for play to tell.
+
+**Considered.** Keeping 5×5 with a rule that limits the starter, such as no first move in the centre (not tried: a smaller board is the simpler change).

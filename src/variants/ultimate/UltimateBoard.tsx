@@ -24,6 +24,7 @@ const BOARD_NAMES = [
 const RING = {
   X: 'ring-2 ring-player-x dark:shadow-glow-x',
   O: 'ring-2 ring-player-o dark:shadow-glow-o',
+  S: 'ring-2 ring-player-s dark:shadow-glow-s',
 } as const
 
 /** A won small board's squares take the winner's tint. */
