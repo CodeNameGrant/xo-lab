@@ -41,6 +41,9 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                  | Superseded by D-31                    |
 | D-30 | 2026-11-10 | Ultimate's board: rings, tints and a large mark            | Accepted                              |
 | D-31 | 2026-11-10 | Ultimate's board reaches to 6 px from the screen edge      | Accepted                              |
+| D-32 | 2026-11-11 | Shift: a 3×3 window that moves over a 5×5 field            | Accepted                              |
+| D-33 | 2026-11-11 | A draw as soon as no line can be won                       | Accepted                              |
+| D-34 | 2026-11-11 | Shift's window moves only by dragging its grid lines       | Accepted                              |
 
 ---
 
@@ -327,3 +330,35 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 **Why.** After playing D-29's board, Grant found the 34 px squares small and cramped and asked for the board to go to the screen edges. 6 px, not 4 px as in the mockup, leaves room for the 5 px ring around an edge board so the screen edge doesn't cut it off. D-25 allows a change to the shared screen for one variant only through [02-game-screen.md](02-game-screen.md), which now records it.
 
 **Considered.** Narrower gaps between squares and boards instead (rejected: more room per square, but the board would look more cramped, not less). Zooming into a small board to play (still rejected, as in D-29).
+
+## 2026-11-11
+
+### D-32 · Shift: a 3×3 window that moves over a 5×5 field
+
+**Status:** Accepted
+
+**Decision.** Shift (#14, a working name) is played on a 5×5 field of tiles with a 3×3 window over it, starting in the centre. On a turn a player either places a mark on an empty tile inside the window or moves the window one step in any of the eight directions, keeping it on the field; moving is allowed from the first turn and placements are unlimited. Marks stay on their tiles and only marks inside the window count. Three in a row inside the window wins, whether a placement or a window move made it. A window move that makes a line for both players at once is a draw.
+
+**Why.** Grant's idea, settled in a design discussion. If marks travelled with the window, moving it could never make a line, so the window has to be a view over fixed marks. One step at a time keeps moving the window a tactic: if it could jump to any of its nine positions, every line of three on the field would fit under some position, so a line anywhere would win on the next turn and the window would only limit where marks go. A draw for a double line is the simplest fair answer and stops a win by accident.
+
+**Considered.** Moving to any position (rejected, above). Placing anywhere on the field (rejected: moving the window would rarely be worth a turn). The player who moves wins a double line, or the move is illegal (rejected for the draw). A limited number of marks with a third move, sliding your own mark (rejected: changes the game).
+
+### D-33 · A draw as soon as no line can be won
+
+**Status:** Accepted
+
+**Decision.** In Shift, and later in Trio (#16), the game is a draw as soon as every line of three on the field holds marks of more than one player, because nobody can ever win. The check is `anyLineOpen` in `src/game/lines.ts`. Shift has no repetition rule: two players who keep moving the window back and forth can play forever, and can press New game. That gap is to be revisited with the computer opponent, which would happily loop.
+
+**Why.** Grant asked for the game to notice when no win is possible rather than rules that depend on counting moves or repeated positions. It needs no history or clock, so the rules stay pure. In Trio it also stops three players playing on to a draw that is already certain.
+
+**Considered.** A draw on the third repetition of a position, and a draw after N window moves in a row (both rejected: they end games by counting rather than by what is on the board, and the players can always start a new game).
+
+### D-34 · Shift's window moves only by dragging its grid lines
+
+**Status:** Accepted
+
+**Decision.** Shift's window is drawn as its four inner grid lines only, a `#` in the colour of the player to move, with no outer border; marks outside it are faded to 40 %, while the tiles stay as they are. It is moved only by dragging those grid lines, which sit in the 8 px gaps between tiles: the window follows the pointer, at most one step each way, and snaps to the nearest position on release. A tap on an empty tile inside the window places a mark; a press on a tile that moves more than 10 px places nothing. There is no keyboard or screen-reader way to move the window yet, a known exception to the accessibility rules in `AGENTS.md`.
+
+**Why.** Grant pictured moving the board by dragging and compared playable mockups. Grabbing by the grid lines alone keeps a tap on a tile always meaning "place here"; cancelling a press that moves means a missed grab can't spend the turn on a mark, which matters because there is no undo. Accessibility was set aside for now by Grant's choice.
+
+**Considered.** Tapping a tile outside the window to move one step towards it (kept as the likely way to close the accessibility gap). Eight arrow buttons around the board (rejected: they shrink the tiles to about 40 px). Grabbing anywhere in the window with a movement threshold, and wider 14 px gaps (rejected by Grant for the grid lines alone at 8 px).
