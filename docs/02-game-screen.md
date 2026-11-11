@@ -6,7 +6,7 @@ The screen is shared code: `src/screens/GameScreen.tsx` draws everything except 
 
 ## What a variant may change
 
-**Only its board.** The top bar, the player cards and the bottom bar are the same in every variant: same order, same sizes, same colours, same words. The board normally sits inside the column's 24 px side padding; the exceptions are Ultimate's and Shift's, which reach to 6 px from the screen edge (decisions D-31, D-34).
+**Only its board.** The top bar, the player cards and the bottom bar are the same in every variant: same order, same sizes, same colours, same words. The board normally sits inside the column's 24 px side padding; the one exception is Ultimate's, which reaches to 6 px from the screen edge (decision D-31).
 
 A variant that needs anything different does it inside its own board component, and records it in [Per-variant differences](#per-variant-differences) below and as a decision. A difference that would change the shared parts for one variant is a change to this document first, not a special case in the code.
 
@@ -132,7 +132,7 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Classic**  | The shared 3×3 board (`src/boards/GridBoard.tsx`)                                                                                                                                                                                               | None                                                                    | Built (#3)  |
 | **Infinite** | The shared 3×3 board, plus the mover's oldest piece drawn at 40 % opacity and pulsing once they have three (its square's label adds "disappears next"), and a fade-out when a piece is removed. Both in the player's own colour; no new colours | None                                                                    | Built (#5)  |
 | **Ultimate** | Its own nested board (`src/variants/ultimate/UltimateBoard.tsx`), described below                                                                                                                                                               | The board is wider than the column, to 6 px from the screen edge (D-31) | Built (#6)  |
-| **Shift**    | Its own 5×5 field (`src/variants/shift/ShiftBoard.tsx`), described below                                                                                                                                                                        | The field is wider than the column, to 6 px from the screen edge (D-34) | Built (#14) |
+| **Shift**    | Its own 5×5 field (`src/variants/shift/ShiftBoard.tsx`), described below                                                                                                                                                                        | None                                                                    | Built (#14) |
 
 ### Ultimate's board
 
@@ -150,10 +150,10 @@ The tile shape of the 3×3 board, scaled down to nine small boards (decisions D-
 
 The tile shape of the 3×3 board on a 5×5 field (decisions D-28, D-32, D-34). The same shape in both themes; only the colours change.
 
-- **Field:** wider than the column, like Ultimate's board: it reaches 18 px into the side padding on each side, so on the 390 px phone it is **378 px** wide, 6 px from each screen edge; at most **400 px** on a wider screen. 25 tiles **14 px** apart, radius 16 px, each with a 1 px `grid` border on `surface`; on the 390 px phone each tile is about **64 px**. Pieces are 40 px.
-- **The window:** its four inner grid lines only, a `#` with no outer border, each line 14 px wide in a gap between tiles, in the colour of the player to move at 60 % (+ glow in dark), 90 % while dragged. Once the game is over the lines turn the `line` colour and can't be grabbed.
+- **Field:** 342 px wide at most, 25 tiles **8 px** apart, radius 16 px, each with a 1 px `grid` border on `surface`. On the 390 px phone each tile is about **62 px**. Pieces are 40 px.
+- **The window:** its four inner grid lines only, a `#` with no outer border, each line 8 px wide in a gap between tiles, in the colour of the player to move at 60 % (+ glow in dark), 90 % while dragged. Once the game is over the lines turn the `line` colour and the window can't be dragged.
 - **Outside the window:** tiles look the same as inside; only their pieces fade, to 40 % opacity, because they don't count. While the window is dragged, the pieces it would cover on release are shown at full strength.
-- **Moving it:** drag a grid line. It follows the pointer at most one step each way and snaps to the nearest position on release (D-34). The board turns off touch scrolling so a drag never scrolls the page.
+- **Moving it:** drag from anywhere inside the window, tiles or gaps. A press that moves more than 10 px is a drag and places nothing; one that doesn't is a tap. The window follows the pointer at most one step each way and snaps to the nearest position on release (D-34). The board turns off touch scrolling so a drag never scrolls the page.
 - **Winning line:** as on the 3×3 board: the winner's tint in light, the shared highlight in dark, and a border in the winner's colour.
 - **Labels:** "Row 2, column 5, X", with ", outside the board" for a tile outside the window.
 

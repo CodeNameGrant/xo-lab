@@ -4,9 +4,9 @@ import { Mark } from '../../ui/Mark.tsx'
 import type { BoardProps } from '../types.ts'
 import type { ShiftMove, ShiftSelectors, ShiftState } from './rules.ts'
 
-/** The gap between tiles: `gap-3.5`, 14 px, wide enough for a finger to grab the window's grid lines. The drag maths needs it in pixels. */
-const GAP = 14
-/** How far a press on a tile may move before it stops counting as a tap. */
+/** The gap between tiles: `gap-2`, 8 px. The drag maths needs it in pixels. */
+const GAP = 8
+/** How far a press may move before it is a drag rather than a tap. */
 const TAP_SLOP = 10
 
 /** The window's grid lines, in the colour of the player to move (+ glow in dark). */
@@ -15,28 +15,36 @@ const LINE_COLOUR: Record<Player, string> = {
   O: 'bg-player-o dark:shadow-glow-o',
 }
 
-/** One grid line of the window: drawn in a gap between tiles, and the only place the window can be grabbed. */
-const gridLine = 'pointer-events-auto absolute cursor-grab rounded-full'
-
-interface Drag {
+/** A press on the board, from pointer down until the tap or drag it turns into is over. */
+interface Press {
   readonly pointer: number
   readonly startX: number
   readonly startY: number
   /** One tile plus one gap, in pixels: how far the window moves per step. */
   readonly step: number
+  /** Whether it started inside the window, so moving it drags the window. */
+  readonly onWindow: boolean
+  /** Whether it has moved further than a tap may. */
+  readonly moved: boolean
+}
+
+/** Where the window has been dragged to, in pixels from where it sits. */
+interface Offset {
   readonly dx: number
   readonly dy: number
+  /** One tile plus one gap, in pixels. */
+  readonly step: number
 }
 
 /**
  * Shift's board: a 5×5 field of tiles with the 3×3 window drawn over it as
  * its four inner grid lines, a `#` with no outer border.
  *
- * Tapping an empty tile inside the window places a mark. Dragging a grid line
- * moves the window: it follows the pointer, at most one step each way, and
- * on release snaps to the nearest position; letting go where it started is
- * not a move. A press on a tile that moves more than a few pixels places
- * nothing, so a missed grab can't spend the turn on a mark.
+ * Every press inside the window is a tap or a drag, told apart by how far it
+ * moves. A tap on an empty tile places a mark. A press that moves more than
+ * a few pixels drags the window instead and places nothing: the window
+ * follows the pointer, at most one step each way, and on release snaps to the
+ * nearest position; letting go where it started is not a move.
  *
  * Moving the window works only by dragging for now: there is no keyboard or
  * screen-reader way to do it yet (see docs/01-decisions.md, D-34).
@@ -50,84 +58,104 @@ export function ShiftBoard({ state, rules, onMove }: BoardProps<ShiftState, Shif
   const highlight = outcome.kind === 'won' ? outcome.highlight : []
 
   const board = useRef<HTMLDivElement>(null)
-  const [drag, setDragState] = useState<Drag | null>(null)
-  // The same drag, readable at once: pointer events can arrive faster than React re-renders,
-  // so the handlers read this ref rather than the `drag` of the last render.
-  const live = useRef<Drag | null>(null)
-  const setDrag = (next: Drag | null) => {
-    live.current = next
-    setDragState(next)
-  }
-  // Where the last press on a tile started, and whether it has since moved too far to be a tap.
-  const press = useRef<{ x: number; y: number; moved: boolean } | null>(null)
+  // The press is read and updated by every pointer event, which can arrive faster than React
+  // re-renders, so it lives in a ref. Only the drag offset is state, because it is drawn.
+  const press = useRef<Press | null>(null)
+  // Whether the press that just ended moved. The click that follows a pointer-up comes after the
+  // press has ended, so it reads this to tell a tap (place a mark) from a drag (place nothing).
+  const lastMoved = useRef(false)
+  const [offset, setOffset] = useState<Offset | null>(null)
 
-  // While dragging, the window position the pointer is nearest to, kept to one step and on the field.
-  const nearest = (current: Drag | null) => {
-    const steps = (offset: number) => (current ? Math.round(offset / current.step) : 0)
-    return { row: at.row + steps(current?.dy ?? 0), column: at.column + steps(current?.dx ?? 0) }
+  // The window position nearest to where it has been dragged.
+  const nearest = (dragged: Offset | null) => {
+    const steps = (pixels: number) => (dragged ? Math.round(pixels / dragged.step) : 0)
+    return { row: at.row + steps(dragged?.dy ?? 0), column: at.column + steps(dragged?.dx ?? 0) }
   }
-  const shown = nearest(drag)
+  const shown = nearest(offset)
   const inside = (tile: number) => {
     const row = Math.floor(tile / 5)
     const column = tile % 5
     return row >= shown.row && row < shown.row + 3 && column >= shown.column && column < shown.column + 3
   }
 
-  function startDrag(event: PointerEvent<HTMLDivElement>) {
-    if (over || !board.current) return
-    event.currentTarget.setPointerCapture(event.pointerId)
-    const width = board.current.getBoundingClientRect().width
-    setDrag({
-      pointer: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      step: (width + GAP) / 5,
-      dx: 0,
-      dy: 0,
-    })
-  }
-
-  /** The drag with the window moved to follow `event`'s pointer: at most one step each way, never off the field. */
-  function follow(current: Drag, event: PointerEvent<HTMLDivElement>): Drag {
-    const limit = (offset: number, from: number) =>
-      Math.max(-Math.min(1, from) * current.step, Math.min(Math.min(1, 2 - from) * current.step, offset))
+  /** How far the pointer has dragged the window: at most one step each way, never off the field. */
+  function follow(current: Press, event: PointerEvent<HTMLDivElement>): Offset {
+    const limit = (pixels: number, from: number) =>
+      Math.max(-Math.min(1, from) * current.step, Math.min(Math.min(1, 2 - from) * current.step, pixels))
     return {
-      ...current,
       dx: limit(event.clientX - current.startX, at.column),
       dy: limit(event.clientY - current.startY, at.row),
+      step: current.step,
     }
   }
 
-  function moveDrag(event: PointerEvent<HTMLDivElement>) {
-    const current = live.current
-    if (current && event.pointerId === current.pointer) setDrag(follow(current, event))
+  function down(event: PointerEvent<HTMLDivElement>) {
+    if (!board.current) return
+    const box = board.current.getBoundingClientRect()
+    const step = (box.width + GAP) / 5
+    // Inside the window's square, gaps included, measured from its top-left corner.
+    const x = event.clientX - box.left - at.column * step
+    const y = event.clientY - box.top - at.row * step
+    const span = 3 * step - GAP
+    lastMoved.current = false
+    press.current = {
+      pointer: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      step,
+      onWindow: !over && x >= 0 && x <= span && y >= 0 && y <= span,
+      moved: false,
+    }
   }
 
-  function endDrag(event: PointerEvent<HTMLDivElement>) {
-    const current = live.current
+  function move(event: PointerEvent<HTMLDivElement>) {
+    const current = press.current
     if (!current || event.pointerId !== current.pointer) return
-    setDrag(null)
-    // Where the pointer is let go counts, even if no move event arrived before it.
+    // A mouse released off the board sends its pointer-up elsewhere; with no button held, the press is over.
+    if (event.buttons === 0) {
+      press.current = null
+      setOffset(null)
+      return
+    }
+    if (!current.moved && Math.hypot(event.clientX - current.startX, event.clientY - current.startY) > TAP_SLOP) {
+      press.current = { ...current, moved: true }
+      // From here the drag keeps every pointer event, even off the board; the tile pressed gets no click.
+      if (current.onWindow) board.current?.setPointerCapture(event.pointerId)
+    }
+    if (press.current?.moved && current.onWindow) setOffset(follow(current, event))
+  }
+
+  function up(event: PointerEvent<HTMLDivElement>) {
+    const current = press.current
+    if (!current || event.pointerId !== current.pointer) return
+    // Every pointer-up ends the press, so a mouse moving afterwards, with no button held, drags nothing.
+    press.current = null
+    lastMoved.current = current.moved
+    if (!current.moved || !current.onWindow) return
+    setOffset(null)
+    // Where the pointer is let go counts, even if no move event arrived just before it.
     const target = nearest(follow(current, event))
     const to = target.row * 3 + target.column
-    const move = legal.find((candidate) => candidate.kind === 'window' && candidate.to === to)
-    if (move) onMove(move)
+    const windowMove = legal.find((candidate) => candidate.kind === 'window' && candidate.to === to)
+    if (windowMove) onMove(windowMove)
   }
 
   return (
     <div
       ref={board}
-      className="relative grid aspect-square w-[min(calc(100%+36px),400px)] shrink-0 touch-none grid-cols-5 grid-rows-5 gap-3.5 select-none"
+      className="relative grid aspect-square w-[min(342px,100%)] touch-none grid-cols-5 grid-rows-5 gap-2 select-none"
       role="group"
       aria-label="Board"
-      onPointerDown={(event) => (press.current = { x: event.clientX, y: event.clientY, moved: false })}
-      onPointerMove={(event) => {
-        const start = press.current
-        if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > TAP_SLOP) start.moved = true
+      onPointerDown={down}
+      onPointerMove={move}
+      onPointerUp={up}
+      onPointerCancel={() => {
+        press.current = null
+        setOffset(null)
       }}
     >
       {tiles.map((cell, tile) => {
-        const playable = legal.some((move) => move.kind === 'place' && move.tile === tile)
+        const playable = legal.some((candidate) => candidate.kind === 'place' && candidate.tile === tile)
         const outside = !inside(tile)
         return (
           <button
@@ -141,8 +169,8 @@ export function ShiftBoard({ state, rules, onMove }: BoardProps<ShiftState, Shif
             aria-disabled={!playable}
             onClick={(event) => {
               // detail is 0 for a keyboard press, which has no pointer to have moved.
-              const moved = event.detail > 0 && press.current?.moved
-              press.current = null
+              const moved = event.detail > 0 && lastMoved.current
+              lastMoved.current = false
               if (playable && !moved) onMove({ kind: 'place', tile })
             }}
           >
@@ -165,22 +193,18 @@ export function ShiftBoard({ state, rules, onMove }: BoardProps<ShiftState, Shif
         style={{
           gridRow: `${at.row + 1} / span 3`,
           gridColumn: `${at.column + 1} / span 3`,
-          transform: drag ? `translate(${drag.dx}px, ${drag.dy}px)` : undefined,
+          transform: offset ? `translate(${offset.dx}px, ${offset.dy}px)` : undefined,
         }}
-        onPointerMove={moveDrag}
-        onPointerUp={endDrag}
-        onPointerCancel={() => setDrag(null)}
       >
         {[
-          'inset-y-0 left-[calc((100%-28px)/3)] w-3.5',
-          'inset-y-0 left-[calc((100%-28px)*2/3+14px)] w-3.5',
-          'inset-x-0 top-[calc((100%-28px)/3)] h-3.5',
-          'inset-x-0 top-[calc((100%-28px)*2/3+14px)] h-3.5',
+          'inset-y-0 left-[calc((100%-16px)/3)] w-2',
+          'inset-y-0 left-[calc((100%-16px)*2/3+8px)] w-2',
+          'inset-x-0 top-[calc((100%-16px)/3)] h-2',
+          'inset-x-0 top-[calc((100%-16px)*2/3+8px)] h-2',
         ].map((place) => (
           <div
             key={place}
-            className={`${gridLine} ${place} ${over ? 'pointer-events-none cursor-default bg-line' : LINE_COLOUR[state.turn]} ${drag ? 'cursor-grabbing opacity-90' : 'opacity-60'}`}
-            onPointerDown={startDrag}
+            className={`absolute rounded-full ${place} ${over ? 'bg-line' : LINE_COLOUR[state.turn]} ${offset ? 'opacity-90' : 'opacity-60'}`}
           />
         ))}
       </div>

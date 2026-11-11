@@ -43,7 +43,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-31 | 2026-11-10 | Ultimate's board reaches to 6 px from the screen edge      | Accepted                              |
 | D-32 | 2026-11-11 | Shift: a 3×3 window that moves over a 5×5 field            | Accepted                              |
 | D-33 | 2026-11-11 | A draw as soon as no line can be won                       | Accepted                              |
-| D-34 | 2026-11-11 | Shift's window moves only by dragging its grid lines       | Accepted                              |
+| D-34 | 2026-11-11 | Shift's window moves only by dragging it                   | Accepted                              |
 
 ---
 
@@ -353,12 +353,12 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 
 **Considered.** A draw on the third repetition of a position, and a draw after N window moves in a row (both rejected: they end games by counting rather than by what is on the board, and the players can always start a new game).
 
-### D-34 · Shift's window moves only by dragging its grid lines
+### D-34 · Shift's window moves only by dragging it
 
 **Status:** Accepted
 
-**Decision.** Shift's window is drawn as its four inner grid lines only, a `#` in the colour of the player to move, with no outer border; marks outside it are faded to 40 %, while the tiles stay as they are. It is moved only by dragging those grid lines, which sit in the 14 px gaps between tiles: the window follows the pointer, at most one step each way, and snaps to the nearest position on release. A tap on an empty tile inside the window places a mark; a press on a tile that moves more than 10 px places nothing. There is no keyboard or screen-reader way to move the window yet, a known exception to the accessibility rules in `AGENTS.md`. To make room for the wider gaps, the field reaches past the column to 6 px from the screen edge, as Ultimate's board does (D-31): on the 390 px phone it is 378 px wide with tiles of about 64 px.
+**Decision.** Shift's window is drawn as its four inner grid lines only, a `#` in the colour of the player to move, 8 px wide in the gaps between tiles, with no outer border; marks outside it are faded to 40 %, while the tiles stay as they are. It is moved only by dragging, and a drag can start anywhere inside the window, on a tile or a gap. A press there that moves more than 10 px is a drag: the window follows the pointer, at most one step each way, and snaps to the nearest position on release, and nothing is placed. A press that doesn't move is a tap, and a tap on an empty tile inside the window places a mark. There is no keyboard or screen-reader way to move the window yet, a known exception to the accessibility rules in `AGENTS.md`.
 
-**Why.** Grant pictured moving the board by dragging and compared playable mockups. Grabbing by the grid lines alone keeps a tap on a tile always meaning "place here"; cancelling a press that moves means a missed grab can't spend the turn on a mark, which matters because there is no undo. Accessibility was set aside for now by Grant's choice.
+**Why.** Grant pictured moving the board by dragging and compared playable mockups. The first build let only the grid lines be grabbed, to keep a press on a tile always meaning "place here", but on a phone the lines were hard to grab at 8 px and still at 14 px, with the field widened to the screen edge to make room. Grabbing anywhere in the window gives a target the size of the whole window. The movement threshold keeps the two apart, and a press that moves never places a mark, so a drag can't spend the turn on one by mistake, which matters because there is no undo. Accessibility was set aside for now by Grant's choice.
 
-**Considered.** Tapping a tile outside the window to move one step towards it (kept as the likely way to close the accessibility gap). Eight arrow buttons around the board (rejected: they shrink the tiles to about 40 px). Grabbing anywhere in the window with a movement threshold (rejected by Grant for the grid lines alone). 8 px gaps, as first built (rejected after test-playing the preview on a phone: the lines were hard to grab).
+**Considered.** Tapping a tile outside the window to move one step towards it (kept as the likely way to close the accessibility gap). Eight arrow buttons around the board (rejected: they shrink the tiles to about 40 px). Grabbing by the grid lines only, at 8 px and then at 14 px with the field out to 6 px from the screen edge (both built and rejected after test-playing the preview on a phone: the lines were hard to grab).
