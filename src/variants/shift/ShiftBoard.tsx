@@ -4,8 +4,8 @@ import { Mark } from '../../ui/Mark.tsx'
 import type { BoardProps } from '../types.ts'
 import type { ShiftMove, ShiftSelectors, ShiftState } from './rules.ts'
 
-/** The gap between tiles: `gap-2`, 8 px. The drag maths needs it in pixels. */
-const GAP = 8
+/** The gap between tiles: `gap-3.5`, 14 px, wide enough for a finger to grab the window's grid lines. The drag maths needs it in pixels. */
+const GAP = 14
 /** How far a press on a tile may move before it stops counting as a tap. */
 const TAP_SLOP = 10
 
@@ -117,7 +117,7 @@ export function ShiftBoard({ state, rules, onMove }: BoardProps<ShiftState, Shif
   return (
     <div
       ref={board}
-      className="relative grid aspect-square w-[min(342px,100%)] touch-none grid-cols-5 grid-rows-5 gap-2 select-none"
+      className="relative grid aspect-square w-[min(calc(100%+36px),400px)] shrink-0 touch-none grid-cols-5 grid-rows-5 gap-3.5 select-none"
       role="group"
       aria-label="Board"
       onPointerDown={(event) => (press.current = { x: event.clientX, y: event.clientY, moved: false })}
@@ -172,10 +172,10 @@ export function ShiftBoard({ state, rules, onMove }: BoardProps<ShiftState, Shif
         onPointerCancel={() => setDrag(null)}
       >
         {[
-          'inset-y-0 left-[calc((100%-16px)/3)] w-2',
-          'inset-y-0 left-[calc((100%-16px)*2/3+8px)] w-2',
-          'inset-x-0 top-[calc((100%-16px)/3)] h-2',
-          'inset-x-0 top-[calc((100%-16px)*2/3+8px)] h-2',
+          'inset-y-0 left-[calc((100%-28px)/3)] w-3.5',
+          'inset-y-0 left-[calc((100%-28px)*2/3+14px)] w-3.5',
+          'inset-x-0 top-[calc((100%-28px)/3)] h-3.5',
+          'inset-x-0 top-[calc((100%-28px)*2/3+14px)] h-3.5',
         ].map((place) => (
           <div
             key={place}
