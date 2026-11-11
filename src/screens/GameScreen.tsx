@@ -1,6 +1,6 @@
 import { use, useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { playerName, type Outcome, type Player } from '../game/rules.ts'
+import { playerName, playersOf, type Outcome, type Player } from '../game/rules.ts'
 import { currentState, newGame, playMove, startGame } from '../game/session.ts'
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
@@ -42,6 +42,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
   const turn = rules.currentPlayer(state)
   const over = outcome.kind !== 'in-progress'
   const winner = outcome.kind === 'won' ? outcome.winner : null
+  const players = playersOf(entry.info.players)
 
   const status =
     outcome.kind === 'won'
@@ -73,13 +74,18 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         </div>
       </header>
 
+      {/*
+        Two columns. With three players, Player 3's card wraps to a second row, the same width
+        as the others and centred (D-37).
+      */}
       <div className="grid grid-cols-2 gap-3">
-        {(['X', 'O'] as const).map((player) => (
+        {players.map((player) => (
           <PlayerCard
             key={player}
             player={player}
             look={cardLook(player, outcome, turn)}
             first={game.firstPlayer === player}
+            className={player === 'S' ? 'col-span-2 w-[calc(50%-6px)] justify-self-center' : ''}
           />
         ))}
       </div>
@@ -96,7 +102,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         <button
           type="button"
           className={`${barButton} ${PLAY_AGAIN[winner ?? 'draw']}`}
-          onClick={() => setGame(newGame)}
+          onClick={() => setGame((g) => newGame(g, players.length))}
         >
           <Icon name="newGame" size={20} />
           Play again
@@ -105,7 +111,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         <button
           type="button"
           className={`${barButton} border border-line bg-surface text-ink dark:bg-transparent`}
-          onClick={() => setGame(newGame)}
+          onClick={() => setGame((g) => newGame(g, players.length))}
         >
           <Icon name="newGame" size={20} />
           New game
@@ -130,6 +136,7 @@ const barButton = 'flex h-13 w-full items-center justify-center gap-2 rounded-ca
 const PLAY_AGAIN = {
   X: 'bg-player-x text-on-player-x dark:font-bold dark:shadow-glow-x',
   O: 'bg-player-o text-on-player-o dark:font-bold dark:shadow-glow-o',
+  S: 'bg-player-s text-on-player-s dark:font-bold dark:shadow-glow-s',
   draw: 'bg-primary text-on-primary dark:font-bold dark:shadow-glow-primary',
 } as const
 
@@ -147,23 +154,42 @@ function cardLook(player: Player, outcome: Outcome, turn: Player): CardLook {
  * (and a glow in the dark theme); the winner's card is also tinted. The beaten card fades;
  * a draw turns both cards grey. Text stays in the normal colours so it keeps its contrast.
  */
+const WAITING = 'border-surface bg-surface dark:border-grid'
+const LOST = 'border-surface bg-surface opacity-40 dark:border-grid'
+const DRAW = 'border-grid bg-page'
 const CARD = {
-  turn: { X: 'border-player-x bg-surface dark:shadow-glow-x', O: 'border-player-o bg-surface dark:shadow-glow-o' },
-  waiting: { X: 'border-surface bg-surface dark:border-grid', O: 'border-surface bg-surface dark:border-grid' },
-  won: { X: 'border-player-x bg-tint-x dark:shadow-glow-x', O: 'border-player-o bg-tint-o dark:shadow-glow-o' },
-  lost: {
-    X: 'border-surface bg-surface opacity-40 dark:border-grid',
-    O: 'border-surface bg-surface opacity-40 dark:border-grid',
+  turn: {
+    X: 'border-player-x bg-surface dark:shadow-glow-x',
+    O: 'border-player-o bg-surface dark:shadow-glow-o',
+    S: 'border-player-s bg-surface dark:shadow-glow-s',
   },
-  draw: { X: 'border-grid bg-page', O: 'border-grid bg-page' },
+  waiting: { X: WAITING, O: WAITING, S: WAITING },
+  won: {
+    X: 'border-player-x bg-tint-x dark:shadow-glow-x',
+    O: 'border-player-o bg-tint-o dark:shadow-glow-o',
+    S: 'border-player-s bg-tint-s dark:shadow-glow-s',
+  },
+  lost: { X: LOST, O: LOST, S: LOST },
+  draw: { X: DRAW, O: DRAW, S: DRAW },
 } as const
 
-function PlayerCard({ player, look, first }: { player: Player; look: CardLook; first: boolean }) {
-  const role = player === 'X' ? 'Crosses' : 'Noughts'
+/** The detail line under each player's name. */
+const ROLE = { X: 'Crosses', O: 'Noughts', S: 'Stars' } as const
+
+interface PlayerCardProps {
+  readonly player: Player
+  readonly look: CardLook
+  readonly first: boolean
+  /** For layout only: where the card sits in the grid. */
+  readonly className?: string
+}
+
+function PlayerCard({ player, look, first, className }: PlayerCardProps) {
+  const role = ROLE[player]
   const detail = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : first ? `${role} · first move` : role
   return (
     <div
-      className={`flex items-center gap-3 rounded-card border-2 px-3.5 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${CARD[look][player]}`}
+      className={`flex items-center gap-3 rounded-card border-2 px-3.5 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${CARD[look][player]} ${className ?? ''}`}
     >
       <Mark player={player} size={28} stroke={2.5} className="shrink-0" />
       <div className="min-w-0">

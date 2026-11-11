@@ -13,6 +13,7 @@ const TAP_SLOP = 10
 const LINE_COLOUR: Record<Player, string> = {
   X: 'bg-player-x dark:shadow-glow-x',
   O: 'bg-player-o dark:shadow-glow-o',
+  S: 'bg-player-s dark:shadow-glow-s',
 }
 
 /** A press on the board, from pointer down until the tap or drag it turns into is over. */

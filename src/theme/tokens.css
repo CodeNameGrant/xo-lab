@@ -43,6 +43,8 @@
    */
   --color-player-x: #2457d6;
   --color-player-o: #b12b35;
+  /* Player 3, in three-player variants: gold, dark enough to read on white (about 4.6:1). */
+  --color-player-s: #946800;
   /* The winning squares' shared highlight. Only the dark theme uses it; light tints the
      winning squares in the winner's own colour (the tints below). */
   --color-win: #eaf0fd;
@@ -51,10 +53,12 @@
      their colour behind normal text, the two tints at the same lightness and chroma. */
   --color-tint-x: #eaf0fd;
   --color-tint-o: #feebea;
+  --color-tint-s: #fbf1da;
 
   /* Text on a button filled with a player's colour (Play again). */
   --color-on-player-x: #ffffff;
   --color-on-player-o: #ffffff;
+  --color-on-player-s: #ffffff;
 
   --color-link: #2457d6;
   --color-link-hover: #163c9e;
@@ -71,12 +75,15 @@
    */
   --shadow-glow-x: 0 0 16px color-mix(in srgb, var(--color-player-x) 35%, transparent);
   --shadow-glow-o: 0 0 16px color-mix(in srgb, var(--color-player-o) 35%, transparent);
+  --shadow-glow-s: 0 0 16px color-mix(in srgb, var(--color-player-s) 35%, transparent);
   --shadow-glow-primary: 0 0 18px color-mix(in srgb, var(--color-primary) 45%, transparent);
   --drop-shadow-glow-x: 0 0 6px var(--color-player-x);
   --drop-shadow-glow-o: 0 0 6px var(--color-player-o);
+  --drop-shadow-glow-s: 0 0 6px var(--color-player-s);
   /* Small pieces (player cards, hub previews) glow less. */
   --drop-shadow-glow-x-sm: 0 0 4px var(--color-player-x);
   --drop-shadow-glow-o-sm: 0 0 4px var(--color-player-o);
+  --drop-shadow-glow-s-sm: 0 0 4px var(--color-player-s);
 
   --radius-card: 14px;
   --radius-tile: 16px;
@@ -152,13 +159,16 @@
 
   --color-player-x: #3de0ff;
   --color-player-o: #ff4fb0;
+  --color-player-s: #ffc93c;
   --color-win: #1e2a52;
 
   --color-tint-x: #1e2a52;
   --color-tint-o: #34163a;
+  --color-tint-s: #352c14;
 
   --color-on-player-x: #0b1020;
   --color-on-player-o: #0b1020;
+  --color-on-player-s: #0b1020;
 
   --color-link: #3de0ff;
   --color-link-hover: #9defff;

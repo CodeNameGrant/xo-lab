@@ -2,6 +2,7 @@ import type { VariantInfo } from '../types.ts'
 
 export const shiftInfo: VariantInfo = {
   name: 'Shift',
+  players: 2,
   tagline: 'A 3×3 board that slides over a 5×5 field. Place a mark, or move the board.',
   howToPlay: [
     'The game is a 3×3 board laid over a bigger 5×5 field. Player 1 is X, Player 2 is O.',

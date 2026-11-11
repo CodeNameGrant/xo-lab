@@ -4,7 +4,7 @@ import {
   IN_PROGRESS,
   otherPlayer,
   type Outcome,
-  type Player,
+  type TwoPlayer,
   type VariantRules,
 } from '../../game/rules.ts'
 
@@ -16,7 +16,7 @@ import {
 export interface InfiniteState {
   /** Each player's marks on the board, as square indexes (0–8), oldest first. */
   readonly marks: { readonly X: readonly number[]; readonly O: readonly number[] }
-  readonly turn: Player
+  readonly turn: TwoPlayer
 }
 
 /** The index (0–8) of the square to mark. */
@@ -48,7 +48,8 @@ function outcome(state: InfiniteState): Outcome {
 }
 
 export const infiniteRules: VariantRules<InfiniteState, InfiniteMove, InfiniteSelectors> = {
-  initialState: (firstPlayer) => ({ marks: { X: [], O: [] }, turn: firstPlayer }),
+  // A two-player variant is only ever started by X or O.
+  initialState: (firstPlayer) => ({ marks: { X: [], O: [] }, turn: firstPlayer === 'O' ? 'O' : 'X' }),
 
   currentPlayer: (state) => state.turn,
 

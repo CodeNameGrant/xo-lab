@@ -8,10 +8,12 @@
 import { describe, expect, it } from 'vitest'
 import { variants } from '../variants/registry.ts'
 import type { AnyRules } from '../variants/types.ts'
-import type { Player } from './rules.ts'
+import { nextPlayer, playersOf, type Player } from './rules.ts'
 import { currentState, playMove, startGame, type Game } from './session.ts'
 
-const loaded = await Promise.all(variants.map(async (entry) => [entry.id, await entry.loadRules()] as const))
+const loaded = await Promise.all(
+  variants.map(async (entry) => [entry.id, await entry.loadRules(), playersOf(entry.info.players)] as const),
+)
 
 /** A small seeded random number generator, so a failing game can be replayed exactly. */
 function seededRandom(seed: number) {
@@ -36,8 +38,8 @@ function randomGame(rules: AnyRules, seed: number, first: Player = 'X', cap = 20
 
 const SEEDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-describe.each(loaded)('%s follows the rules contract', (_, rules) => {
-  it.each<Player>(['X', 'O'])('a new game is in progress with %s to move', (first) => {
+describe.each(loaded)('%s follows the rules contract', (_, rules, players) => {
+  it.each(players)('a new game is in progress with %s to move', (first) => {
     const state = rules.initialState(first)
     expect(rules.outcome(state)).toEqual({ kind: 'in-progress' })
     expect(rules.currentPlayer(state)).toBe(first)
@@ -80,6 +82,16 @@ describe.each(loaded)('%s follows the rules contract', (_, rules) => {
       const before = structuredClone(state)
       const next = rules.applyMove(state, move)
       expect(state).toEqual(before)
+      state = next
+    }
+  })
+
+  it.each(SEEDS)('each move passes the turn to the next player (game %i)', (seed) => {
+    const game = randomGame(rules, seed)
+    let state = rules.initialState(game.firstPlayer)
+    for (const move of game.moves) {
+      const next = rules.applyMove(state, move)
+      expect(rules.currentPlayer(next)).toBe(nextPlayer(rules.currentPlayer(state), players.length))
       state = next
     }
   })

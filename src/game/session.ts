@@ -1,4 +1,4 @@
-import { otherPlayer, type Player, type VariantRules } from './rules.ts'
+import { nextPlayer, type Player, type VariantRules } from './rules.ts'
 
 /**
  * One game of any variant, stored as who started plus the moves played.
@@ -36,7 +36,12 @@ export function playMove<State, Move>(rules: VariantRules<State, Move>, game: Ga
   return { ...game, moves: [...game.moves, move] }
 }
 
-/** A fresh game of the same variant, started by the other player. */
-export function newGame<Move>(game: Game<Move>): Game<Move> {
-  return startGame(otherPlayer(game.firstPlayer))
+/**
+ * A fresh game of the same variant, started by the next player along: the
+ * first move passes one place along the turn order with each new game, so
+ * with two players it alternates and with three it goes 1 → 2 → 3 → 1.
+ * `players` is the variant's player count, from its `VariantInfo`.
+ */
+export function newGame<Move>(game: Game<Move>, players: number): Game<Move> {
+  return startGame(nextPlayer(game.firstPlayer, players))
 }

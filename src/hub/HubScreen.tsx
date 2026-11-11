@@ -53,7 +53,7 @@ function Preview({ rows }: { rows: VariantInfo['preview'] }) {
         .split('')
         .map((cell, index) => (
           <span key={index} className="flex items-center justify-center rounded-[3px] bg-surface">
-            {(cell === 'X' || cell === 'O') && <Mark player={cell} size={14} stroke={3} />}
+            {(cell === 'X' || cell === 'O' || cell === 'S') && <Mark player={cell} size={14} stroke={3} />}
           </span>
         ))}
     </span>
