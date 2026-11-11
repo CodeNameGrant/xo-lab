@@ -1,5 +1,6 @@
 import { classicInfo } from './classic/info.ts'
 import { infiniteInfo } from './infinite/info.ts'
+import { shiftInfo } from './shift/info.ts'
 import type { VariantEntry } from './types.ts'
 import { ultimateInfo } from './ultimate/info.ts'
 
@@ -26,6 +27,12 @@ export const variants: readonly VariantEntry[] = [
     info: ultimateInfo,
     loadRules: () => import('./ultimate/rules.ts').then((m) => m.ultimateRules),
     loadBoard: () => import('./ultimate/UltimateBoard.tsx').then((m) => m.UltimateBoard),
+  },
+  {
+    id: 'shift',
+    info: shiftInfo,
+    loadRules: () => import('./shift/rules.ts').then((m) => m.shiftRules),
+    loadBoard: () => import('./shift/ShiftBoard.tsx').then((m) => m.ShiftBoard),
   },
 ]
 
