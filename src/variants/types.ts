@@ -8,7 +8,7 @@ export interface VariantInfo {
   readonly players: 2 | 3
   /** One line for the hub card. */
   readonly tagline: string
-  /** The "How to play" panel, one paragraph per entry. */
+  /** The "How to play" panel, one paragraph per entry. Words marked `**like this**` are drawn in bold. */
   readonly howToPlay: readonly string[]
   /** A small static picture for the hub card: rows of "X", "O", "S" (a star) and "." (empty). */
   readonly preview: readonly string[]

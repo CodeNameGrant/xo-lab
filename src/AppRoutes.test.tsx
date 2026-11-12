@@ -19,7 +19,7 @@ describe('app routes', () => {
 
   it('lists Classic on the hub', () => {
     renderAt('/')
-    expect(screen.getByRole('link', { name: /Classic/ })).toHaveAttribute('href', '/play/classic')
+    expect(screen.getByRole('link', { name: /^Classic/ })).toHaveAttribute('href', '/play/classic')
   })
 
   it('opens the Classic game at /play/classic', async () => {

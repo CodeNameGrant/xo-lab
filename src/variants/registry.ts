@@ -1,5 +1,6 @@
 import { classicInfo } from './classic/info.ts'
 import { infiniteInfo } from './infinite/info.ts'
+import { misereInfo } from './misere/info.ts'
 import { shiftInfo } from './shift/info.ts'
 import { trioInfo } from './trio/info.ts'
 import type { VariantEntry } from './types.ts'
@@ -40,6 +41,12 @@ export const variants: readonly VariantEntry[] = [
     info: trioInfo,
     loadRules: () => import('./trio/rules.ts').then((m) => m.trioRules),
     loadBoard: () => import('./trio/TrioBoard.tsx').then((m) => m.TrioBoard),
+  },
+  {
+    id: 'misere',
+    info: misereInfo,
+    loadRules: () => import('./misere/rules.ts').then((m) => m.misereRules),
+    loadBoard: () => import('./misere/MisereBoard.tsx').then((m) => m.MisereBoard),
   },
 ]
 

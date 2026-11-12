@@ -14,7 +14,7 @@ interface GridBoardProps {
   /** Squares across: 3 (Classic, Infinite) or 4 (Trio). The board is always square. */
   readonly size?: 3 | 4
   readonly cells: readonly Cell[]
-  /** Squares to light up, e.g. the winning line. */
+  /** Squares to light up: the completed line, in the colour of the player whose marks it holds. */
   readonly highlight: readonly number[]
   /** Whether a tap on this square is a legal move. */
   readonly isPlayable: (index: number) => boolean
@@ -55,9 +55,10 @@ export function GridBoard({ size = 3, cells, highlight, isPlayable, onPlay, disa
           <button
             key={index}
             type="button"
-            // Every square is its own bordered tile; a winning tile's border takes the winner's colour.
-            // Winning tiles are tinted in the winner's colour in light (D-24); dark keeps one shared highlight.
-            // The winning highlight fades in, unless the device asks for reduced motion.
+            // Every square is its own bordered tile; a tile of the completed line takes its player's colour on
+            // its border, and in light its player's tint (D-24); dark keeps one shared highlight. That player
+            // usually won, but not always: in Misère they lost (D-40). The highlight fades in, unless the
+            // device asks for reduced motion.
             className="flex min-h-11 min-w-11 items-center justify-center rounded-tile border border-grid bg-surface data-[win=O]:border-player-o data-[win=S]:border-player-s data-[win=X]:border-player-x motion-safe:transition-colors motion-safe:duration-300 dark:data-win:bg-win light:data-[win=O]:bg-tint-o light:data-[win=S]:bg-tint-s light:data-[win=X]:bg-tint-x"
             data-win={(highlight.includes(index) && cell) || undefined}
             aria-label={`Row ${row}, column ${column}, ${cell ?? 'empty'}${fading ? ', disappears next' : ''}`}
