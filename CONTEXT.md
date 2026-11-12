@@ -31,3 +31,7 @@ _Avoid_: victor
 **Draw**:
 A finished game that goes to nobody: the board is full, or no line can be completed any more.
 _Avoid_: tie, stalemate
+
+**Score**:
+How many games each player has won, and how many were draws, since the variant's game screen was opened. Only finished games count; a game abandoned with New game doesn't.
+_Avoid_: tally, record, match, session

@@ -15,7 +15,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-03 | 2026-11-09 | Vite, React, TypeScript and React Router on Vercel         | Accepted                              |
 | D-04 | 2026-11-09 | Pin Vite as the framework in `vercel.json`                 | Accepted                              |
 | D-05 | 2026-11-09 | One rules contract for every variant                       | Accepted                              |
-| D-06 | 2026-11-09 | A game is the first player plus the move list              | Accepted                              |
+| D-06 | 2026-11-09 | A game is the first player plus the move list              | Accepted, reason updated by D-41      |
 | D-07 | 2026-11-09 | A registry of variants, each loaded only when opened       | Accepted                              |
 | D-08 | 2026-11-09 | One contract test suite runs for every variant             | Accepted                              |
 | D-09 | 2026-11-09 | Player 1 is X; the first move alternates per new game      | Accepted                              |
@@ -50,6 +50,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-38 | 2026-11-11 | Trio is played on a 5×5 board                              | Superseded by D-39                    |
 | D-39 | 2026-11-11 | Trio is played on a 4×4 board                              | Accepted                              |
 | D-40 | 2026-11-12 | Misère: a completed line loses                             | Accepted                              |
+| D-41 | 2026-11-12 | No saved games                                             | Accepted                              |
 
 ---
 
@@ -101,7 +102,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 
 ### D-06 · A game is the first player plus the move list
 
-**Status:** Accepted
+**Status:** Accepted (its reason is updated by D-41: saving was dropped)
 
 **Decision.** The game session (`src/game/session.ts`) stores only who started and the moves played. The current state is never stored; it is rebuilt by replaying the moves through the rules.
 
@@ -432,3 +433,15 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 **Why.** Grant set the meaning of the highlight: it says "this player has completed a line", and whether that wins or loses is the variant's rule, winning by default. So the shared board needs no change, and `CONTEXT.md` now calls it the completed line rather than the winning line. Naming the winner on the shared screen is accurate, because in Misère you win by making your opponent complete a line; How to play explains why. The mirror strategy (take the centre, then answer every move with the square opposite it) means the first player can never be forced to lose, so careful play is a draw as in Classic; the rules stay standard because most players won't find it and the first move rotates anyway.
 
 **Considered.** Tinting the completed line in the winner's colour, or a neutral "losing line" look (rejected: the line is the loser's marks, and the highlight means "completed", not "won"). A new outcome that names the loser (rejected: a contract and shared-screen change for one variant). Rich text in `info.ts` as JSX (rejected for `**…**` markers, which keep info files plain data).
+
+### D-41 · No saved games
+
+**Status:** Accepted
+
+**Decision.** The app does not keep a game in progress across a reload or a closed tab: reloading a variant starts a fresh game. Ticket #7 (M4 · Saving) is closed as not planned, the M4 milestone is closed with it, and the spec (#1) is closed with milestones M1 to M3 shipped. Nothing is stored on the device except the theme choice (D-17), and the starting player is not remembered between visits.
+
+The game session stays as D-06 describes it, the first player plus the move list, replayed to get the current state. Its reason is now the one that still holds: a game is two plain values, the rules are the only code that builds a state, and every variant is driven through the same contract.
+
+**Why.** Grant decided the app doesn't need the feature. No further reason was recorded; add one here if it matters later.
+
+**Considered.** Building #7 as specified: one saved game and one next-starting-player per variant in local storage, discarding broken saves.

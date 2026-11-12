@@ -59,9 +59,9 @@ Lowercase type from the list above, optional parenthesised scope (a variant id i
 
 ## Issues and milestones
 
-**Milestones are the plan.** Each one (`M1 · Foundation, Classic and themes` through `M4 · Saving`) ends in a playable deploy, as laid out in the spec, issue #1. Set the milestone on every new issue that belongs to one.
+**Milestones group work that ends in a playable deploy.** The spec's four are closed: M1 to M3 shipped, and M4 · Saving was dropped (decision D-41). When a new milestone is opened, set it on every issue that belongs to it.
 
-**The spec is issue #1.** It holds the user stories, the rules decisions and the testing decisions for milestones 1–4. Read it before reopening a settled question.
+**The spec is issue #1**, now closed. It still holds the original user stories, rules decisions and testing decisions; read it, and `docs/01-decisions.md` for what changed since, before reopening a settled question.
 
 **Labels are the ones that exist** — the triage labels in `docs/agents/triage-labels.md` plus GitHub's defaults (`bug`, `enhancement`, `documentation`, `accessibility`, …). Apply them; don't invent new ones. Propose a new label, don't just create it.
 
@@ -80,5 +80,3 @@ Keeping the docs true is part of the work:
 ## What happens on merge
 
 `main` is squash-only, and **merging deploys.** Vercel builds `main` to production; every other branch gets a preview link. So the preview is the last check: test-play it on a phone before merging, because nothing stands between the merge and the live app.
-
-When saving lands (#7), a change to a variant's `State` or `Move` shape can break games already saved on players' devices. Check that before merging such a change.

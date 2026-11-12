@@ -1,18 +1,23 @@
 # XO Lab
 
-Tic-tac-toe and its variants, for two players sharing one phone or browser.
+Tic-tac-toe and its variants, for two or three players sharing one phone or browser.
 
 XO Lab is a hub: the home screen lists each variant as a card, and tapping one opens its game at its own address, such as `/play/classic`. Every variant is played on the same screen (top bar, player cards, board, Play again) with a How to play panel for its rules. The app follows the device's light or dark setting, or a theme chosen with the sun/moon toggle.
 
 ## Variants
 
-| Variant      | How it plays                                                                                         | Status   |
-| ------------ | ---------------------------------------------------------------------------------------------------- | -------- |
-| **Classic**  | The standard 3×3 game. Three in a row wins; a full board with no line is a draw.                     | Playable |
-| **Infinite** | Each player keeps at most three pieces; placing a fourth removes their oldest. There is no draw.     | Playable |
-| **Ultimate** | A 3×3 grid of 3×3 boards. The square you play in decides which small board your opponent plays next. | Playable |
+All six are playable. Player 1 is X, Player 2 is O, and in Trio Player 3 is a star.
 
-Saving each variant's game in progress on the device is planned for M4 (#7). The full plan is the spec, issue #1.
+| Variant      | Players | How it plays                                                                                                                    |
+| ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Classic**  | 2       | The standard 3×3 game. Three in a row wins; a full board with no line is a draw.                                                |
+| **Infinite** | 2       | Each player keeps at most three marks; placing a fourth removes their oldest. There is no draw.                                 |
+| **Ultimate** | 2       | Nine small boards in a 3×3 grid. The square you play in sends your opponent to that small board; win three boards in a row.     |
+| **Shift**    | 2       | A 3×3 board over a 5×5 field. Each turn, place a mark inside the board or slide the board one step; only marks inside it count. |
+| **Trio**     | 3       | Three players on a 4×4 board, taking turns 1, 2, 3. First to three in a row wins.                                               |
+| **Misère**   | 2       | Classic turned round: making three in a row loses.                                                                              |
+
+Games aren't saved: reloading a variant starts a fresh game, and only the theme choice is kept on the device (decision D-41). The original plan is the spec, issue #1.
 
 ## Running it
 
@@ -47,7 +52,7 @@ src/
 ├── screens/     The game screen every variant is played on
 ├── hub/         The home screen
 ├── theme/       Design tokens for both themes, and the light/dark switching
-└── ui/          Icons, the X and O pieces, and shared class lists
+└── ui/          Icons, the X, O and star pieces, and shared class lists
 ```
 
 Adding a variant is a new folder under `src/variants/` and one entry in `src/variants/registry.ts`. The hub, the routes, the game screen and the contract tests pick it up from there.

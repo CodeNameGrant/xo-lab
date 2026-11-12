@@ -4,8 +4,8 @@ import { nextPlayer, type Player, type VariantRules } from './rules.ts'
  * One game of any variant, stored as who started plus the moves played.
  *
  * The current state is never stored: it is rebuilt by replaying the moves
- * from the initial state. That keeps saved games tiny and means a saved
- * game can be checked by replaying it through the rules.
+ * from the initial state, so the rules are the only code that builds one.
+ * Games are not saved across reloads (decision D-41 in docs/01-decisions.md).
  */
 export interface Game<Move> {
   readonly firstPlayer: Player
