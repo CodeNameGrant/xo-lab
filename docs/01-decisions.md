@@ -49,6 +49,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-37 | 2026-11-11 | Player 3's card is centred on a second row                 | Accepted                              |
 | D-38 | 2026-11-11 | Trio is played on a 5×5 board                              | Superseded by D-39                    |
 | D-39 | 2026-11-11 | Trio is played on a 4×4 board                              | Accepted                              |
+| D-40 | 2026-11-12 | Misère: a completed line loses                             | Accepted                              |
 
 ---
 
@@ -419,3 +420,15 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 **Why.** After playing the 5×5 board, Grant found it too big: the player who starts wins too easily, because with that much room the other two can't block every threat (D-38's open concern). A smaller board gives the two opponents a better chance to block. D-38 expected 4×4 to end in many draws; whether it does is for play to tell.
 
 **Considered.** Keeping 5×5 with a rule that limits the starter, such as no first move in the centre (not tried: a smaller board is the simpler change).
+
+## 2026-11-12
+
+### D-40 · Misère: a completed line loses
+
+**Status:** Accepted
+
+**Decision.** Misère (#19) is Classic with the result turned round: whoever makes a completed line loses, and their opponent is the winner; a move that completes two lines also loses; a full board with no completed line is a draw. A player must move every turn, even when every empty square loses, and there is no rule against the first player's centre-and-mirror strategy. The contract is unchanged: the outcome is `won` by the opponent, and `highlight` is the completed line. On the board the completed line keeps the colour of the player whose marks it holds, the loser, while the player cards, Play again and the screen-reader line name the winner. How to play paragraphs may mark words `**like this**` to draw them in bold, which Misère uses for "Don't" and "you lose".
+
+**Why.** Grant set the meaning of the highlight: it says "this player has completed a line", and whether that wins or loses is the variant's rule, winning by default. So the shared board needs no change, and `CONTEXT.md` now calls it the completed line rather than the winning line. Naming the winner on the shared screen is accurate, because in Misère you win by making your opponent complete a line; How to play explains why. The mirror strategy (take the centre, then answer every move with the square opposite it) means the first player can never be forced to lose, so careful play is a draw as in Classic; the rules stay standard because most players won't find it and the first move rotates anyway.
+
+**Considered.** Tinting the completed line in the winner's colour, or a neutral "losing line" look (rejected: the line is the loser's marks, and the highlight means "completed", not "won"). A new outcome that names the loser (rejected: a contract and shared-screen change for one variant). Rich text in `info.ts` as JSX (rejected for `**…**` markers, which keep info files plain data).

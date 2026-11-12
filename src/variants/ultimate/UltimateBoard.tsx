@@ -18,7 +18,7 @@ const BOARD_NAMES = [
 
 /**
  * The ring around a small board: the boards the player to move may play in,
- * in their colour, or the winning line of boards in the winner's colour.
+ * in their colour, or the completed line of boards in the winner's colour.
  * Dark adds the player's glow.
  */
 const RING = {

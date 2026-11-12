@@ -31,11 +31,29 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
           </div>
           {info.howToPlay.map((paragraph) => (
             <p key={paragraph} className="mt-3 text-[15px] leading-normal text-ink-muted">
-              {paragraph}
+              <Emphasis text={paragraph} />
             </p>
           ))}
         </div>
       </dialog>
     </>
+  )
+}
+
+/**
+ * A How to play paragraph, with any words marked `**like this**` drawn in bold
+ * and the normal text colour, so they stand out from the muted grey around them.
+ * Splitting on a pattern with a capture group keeps the marked words at the odd
+ * positions of the result.
+ */
+function Emphasis({ text }: { text: string }) {
+  return text.split(/\*\*(.+?)\*\*/).map((part, index) =>
+    index % 2 === 1 ? (
+      <strong key={index} className="font-semibold text-ink">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
   )
 }

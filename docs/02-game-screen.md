@@ -64,8 +64,8 @@ Names and detail text always stay in the normal text colours, never the player's
 - Centred, horizontally and vertically, in all the height left between the cards and the bottom bar.
 - It is the variant's own component (see [Per-variant differences](#per-variant-differences)). It receives the state, the rules and a "play this move" callback, and nothing else.
 - Every square is a real button at least **44 px** square, labelled with its position and contents ("Row 2, column 3, X"). The one exception is Ultimate, whose 81 squares are about 38 px on the 390 px reference phone (decision D-31).
-- The winning line is highlighted: in light, the winning squares take **the winner's tint**; in dark, they take the shared win highlight with a 1 px border in the winner's colour.
-- The 3×3 board (Classic, Infinite) is **342 px** wide at most: nine separate tiles, 10 px apart, radius 16 px, each with a 1 px `grid` border on `surface`, and no panel behind them; pieces are 60 px. It is the same shape in both themes and only the colours change (decision D-28). A winning tile's border takes the winner's colour in both themes.
+- The **completed line** (see `CONTEXT.md`) is highlighted in the colour of the player whose marks it holds: in light, its squares take **that player's tint**; in dark, they take the shared `win` highlight with a 1 px border in that player's colour. In most variants that player is the winner; in Misère they are the loser (D-40).
+- The 3×3 board (Classic, Infinite) is **342 px** wide at most: nine separate tiles, 10 px apart, radius 16 px, each with a 1 px `grid` border on `surface`, and no panel behind them; pieces are 60 px. It is the same shape in both themes and only the colours change (decision D-28). A tile of the completed line takes its player's colour on its border in both themes.
 
 ### 4 · Bottom bar
 
@@ -103,7 +103,7 @@ Every colour is a token in `src/theme/tokens.css`; components use the token, nev
 | `tint-x`             | Player 1's winning card and, in light, squares       | `#EAF0FD`            | `#1E2A52`            |
 | `tint-o`             | Player 2's winning card and, in light, squares       | `#FEEBEA`            | `#34163A`            |
 | `tint-s`             | Player 3's winning card and, in light, squares       | `#FBF1DA`            | `#352C14`            |
-| `win`                | Winning squares in dark                              | (not used in light)  | `#1E2A52`            |
+| `win`                | The completed line's squares in dark                 | (not used in light)  | `#1E2A52`            |
 | `on-player-x`        | Text on Player 1's Play again                        | `#FFFFFF`            | `#0B1020`            |
 | `on-player-o`        | Text on Player 2's Play again                        | `#FFFFFF`            | `#0B1020`            |
 | `on-player-s`        | Text on Player 3's Play again                        | `#FFFFFF`            | `#0B1020`            |
@@ -124,7 +124,7 @@ Every colour is a token in `src/theme/tokens.css`; components use the token, nev
 
 ## Motion
 
-A piece pops in when placed (180 ms); winning squares and card changes fade (200–300 ms). Every animation is behind `motion-safe:`, so a device set to reduce motion gets none (decision D-20).
+A piece pops in when placed (180 ms); the completed line's highlight and card changes fade (200–300 ms). Every animation is behind `motion-safe:`, so a device set to reduce motion gets none (decision D-20).
 
 Infinite adds two (decision D-27): the piece that disappears next pulses between 55 % and 20 % opacity (1.4 s each way), and a removed piece fades from 40 % to nothing while shrinking to 80 % (300 ms). With reduced motion the disappearing piece is a still 40 %, and a removed piece is simply gone.
 
@@ -139,6 +139,7 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Ultimate** | Its own nested board (`src/variants/ultimate/UltimateBoard.tsx`), described below                                                                                                                                                               | The board is wider than the column, to 6 px from the screen edge (D-31) | Built (#6)  |
 | **Shift**    | Its own 5×5 field (`src/variants/shift/ShiftBoard.tsx`), described below                                                                                                                                                                        | None                                                                    | Built (#14) |
 | **Trio**     | The shared grid board at 4×4 (`src/boards/GridBoard.tsx` with `size={4}`): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px                                                                                                   | Three player cards, Player 3 centred on a second row (D-37)             | Built (#16) |
+| **Misère**   | The shared 3×3 board (`src/boards/GridBoard.tsx`); the completed line keeps the colour of the player who made it, the loser (D-40)                                                                                                              | None                                                                    | Built (#19) |
 
 ### Ultimate's board
 
@@ -149,7 +150,7 @@ The tile shape of the 3×3 board, scaled down to nine small boards (decisions D-
 - **Boards you may play in:** a 2 px ring in the current player's colour, 3 px outside the tiles (+ the player's glow in dark). On the first move, and whenever the player is sent to a won or full board, every open board is ringed.
 - **A won small board:** its squares take the winner's tint, its pieces fade to 25 %, and the winner's mark is drawn over it at the board's full size (+ glow in dark).
 - **A full small board with no winner:** its pieces fade to 40 %, with no mark over it.
-- **The winning line of small boards:** the same ring, in the winner's colour, once the game is won.
+- **The completed line of small boards:** the same ring, in the winner's colour, once the game is won.
 - **Labels:** each small board is a group named by position ("Top-right board", then ", won by Player 1", ", full, no winner" or ", play here"); each square reads "Top-right board, row 2, column 1, empty".
 
 ### Shift's board
@@ -160,7 +161,7 @@ The tile shape of the 3×3 board on a 5×5 field (decisions D-28, D-32, D-34). T
 - **The window:** its four inner grid lines only, a `#` with no outer border, each line 8 px wide in a gap between tiles, in the colour of the player to move at 60 % (+ glow in dark), 90 % while dragged. Once the game is over the lines turn the `line` colour and the window can't be dragged.
 - **Outside the window:** tiles look the same as inside; only their pieces fade, to 40 % opacity, because they don't count. While the window is dragged, the pieces it would cover on release are shown at full strength.
 - **Moving it:** drag from anywhere inside the window, tiles or gaps. A press that moves more than 10 px is a drag and places nothing; one that doesn't is a tap. The window follows the pointer at most one step each way and snaps to the nearest position on release (D-34). The board turns off touch scrolling so a drag never scrolls the page.
-- **Winning line:** as on the 3×3 board: the winner's tint in light, the shared highlight in dark, and a border in the winner's colour.
+- **Completed line:** as on the 3×3 board: its player's tint in light, the shared highlight in dark, and a border in its player's colour.
 - **Labels:** "Row 2, column 5, X", with ", outside the board" for a tile outside the window.
 
 When a new variant is built, fill in its row with what was actually built, and add its board's sizes and colours here.
