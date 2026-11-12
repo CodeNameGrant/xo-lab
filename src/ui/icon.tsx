@@ -1,4 +1,14 @@
-import { ChevronLeft, ChevronRight, CircleQuestionMark, Moon, RotateCw, Sun, X, type LucideIcon } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  CircleQuestionMark,
+  Flag,
+  Moon,
+  RotateCw,
+  Sun,
+  X,
+  type LucideIcon,
+} from 'lucide-react'
 
 /**
  * Every icon in the app, by what it means rather than what it looks like.
@@ -12,6 +22,8 @@ const GLYPHS = {
   help: CircleQuestionMark,
   newGame: RotateCw,
   close: X,
+  /** On the player card of whoever made the first move of this game. */
+  starter: Flag,
   /** The theme toggle shows the theme it switches to. */
   lightTheme: Sun,
   darkTheme: Moon,

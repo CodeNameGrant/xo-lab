@@ -1,6 +1,7 @@
 import { use, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { playerName, playersOf, type Outcome, type Player } from '../game/rules.ts'
+import { addResult, describeScore, NO_SCORE } from '../game/score.ts'
 import { currentState, newGame, playMove, startGame } from '../game/session.ts'
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
@@ -30,12 +31,23 @@ function loadVariant(entry: VariantEntry): Promise<LoadedVariant> {
  * The shared game screen, the same for every variant: top bar, player
  * cards, the variant's own board and the bottom bar. The player cards show
  * whose turn it is and, at the end, who won or that it's a draw; the bottom
- * bar's New game then becomes Play again.
+ * bar's New game then becomes Play again. The cards also keep the score of
+ * every game played since the screen opened, and flag who started this one.
  * Must be rendered inside <Suspense>, which shows while the variant loads.
  */
 export function GameScreen({ entry }: { entry: VariantEntry }) {
   const { rules, Board } = use(loadVariant(entry))
   const [game, setGame] = useState(() => startGame<unknown>())
+  // Kept beside the game, never in it, and only while this screen is open (D-42).
+  const [score, setScore] = useState(NO_SCORE)
+
+  /** Plays `move` and, if it ends the game, adds the result to the score. */
+  function play(move: unknown) {
+    const next = playMove(rules, game, move)
+    if (next === game) return
+    setGame(next)
+    setScore((s) => addResult(s, rules.outcome(currentState(rules, next))))
+  }
 
   const state = useMemo(() => currentState(rules, game), [rules, game])
   const outcome = rules.outcome(state)
@@ -46,9 +58,9 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
 
   const status =
     outcome.kind === 'won'
-      ? `${playerName(outcome.winner)} wins!`
+      ? `${playerName(outcome.winner)} wins! ${describeScore(score, players)}`
       : outcome.kind === 'draw'
-        ? "It's a draw"
+        ? `It's a draw. ${describeScore(score, players)}`
         : `${playerName(turn)} to move`
 
   return (
@@ -78,20 +90,26 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
         Two columns. With three players, Player 3's card wraps to a second row, the same width
         as the others and centred (D-37).
       */}
-      <div className="grid grid-cols-2 gap-3">
-        {players.map((player) => (
-          <PlayerCard
-            key={player}
-            player={player}
-            look={cardLook(player, outcome, turn)}
-            first={game.firstPlayer === player}
-            className={player === 'S' ? 'col-span-2 w-[calc(50%-6px)] justify-self-center' : ''}
-          />
-        ))}
+      <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 gap-3">
+          {players.map((player) => (
+            <PlayerCard
+              key={player}
+              player={player}
+              look={cardLook(player, outcome, turn)}
+              starter={game.firstPlayer === player}
+              wins={score.wins[player]}
+              className={player === 'S' ? 'col-span-2 w-[calc(50%-6px)] justify-self-center' : ''}
+            />
+          ))}
+        </div>
+        <p className="text-center text-[13px] text-ink-muted">
+          {score.draws === 1 ? '1 draw' : `${score.draws} draws`}
+        </p>
       </div>
 
       <div className="flex grow items-center justify-center">
-        <Board state={state} rules={rules} onMove={(move: unknown) => setGame((g) => playMove(rules, g, move))} />
+        <Board state={state} rules={rules} onMove={play} />
       </div>
 
       {/*
@@ -176,28 +194,44 @@ const CARD = {
 /** The detail line under each player's name. */
 const ROLE = { X: 'Crosses', O: 'Noughts', S: 'Stars' } as const
 
+/** The score box takes the player's tint, except on their winning card, which is already that tint (D-42). */
+const SCORE_BOX = { X: 'bg-tint-x', O: 'bg-tint-o', S: 'bg-tint-s' } as const
+
 interface PlayerCardProps {
   readonly player: Player
   readonly look: CardLook
-  readonly first: boolean
+  /** This player made the first move of this game. */
+  readonly starter: boolean
+  /** Games this player has won since the screen opened. */
+  readonly wins: number
   /** For layout only: where the card sits in the grid. */
   readonly className?: string
 }
 
-function PlayerCard({ player, look, first, className }: PlayerCardProps) {
-  const role = ROLE[player]
-  const detail = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : first ? `${role} · first move` : role
+function PlayerCard({ player, look, starter, wins, className }: PlayerCardProps) {
+  const detail = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : ROLE[player]
   return (
     <div
-      className={`flex items-center gap-3 rounded-card border-2 px-3.5 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${CARD[look][player]} ${className ?? ''}`}
+      className={`flex items-center gap-1.5 rounded-card border-2 px-1.75 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${CARD[look][player]} ${className ?? ''}`}
     >
       <Mark player={player} size={28} stroke={2.5} className="shrink-0" />
-      <div className="min-w-0">
-        <div className="text-[15px] font-semibold">
+      <div className="min-w-0 grow">
+        <div className="flex items-center gap-1 text-[15px] font-semibold">
           {playerName(player)}
+          {starter && <Icon name="starter" size={13} className="shrink-0 text-ink-muted" />}
+          {starter && <span className="sr-only">, started this game</span>}
           {look === 'turn' && <span className="sr-only"> (to move)</span>}
         </div>
         <div className={`text-[13px] ${look === 'won' ? 'font-semibold text-ink' : 'text-ink-muted'}`}>{detail}</div>
+      </div>
+      <div
+        className={`ml-0.5 flex h-6.5 min-w-6.5 shrink-0 items-center justify-center rounded-score px-1.5 text-[15px] font-semibold tabular-nums dark:font-bold ${look === 'won' ? 'bg-surface' : SCORE_BOX[player]}`}
+      >
+        {/* A new key on each change remounts the number, so its pop plays again. */}
+        <span key={wins} className="motion-safe:animate-place">
+          {wins}
+        </span>
+        <span className="sr-only">{wins === 1 ? ' win' : ' wins'}</span>
       </div>
     </div>
   )
