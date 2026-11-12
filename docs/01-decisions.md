@@ -51,6 +51,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-39 | 2026-11-11 | Trio is played on a 4×4 board                              | Accepted                              |
 | D-40 | 2026-11-12 | Misère: a completed line loses                             | Accepted                              |
 | D-41 | 2026-11-12 | No saved games                                             | Accepted                              |
+| D-42 | 2026-11-12 | The score on the player cards, and a flag for the starter  | Accepted                              |
 
 ---
 
@@ -445,3 +446,13 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** Grant decided the app doesn't need the feature. No further reason was recorded; add one here if it matters later.
 
 **Considered.** Building #7 as specified: one saved game and one next-starting-player per variant in local storage, discarding broken saves.
+
+### D-42 · The score on the player cards, and a flag for the starter
+
+**Status:** Accepted
+
+**Decision.** Every variant's game screen keeps a **Score** (#21): each player's wins and the number of draws since the screen was opened. A finished game adds one to its winner (in Misère, the opponent of the player who made the completed line) or to the draws; a game abandoned with New game counts for nobody. The score lives in memory on the game screen only, beside the game: it is never part of the game (D-06), it is not saved (D-41), it starts at 0 whenever the screen opens, and there is no reset button. Each player card shows its player's wins in a small box on its right, filled with the player's tint (with `surface` on the Won card, which is already tinted); the draws are a line under the cards. The "· first move" text on the starter's card is replaced by a flag icon after the name, and the card's side padding and the gap after its piece are halved (14 → 7 px, 12 → 6 px) to make room. The screen-reader status line adds the score once a game is over: "Player 2 wins! Player 1 leads 3 games to 1." or "… The score is tied at 3 games each.", and with three players "… Player 3 leads with 3 games." or "… Player 1 and Player 3 are tied at 2 games each."
+
+**Why.** Grant wanted a running score per variant without changing the shared layout, and chose the cards because the score then sits with its player and Trio's third card gets one too. A plain number read as dull, so it is boxed like a scorecard; the tint fill matches the winning card, and switching to `surface` on that card keeps the score visible at the moment it changes. The box needed room beside the name on a 390 px phone, which the tighter padding gives. The highlighted card already shows who moves first when a game starts, so the text note became a small flag that still shows the starter mid-game. The status line names only the leader, so it stays short with any number of players.
+
+**Considered.** Mocked up in [score on the player cards](https://claude.ai/artifact/QqLNN1J7b8dRCVgbAj1dYG): a score strip under the cards (a fifth part, taking board height), a line in the top bar (small, and awkward with three players), and tally dots (they overflow after about five wins). For the box: a neutral page-coloured slot and a player-coloured frame (Grant preferred the tint). For the starter: a "1st" box stacked under the score (rejected: both boxes became too small), a play triangle, and a coloured dot beside the name or on the box.

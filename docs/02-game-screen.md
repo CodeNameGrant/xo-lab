@@ -14,12 +14,12 @@ A variant that needs anything different does it inside its own board component, 
 
 Top to bottom, in one centred column:
 
-| #   | Part             | What it holds                                                                                                                           |
-| --- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Top bar**      | Back to the hub · the variant's name · How to play and the theme toggle                                                                 |
-| 2   | **Player cards** | Player 1 (X) and Player 2 (O), side by side, and Player 3 (★) below in a three-player variant: whose turn it is, then who won or a draw |
-| 3   | **Board**        | The variant's own board, centred in all the remaining height                                                                            |
-| 4   | **Bottom bar**   | One full-width button: New game during play, Play again once the game is over                                                           |
+| #   | Part             | What it holds                                                                                                                                                                          |
+| --- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Top bar**      | Back to the hub · the variant's name · How to play and the theme toggle                                                                                                                |
+| 2   | **Player cards** | Player 1 (X) and Player 2 (O), side by side, and Player 3 (★) below in a three-player variant: whose turn it is, then who won or a draw; each player's score, and the draws under them |
+| 3   | **Board**        | The variant's own board, centred in all the remaining height                                                                                                                           |
+| 4   | **Bottom bar**   | One full-width button: New game during play, Play again once the game is over                                                                                                          |
 
 There is **no visible status text** anywhere on the screen. The player cards carry the turn and the result. A visually hidden line (below) carries them for screen readers.
 
@@ -44,8 +44,13 @@ The reference size is a 390 px-wide phone held upright.
 
 - Two equal columns, **12 px** apart. Player 1 (X) is always on the left.
 - **Three players** (a variant whose `VariantInfo` says `players: 3`): Player 3's card wraps to a second row, 12 px below, the same width as the other two and centred (layout A, decision D-37).
-- Each card: radius **14 px**, padding 12 px × 14 px, a **2 px** border. The player's piece at 28 px, then two lines: the name ("Player 1", 15 px, semibold) and a detail line (13 px, secondary text).
-- The detail line is "Crosses", "Noughts" or "Stars", followed by "· first move" on the card of the player who started this game.
+- Each card: radius **14 px**, padding 12 px × 7 px, a **2 px** border. The player's piece at 28 px, 6 px from two lines: the name ("Player 1", 15 px, semibold) and a detail line (13 px, secondary text). Then, 8 px after the text and centred on the card, the score box (decision D-42).
+- The detail line is "Crosses", "Noughts" or "Stars".
+- **Starter:** the card of the player who started this game shows a flag icon after the name, 13 px, in the secondary text colour, 4 px from it.
+- **Score box:** the player's **Score** (see `CONTEXT.md`), their wins since the game screen opened: 15 px semibold (bold in dark), tabular figures, in the normal text colour, in a box **26 px** tall and at least 26 px wide, with 6 px side padding, radius 7 px and no border. The box is filled with the player's tint, or with `surface` on the Won card, whose background is already the tint. It shows 0 before any game finishes, and the number pops in (180 ms) when it changes.
+- **Draws:** "0 draws", "1 draw", "2 draws", 13 px, secondary text, centred **8 px** under the cards (under Player 3's card in a three-player variant). Always shown.
+
+The score is kept only while the game screen is open: it starts at 0 whenever the screen opens, including after a reload, and is gone when the player goes back to the hub. A game abandoned with New game doesn't count.
 
 A card has one of five looks:
 
@@ -83,33 +88,45 @@ In dark, both labels are bold. Either button starts a fresh game of the same var
 
 ### Screen-reader status
 
-A visually hidden `aria-live="polite"` line is always on the page and says the game in words: "Player 1 to move", "Player 2 wins!", "It's a draw". It must be there from the start and never added conditionally, because a live region inserted together with its text is usually not announced.
+A visually hidden `aria-live="polite"` line is always on the page and says the game in words: "Player 1 to move", "Player 2 wins!", "It's a draw.". Once a game is over it adds the score, without the draws:
+
+| Players | Score                | Example                                                          |
+| ------- | -------------------- | ---------------------------------------------------------------- |
+| Two     | One leads            | "Player 2 wins! Player 1 leads 3 games to 1."                    |
+| Two     | Level                | "It's a draw. The score is tied at 3 games each."                |
+| Three   | One leads            | "Player 3 wins! Player 3 leads with 3 games."                    |
+| Three   | Two level at the top | "Player 3 wins! Player 1 and Player 3 are tied at 2 games each." |
+| Three   | All level            | "It's a draw. All three players are tied at 2 games each."       |
+
+Each player card also says its score and, on the starter's card, "started this game", in visually hidden text.
+
+It must be there from the start and never added conditionally, because a live region inserted together with its text is usually not announced.
 
 ## Colours
 
 Every colour is a token in `src/theme/tokens.css`; components use the token, never the hex value. Light is theme A · Clean minimal, dark is theme B · Neon arcade. Which one shows is set by `data-theme` on the page (decision D-17).
 
-| Token                | Used for                                             | Light                | Dark                 |
-| -------------------- | ---------------------------------------------------- | -------------------- | -------------------- |
-| `page`               | Page background; draw card background                | `#F7F7F5`            | `#0B1020`            |
-| `surface`            | Cards, board panel or tiles, outlined button         | `#FFFFFF`            | `#141B33`            |
-| `ink`                | Text                                                 | `#16181D`            | `#E8ECF8`            |
-| `ink-muted`          | Secondary text                                       | `#5B606B`            | `#9AA3BF`            |
-| `line`               | Button and icon-button borders                       | `#D9DBE0`            | `#2E3A60`            |
-| `grid`               | Board grid lines and tile borders; dim card borders  | `#E3E5EA`            | `#26304F`            |
-| `player-x`           | Player 1's pieces, card border and Play again        | `#2457D6`            | `#3DE0FF`            |
-| `player-o`           | Player 2's pieces, card border and Play again        | `#B12B35`            | `#FF4FB0`            |
-| `player-s`           | Player 3's pieces, card border and Play again (gold) | `#946800`            | `#FFC93C`            |
-| `tint-x`             | Player 1's winning card and, in light, squares       | `#EAF0FD`            | `#1E2A52`            |
-| `tint-o`             | Player 2's winning card and, in light, squares       | `#FEEBEA`            | `#34163A`            |
-| `tint-s`             | Player 3's winning card and, in light, squares       | `#FBF1DA`            | `#352C14`            |
-| `win`                | The completed line's squares in dark                 | (not used in light)  | `#1E2A52`            |
-| `on-player-x`        | Text on Player 1's Play again                        | `#FFFFFF`            | `#0B1020`            |
-| `on-player-o`        | Text on Player 2's Play again                        | `#FFFFFF`            | `#0B1020`            |
-| `on-player-s`        | Text on Player 3's Play again                        | `#FFFFFF`            | `#0B1020`            |
-| `primary`            | Play again after a draw                              | `#16181D`            | `#3DE0FF`            |
-| `on-primary`         | Its text                                             | `#FFFFFF`            | `#0B1020`            |
-| `link`, `link-hover` | Links                                                | `#2457D6`, `#163C9E` | `#3DE0FF`, `#9DEFFF` |
+| Token                | Used for                                                 | Light                | Dark                 |
+| -------------------- | -------------------------------------------------------- | -------------------- | -------------------- |
+| `page`               | Page background; draw card background                    | `#F7F7F5`            | `#0B1020`            |
+| `surface`            | Cards, board panel or tiles, outlined button             | `#FFFFFF`            | `#141B33`            |
+| `ink`                | Text                                                     | `#16181D`            | `#E8ECF8`            |
+| `ink-muted`          | Secondary text                                           | `#5B606B`            | `#9AA3BF`            |
+| `line`               | Button and icon-button borders                           | `#D9DBE0`            | `#2E3A60`            |
+| `grid`               | Board grid lines and tile borders; dim card borders      | `#E3E5EA`            | `#26304F`            |
+| `player-x`           | Player 1's pieces, card border and Play again            | `#2457D6`            | `#3DE0FF`            |
+| `player-o`           | Player 2's pieces, card border and Play again            | `#B12B35`            | `#FF4FB0`            |
+| `player-s`           | Player 3's pieces, card border and Play again (gold)     | `#946800`            | `#FFC93C`            |
+| `tint-x`             | Player 1's winning card and score box; in light, squares | `#EAF0FD`            | `#1E2A52`            |
+| `tint-o`             | Player 2's winning card and score box; in light, squares | `#FEEBEA`            | `#34163A`            |
+| `tint-s`             | Player 3's winning card and score box; in light, squares | `#FBF1DA`            | `#352C14`            |
+| `win`                | The completed line's squares in dark                     | (not used in light)  | `#1E2A52`            |
+| `on-player-x`        | Text on Player 1's Play again                            | `#FFFFFF`            | `#0B1020`            |
+| `on-player-o`        | Text on Player 2's Play again                            | `#FFFFFF`            | `#0B1020`            |
+| `on-player-s`        | Text on Player 3's Play again                            | `#FFFFFF`            | `#0B1020`            |
+| `primary`            | Play again after a draw                                  | `#16181D`            | `#3DE0FF`            |
+| `on-primary`         | Its text                                                 | `#FFFFFF`            | `#0B1020`            |
+| `link`, `link-hover` | Links                                                    | `#2457D6`, `#163C9E` | `#3DE0FF`, `#9DEFFF` |
 
 **Glows** exist only in dark, all built from the player colours: pieces have a 6 px drop shadow (4 px at 28 px and smaller), the active or winning card has a 16 px glow at 35 %, and Play again has an 18 px glow at 45 %.
 
@@ -124,7 +141,7 @@ Every colour is a token in `src/theme/tokens.css`; components use the token, nev
 
 ## Motion
 
-A piece pops in when placed (180 ms); the completed line's highlight and card changes fade (200–300 ms). Every animation is behind `motion-safe:`, so a device set to reduce motion gets none (decision D-20).
+A piece pops in when placed, and a score when it changes (180 ms); the completed line's highlight and card changes fade (200–300 ms). Every animation is behind `motion-safe:`, so a device set to reduce motion gets none (decision D-20).
 
 Infinite adds two (decision D-27): the piece that disappears next pulses between 55 % and 20 % opacity (1.4 s each way), and a removed piece fades from 40 % to nothing while shrinking to 80 % (300 ms). With reduced motion the disappearing piece is a still 40 %, and a removed piece is simply gone.
 
