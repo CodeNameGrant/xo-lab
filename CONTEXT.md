@@ -19,7 +19,7 @@ The player who makes the first move of a game; it passes one place along the tur
 _Avoid_: first player (in prose), host
 
 **Shared marks**:
-Marks that belong to nobody: in Notakto every player places an X. Whatever was placed, a completed line counts for the player who completed it.
+Marks that belong to nobody: in Notakto every player places an X, and in Wild either player places an X or an O. Whatever was placed, a completed line counts for the player who completed it.
 _Avoid_: neutral pieces, common marks
 
 ### Boards

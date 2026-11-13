@@ -6,6 +6,7 @@ import { shiftInfo } from './shift/info.ts'
 import { trioInfo } from './trio/info.ts'
 import type { VariantEntry } from './types.ts'
 import { ultimateInfo } from './ultimate/info.ts'
+import { wildInfo } from './wild/info.ts'
 
 /**
  * Every playable variant, in hub order. Adding a variant means adding its
@@ -54,6 +55,12 @@ export const variants: readonly VariantEntry[] = [
     info: notaktoInfo,
     loadRules: () => import('./notakto/rules.ts').then((m) => m.notaktoRules),
     loadBoard: () => import('./notakto/NotaktoBoard.tsx').then((m) => m.NotaktoBoard),
+  },
+  {
+    id: 'wild',
+    info: wildInfo,
+    loadRules: () => import('./wild/rules.ts').then((m) => m.wildRules),
+    loadBoard: () => import('./wild/WildBoard.tsx').then((m) => m.WildBoard),
   },
 ]
 
