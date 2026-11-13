@@ -18,14 +18,32 @@ _Avoid_: you, red, blue, a typed name
 The player who makes the first move of a game; it passes one place along the turn order with each new game.
 _Avoid_: first player (in prose), host
 
+**Shared marks**:
+Marks that belong to nobody: in Notakto every player places an X. Whatever was placed, a completed line counts for the player who completed it.
+_Avoid_: neutral pieces, common marks
+
+### Boards
+
+**Live board**:
+In Notakto, a board that can still be played on.
+_Avoid_: open board, active board
+
+**Dead board**:
+In Notakto, a board with a completed line; nobody can play on it again.
+_Avoid_: closed board, finished board
+
+**Kill**:
+To complete a line on a live board in Notakto, making it a dead board.
+_Avoid_: close, finish
+
 ### Results
 
 **Completed line**:
-Three of one player's marks in a row, across, down or diagonally, that ends the game. Which result it gives is the variant's rule: by default its player wins; in Misère its player loses.
+Three matching marks in a row, across, down or diagonally, belonging to the player who placed the third. What it does is the variant's rule: by default that player wins; in Misère they lose; in Notakto it kills a board.
 _Avoid_: winning line (it doesn't always win)
 
 **Winner**:
-The player a finished game goes to, whatever the reason: in Misère, the opponent of the player who made the completed line.
+The player a finished game goes to, whatever the reason: in Misère, the opponent of the player who made the completed line; in Notakto, the opponent of the player who killed the last live board.
 _Avoid_: victor
 
 **Draw**:

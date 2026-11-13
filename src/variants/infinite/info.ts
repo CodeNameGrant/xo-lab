@@ -3,6 +3,8 @@ import type { VariantInfo } from '../types.ts'
 export const infiniteInfo: VariantInfo = {
   name: 'Infinite',
   players: 2,
+  // The board never fills, so a game always ends with a winner.
+  canDraw: false,
   tagline: 'Three marks each. Place a fourth and your oldest disappears.',
   howToPlay: [
     'Players take turns placing their mark in an empty square. Player 1 is X, Player 2 is O.',

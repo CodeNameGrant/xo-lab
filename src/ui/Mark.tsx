@@ -2,7 +2,14 @@ import { CircleSmall, Star, X } from 'lucide-react'
 import type { Player } from '../game/rules.ts'
 
 interface MarkProps {
+  /** Which piece to draw: X, O or the star. */
   readonly player: Player
+  /**
+   * Whose colour to draw it in. By default the piece's own player's; another player's to draw,
+   * say, Player 2's X on their card in Notakto; or 'neutral' for a mark nobody owns, in the text
+   * colour with no glow (D-43).
+   */
+  readonly tone?: Player | 'neutral'
   readonly size: number
   /** Line thickness in Lucide's 24-unit box: 2 on the board, thicker on small marks so they stay legible. */
   readonly stroke?: number
@@ -31,7 +38,7 @@ const GLYPHS = { X, O: CircleSmall, S: Star } as const
 const STAR_SCALE = 0.6
 
 /** Lucide draws in currentColor, so the player's colour is a text colour. */
-const COLOUR = { X: 'text-player-x', O: 'text-player-o', S: 'text-player-s scale-60' } as const
+const COLOUR = { X: 'text-player-x', O: 'text-player-o', S: 'text-player-s' } as const
 
 /** The neon glow in the dark theme: 6 px on the board, 4 px on small pieces (artboard B). */
 const GLOW = { X: 'dark:drop-shadow-glow-x', O: 'dark:drop-shadow-glow-o', S: 'dark:drop-shadow-glow-s' } as const
@@ -44,15 +51,16 @@ const SMALL_GLOW = {
 /** At or below this size a piece counts as small. */
 const SMALL = 28
 
-/** An X, O or star drawn in its player's colour. Decorative: the label lives on the button around it. */
-export function Mark({ player, size, stroke = 2, className }: MarkProps) {
+/** An X, O or star drawn in its player's colour (or another player's, or neutral). Decorative: the label lives on the button around it. */
+export function Mark({ player, tone = player, size, stroke = 2, className }: MarkProps) {
   const Glyph = GLYPHS[player]
-  const glow = size <= SMALL ? SMALL_GLOW[player] : GLOW[player]
+  const colour = tone === 'neutral' ? 'text-ink' : COLOUR[tone]
+  const glow = tone === 'neutral' ? '' : size <= SMALL ? SMALL_GLOW[tone] : GLOW[tone]
   return (
     <Glyph
       size={size}
       strokeWidth={player === 'S' ? stroke / STAR_SCALE : stroke}
-      className={`${COLOUR[player]} ${glow} ${className ?? ''}`}
+      className={`${colour} ${glow} ${player === 'S' ? 'scale-60' : ''} ${className ?? ''}`}
       aria-hidden="true"
       focusable="false"
     />

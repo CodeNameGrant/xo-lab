@@ -12,6 +12,15 @@ export interface VariantInfo {
   readonly howToPlay: readonly string[]
   /** A small static picture for the hub card: rows of "X", "O", "S" (a star) and "." (empty). */
   readonly preview: readonly string[]
+  /**
+   * For a variant where the marks belong to nobody (Notakto, Wild): the marks every player
+   * places, drawn on each player card in that player's colour, and the card's detail line.
+   * The board, and the hub picture, then draw marks in the neutral text colour (D-43).
+   * Left out when each player has a mark of their own.
+   */
+  readonly sharedMarks?: { readonly marks: readonly ('X' | 'O')[]; readonly detail: string }
+  /** False for a variant that can never end in a draw: the draws line under the cards is left out (D-43). */
+  readonly canDraw?: boolean
 }
 
 /** What every variant's board component receives, and nothing else. */
