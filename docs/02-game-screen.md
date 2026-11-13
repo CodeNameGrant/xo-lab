@@ -159,6 +159,7 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Trio**     | The shared grid board at 4×4 (`src/boards/GridBoard.tsx` with `size={4}`): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px                                                                                                   | Three player cards, Player 3 centred on a second row (D-37)             | Built (#16) |
 | **Misère**   | The shared 3×3 board (`src/boards/GridBoard.tsx`); the completed line keeps the colour of the player who made it, the loser (D-40)                                                                                                              | None                                                                    | Built (#19) |
 | **Notakto**  | Its own three boards (`src/variants/notakto/NotaktoBoard.tsx`), described below                                                                                                                                                                 | Shared marks on the cards; no draws line (D-43)                         | Built (#23) |
+| **Wild**     | The shared grid board at 4×4 with neutral marks, plus a callout to choose X or O (`src/variants/wild/WildBoard.tsx`), described below                                                                                                           | Shared marks on the cards: an X and O pair, "X or O" (D-43)             | Built (#24) |
 
 ### Ultimate's board
 
@@ -191,5 +192,14 @@ Three 3×3 boards in the tile shape of the 3×3 board, the same shape in both th
 - **Marks:** every X is neutral, in the normal text colour with no glow, at 32 px.
 - **A dead board:** its X's fade to 40 %, except the completed line's, whose squares take the colour of the player who completed it: their tint in light, the shared highlight in dark, and a border in their colour. Its squares are no longer playable.
 - **Labels:** each board is a group, "Board 1" to "Board 3", read left to right and then down, with ", dead" once it's dead; each square reads "Board 2, row 1, column 3, X".
+
+### Wild's board
+
+The shared grid board at 4×4, as Trio's (decision D-28): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px. Its marks are neutral, and a callout chooses the mark (decision D-45).
+
+- **Marks:** X's and O's are both neutral, in the normal text colour with no glow. The completed line takes the colour of the player who completed it, the winner, whatever its marks are.
+- **Choosing a mark:** tapping an empty square gives it a 2 px border in the colour of the player to move and opens a callout 8 px above it, or 8 px below it on the top row, centred on the square: a `surface` panel with a 1 px `grid` border (`line` in dark), radius 14 px, the board's shadow, 8 px padding and a small pointer towards the square. In it are two **52 px** buttons, X and O, 8 px apart, radius 12 px, on `page` (`surface` in dark), with 30 px neutral marks. The callout pops in like a piece.
+- **Closing it:** tapping X or O places that mark. Tapping another empty square moves the callout there; tapping the chosen square again, a taken square, a gap, anywhere off the board, or pressing Escape closes it with no move. A move or a new game also closes it.
+- **Labels:** the callout is a group, "Choose a mark for row 2, column 3", and its buttons read "Place X" and "Place O". When it opens, focus moves to "Place X".
 
 When a new variant is built, fill in its row with what was actually built, and add its board's sizes and colours here.

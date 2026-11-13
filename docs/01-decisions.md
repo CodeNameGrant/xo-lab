@@ -54,6 +54,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-42 | 2026-11-12 | The score on the player cards, and a flag for the starter      | Accepted                              |
 | D-43 | 2026-11-13 | Shared marks are neutral, and some variants have no draws line | Accepted                              |
 | D-44 | 2026-11-13 | Notakto: three boards, everyone plays X                        | Accepted                              |
+| D-45 | 2026-11-13 | Wild: 4×4, X or O each turn, chosen in a callout               | Accepted                              |
 
 ---
 
@@ -480,3 +481,13 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** On one board the first player can always win with perfect play; with three, choosing which board to kill and when decides who faces the last board, which is what makes Notakto worth playing. Grant compared three layouts: two-and-one keeps squares nearly as big as three stacked (52 px against 56) while leaving room on the screen, and three in a row would shrink squares to about 32 px, under the 44 px rule.
 
 **Considered.** One or two boards (rejected: one is a solved first-player win; three is the usual game). A choice of board count (rejected: no variant has settings). Three stacked, or three in a row (rejected, above).
+
+### D-45 · Wild: 4×4, X or O each turn, chosen in a callout
+
+**Status:** Accepted
+
+**Decision.** Wild (#24) is played on a 4×4 board, three in a row to win. On every turn, the player to move chooses to place an X or an O; whoever completes a line of three matching marks wins, whoever placed the rest, and a full board with no line is a draw. A move is `{ square, mark }`. The marks are shared (D-43): neutral on the board, and an X and O pair in each player's colour on the cards, with the detail line "X or O". The completed line takes the winner's colour, which the shared grid board now accepts as `lineOwner`, since a neutral mark doesn't say whose it is. The mark is chosen in a small callout next to the tapped square, with an X and an O button: tapping another empty square moves it, and tapping anywhere else closes it.
+
+**Why.** There is no undo, so the mark is chosen at the moment of the move rather than set beforehand. Grant compared a split-square picker and rejected it, then chose a callout, and chose that tapping another empty square moves it straight there. The board was first built at 3×3, as the issue specified; after playing it Grant found it drew too easily, with too little room to trap the opponent, and moved it to 4×4. With either mark open to either player, two matching marks in a line with the third square empty are a win for whoever moves next, so on 4×4's 24 lines of three every move has to avoid leaving one, and someone usually gets trapped.
+
+**Considered.** 3×3 (built first, rejected after play: too many draws). 4×4 with four in a row (rejected: only 10 lines, nearly all spoiled early, so even more draws). An X/O switch next to the board (rejected: easy to forget its setting and place the wrong mark, with no undo). Splitting the tapped square into an X half and an O half (rejected by Grant after trying it). Tapping for X and long-pressing for O (rejected: hidden and error-prone). A callout that only closes when another square is tapped (rejected for moving it).

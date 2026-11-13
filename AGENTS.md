@@ -58,7 +58,7 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade". The current val
 
 # Words
 
-Players are **Player 1 (X)**, **Player 2 (O)** and, in a three-player variant, **Player 3 (★, `S` in code)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate, Shift, Trio, Misère, Notakto), with a fixed number of players (`VariantInfo.players`); its **id** is its URL slug. The buttons are **New game** (called **Play again** once a game is over) and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
+Players are **Player 1 (X)**, **Player 2 (O)** and, in a three-player variant, **Player 3 (★, `S` in code)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate, Shift, Trio, Misère, Notakto, Wild), with a fixed number of players (`VariantInfo.players`); its **id** is its URL slug. The buttons are **New game** (called **Play again** once a game is over) and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
 
 # Testing
 

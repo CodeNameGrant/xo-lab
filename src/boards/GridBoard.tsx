@@ -23,6 +23,16 @@ interface GridBoardProps {
   readonly disappearsNext?: number | null
   /** Infinite: the piece just removed, drawn fading out over its now-empty square. */
   readonly leaving?: LeavingMark | null
+  /** Wild: marks belong to nobody, so they are drawn neutral (D-43). */
+  readonly neutral?: boolean
+  /**
+   * Wild: whose colour the completed line takes, when its marks don't say (a neutral X can be
+   * either player's). Left out, each square takes the colour of the mark on it.
+   */
+  readonly lineOwner?: Player
+  /** Wild: the square the player to move is choosing a mark for, outlined in `chosenBy`'s colour. */
+  readonly chosen?: number | null
+  readonly chosenBy?: Player
 }
 
 /**
@@ -36,13 +46,25 @@ const SIZES = {
 } as const
 
 /**
- * The shared square grid: 3×3 for Classic and Infinite, 4×4 for Trio. It only draws cells and
+ * The shared square grid: 3×3 for Classic, Infinite and Misère, 4×4 for Trio and Wild. It only draws cells and
  * reports taps; the variant's board decides what a tap means.
  *
  * Both themes draw separate tiles with a gap and no panel (decision
  * D-28); only the colours differ between them.
  */
-export function GridBoard({ size = 3, cells, highlight, isPlayable, onPlay, disappearsNext, leaving }: GridBoardProps) {
+export function GridBoard({
+  size = 3,
+  cells,
+  highlight,
+  isPlayable,
+  onPlay,
+  disappearsNext,
+  leaving,
+  neutral,
+  lineOwner,
+  chosen,
+  chosenBy,
+}: GridBoardProps) {
   const { grid, piece, mark } = SIZES[size]
   return (
     <div className={`grid aspect-square w-[min(342px,100%)] ${grid}`} role="group" aria-label="Board">
@@ -59,8 +81,9 @@ export function GridBoard({ size = 3, cells, highlight, isPlayable, onPlay, disa
             // its border, and in light its player's tint (D-24); dark keeps one shared highlight. That player
             // usually won, but not always: in Misère they lost (D-40). The highlight fades in, unless the
             // device asks for reduced motion.
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-tile border border-grid bg-surface data-[win=O]:border-player-o data-[win=S]:border-player-s data-[win=X]:border-player-x motion-safe:transition-colors motion-safe:duration-300 dark:data-win:bg-win light:data-[win=O]:bg-tint-o light:data-[win=S]:bg-tint-s light:data-[win=X]:bg-tint-x"
-            data-win={(highlight.includes(index) && cell) || undefined}
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-tile border border-grid bg-surface data-chosen:border-2 data-[chosen=O]:border-player-o data-[chosen=X]:border-player-x data-[win=O]:border-player-o data-[win=S]:border-player-s data-[win=X]:border-player-x motion-safe:transition-colors motion-safe:duration-300 dark:data-win:bg-win light:data-[win=O]:bg-tint-o light:data-[win=S]:bg-tint-s light:data-[win=X]:bg-tint-x"
+            data-win={(highlight.includes(index) && (lineOwner ?? cell)) || undefined}
+            data-chosen={(index === chosen && chosenBy) || undefined}
             aria-label={`Row ${row}, column ${column}, ${cell ?? 'empty'}${fading ? ', disappears next' : ''}`}
             // aria-disabled (not disabled) keeps every square reachable for screen readers.
             aria-disabled={!playable}
@@ -69,6 +92,7 @@ export function GridBoard({ size = 3, cells, highlight, isPlayable, onPlay, disa
             {cell ? (
               <Mark
                 player={cell}
+                tone={neutral ? 'neutral' : cell}
                 size={mark}
                 // Pops in when placed; the piece that disappears next is faded and pulses instead.
                 className={
