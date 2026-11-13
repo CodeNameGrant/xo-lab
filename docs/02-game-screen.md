@@ -46,9 +46,10 @@ The reference size is a 390 px-wide phone held upright.
 - **Three players** (a variant whose `VariantInfo` says `players: 3`): Player 3's card wraps to a second row, 12 px below, the same width as the other two and centred (layout A, decision D-37).
 - Each card: radius **14 px**, padding 12 px × 7 px, a **2 px** border. The player's piece at 28 px, 6 px from two lines: the name ("Player 1", 15 px, semibold) and a detail line (13 px, secondary text). Then, 8 px after the text and centred on the card, the score box (decision D-42).
 - The detail line is "Crosses", "Noughts" or "Stars".
+- **Shared marks** (a variant whose `VariantInfo` has `sharedMarks`, such as Notakto): each card shows the marks every player places, in that card's player's colour, and the variant's detail line instead ("Crosses" in Notakto). One mark is 28 px; two sit side by side at 18 px. On the board those marks are neutral: the normal text colour, with no glow in dark (decision D-43).
 - **Starter:** the card of the player who started this game shows a flag icon after the name, 13 px, in the secondary text colour, 4 px from it.
 - **Score box:** the player's **Score** (see `CONTEXT.md`), their wins since the game screen opened: 15 px semibold (bold in dark), tabular figures, in the normal text colour, in a box **26 px** tall and at least 26 px wide, with 6 px side padding, radius 7 px and no border. The box is filled with the player's tint, or with `surface` on the Won card, whose background is already the tint. It shows 0 before any game finishes, and the number pops in (180 ms) when it changes.
-- **Draws:** "0 draws", "1 draw", "2 draws", 13 px, secondary text, centred **8 px** under the cards (under Player 3's card in a three-player variant). Always shown.
+- **Draws:** "0 draws", "1 draw", "2 draws", 13 px, secondary text, centred **8 px** under the cards (under Player 3's card in a three-player variant). Left out for a variant that can never end in a draw, Infinite and Notakto, whose `VariantInfo` says `canDraw: false` (decision D-43).
 
 The score is kept only while the game screen is open: it starts at 0 whenever the screen opens, including after a reload, and is gone when the player goes back to the hub. A game abandoned with New game doesn't count.
 
@@ -157,6 +158,7 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Shift**    | Its own 5×5 field (`src/variants/shift/ShiftBoard.tsx`), described below                                                                                                                                                                        | None                                                                    | Built (#14) |
 | **Trio**     | The shared grid board at 4×4 (`src/boards/GridBoard.tsx` with `size={4}`): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px                                                                                                   | Three player cards, Player 3 centred on a second row (D-37)             | Built (#16) |
 | **Misère**   | The shared 3×3 board (`src/boards/GridBoard.tsx`); the completed line keeps the colour of the player who made it, the loser (D-40)                                                                                                              | None                                                                    | Built (#19) |
+| **Notakto**  | Its own three boards (`src/variants/notakto/NotaktoBoard.tsx`), described below                                                                                                                                                                 | Shared marks on the cards; no draws line (D-43)                         | Built (#23) |
 
 ### Ultimate's board
 
@@ -180,5 +182,14 @@ The tile shape of the 3×3 board on a 5×5 field (decisions D-28, D-32, D-34). T
 - **Moving it:** drag from anywhere inside the window, tiles or gaps. A press that moves more than 10 px is a drag and places nothing; one that doesn't is a tap. The window follows the pointer at most one step each way and snaps to the nearest position on release (D-34). The board turns off touch scrolling so a drag never scrolls the page.
 - **Completed line:** as on the 3×3 board: its player's tint in light, the shared highlight in dark, and a border in its player's colour.
 - **Labels:** "Row 2, column 5, X", with ", outside the board" for a tile outside the window.
+
+### Notakto's board
+
+Three 3×3 boards in the tile shape of the 3×3 board, the same shape in both themes (decisions D-43, D-44).
+
+- **Layout:** two boards side by side, 12 px apart, and the third centred below them, the same width, 12 px down: the shape of three player cards (D-37). On the 390 px phone each board is about **165 px** and each square about **52 px**, with squares **4 px** apart, radius 6 px.
+- **Marks:** every X is neutral, in the normal text colour with no glow, at 32 px.
+- **A dead board:** its X's fade to 40 %, except the completed line's, whose squares take the colour of the player who completed it: their tint in light, the shared highlight in dark, and a border in their colour. Its squares are no longer playable.
+- **Labels:** each board is a group, "Board 1" to "Board 3", read left to right and then down, with ", dead" once it's dead; each square reads "Board 2, row 1, column 3, X".
 
 When a new variant is built, fill in its row with what was actually built, and add its board's sizes and colours here.

@@ -7,7 +7,7 @@ import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
-import type { AnyBoard, AnyRules, VariantEntry } from '../variants/types.ts'
+import type { AnyBoard, AnyRules, VariantEntry, VariantInfo } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
 
 interface LoadedVariant {
@@ -99,13 +99,16 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
               look={cardLook(player, outcome, turn)}
               starter={game.firstPlayer === player}
               wins={score.wins[player]}
+              sharedMarks={entry.info.sharedMarks}
               className={player === 'S' ? 'col-span-2 w-[calc(50%-6px)] justify-self-center' : ''}
             />
           ))}
         </div>
-        <p className="text-center text-[13px] text-ink-muted">
-          {score.draws === 1 ? '1 draw' : `${score.draws} draws`}
-        </p>
+        {entry.info.canDraw !== false && (
+          <p className="text-center text-[13px] text-ink-muted">
+            {score.draws === 1 ? '1 draw' : `${score.draws} draws`}
+          </p>
+        )}
       </div>
 
       <div className="flex grow items-center justify-center">
@@ -204,17 +207,35 @@ interface PlayerCardProps {
   readonly starter: boolean
   /** Games this player has won since the screen opened. */
   readonly wins: number
+  /** The variant's shared marks, if its players share them, drawn in this player's colour. */
+  readonly sharedMarks?: VariantInfo['sharedMarks']
   /** For layout only: where the card sits in the grid. */
   readonly className?: string
 }
 
-function PlayerCard({ player, look, starter, wins, className }: PlayerCardProps) {
-  const detail = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : ROLE[player]
+function PlayerCard({ player, look, starter, wins, sharedMarks, className }: PlayerCardProps) {
+  const role = sharedMarks ? sharedMarks.detail : ROLE[player]
+  const detail = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : role
   return (
     <div
       className={`flex items-center gap-1.5 rounded-card border-2 px-1.75 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${CARD[look][player]} ${className ?? ''}`}
     >
-      <Mark player={player} size={28} stroke={2.5} className="shrink-0" />
+      {sharedMarks ? (
+        // The marks every player places, in this player's colour: one at full size, two side by side.
+        <span className="flex shrink-0">
+          {sharedMarks.marks.map((mark) => (
+            <Mark
+              key={mark}
+              player={mark}
+              tone={player}
+              size={sharedMarks.marks.length > 1 ? 18 : 28}
+              stroke={sharedMarks.marks.length > 1 ? 3 : 2.5}
+            />
+          ))}
+        </span>
+      ) : (
+        <Mark player={player} size={28} stroke={2.5} className="shrink-0" />
+      )}
       <div className="min-w-0 grow">
         <div className="flex items-center gap-1 text-[15px] font-semibold">
           {playerName(player)}

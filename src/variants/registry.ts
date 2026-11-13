@@ -1,6 +1,7 @@
 import { classicInfo } from './classic/info.ts'
 import { infiniteInfo } from './infinite/info.ts'
 import { misereInfo } from './misere/info.ts'
+import { notaktoInfo } from './notakto/info.ts'
 import { shiftInfo } from './shift/info.ts'
 import { trioInfo } from './trio/info.ts'
 import type { VariantEntry } from './types.ts'
@@ -47,6 +48,12 @@ export const variants: readonly VariantEntry[] = [
     info: misereInfo,
     loadRules: () => import('./misere/rules.ts').then((m) => m.misereRules),
     loadBoard: () => import('./misere/MisereBoard.tsx').then((m) => m.MisereBoard),
+  },
+  {
+    id: 'notakto',
+    info: notaktoInfo,
+    loadRules: () => import('./notakto/rules.ts').then((m) => m.notaktoRules),
+    loadBoard: () => import('./notakto/NotaktoBoard.tsx').then((m) => m.NotaktoBoard),
   },
 ]
 

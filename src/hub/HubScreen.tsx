@@ -27,7 +27,7 @@ export function HubScreen() {
               // Dark has no panel shadows (artboard B), so the card gets a dim border instead.
               className="flex min-h-11 items-center gap-4 rounded-card bg-surface px-4 py-3.5 text-ink shadow-board hover:text-ink dark:border dark:border-grid"
             >
-              <Preview rows={variant.info.preview} />
+              <Preview rows={variant.info.preview} neutral={variant.info.sharedMarks !== undefined} />
               <span className="flex grow flex-col gap-0.5">
                 <span className="text-[17px] font-semibold">{variant.info.name}</span>
                 <span className="text-sm text-ink-muted">{variant.info.tagline}</span>
@@ -42,7 +42,7 @@ export function HubScreen() {
 }
 
 /** The hub card's picture is 56 px whatever the board, so pieces shrink as the board grows: 14 px on 3×3, 9 on 4×4, 7 on 5×5. */
-function Preview({ rows }: { rows: VariantInfo['preview'] }) {
+function Preview({ rows, neutral }: { rows: VariantInfo['preview']; neutral: boolean }) {
   const piece = rows.length >= 5 ? 7 : rows.length === 4 ? 9 : 14
   return (
     <span
@@ -58,7 +58,9 @@ function Preview({ rows }: { rows: VariantInfo['preview'] }) {
         .split('')
         .map((cell, index) => (
           <span key={index} className="flex items-center justify-center rounded-[3px] bg-surface">
-            {(cell === 'X' || cell === 'O' || cell === 'S') && <Mark player={cell} size={piece} stroke={3} />}
+            {(cell === 'X' || cell === 'O' || cell === 'S') && (
+              <Mark player={cell} tone={neutral ? 'neutral' : cell} size={piece} stroke={3} />
+            )}
           </span>
         ))}
     </span>

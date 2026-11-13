@@ -8,50 +8,52 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 
 ## Index
 
-| #    | Date       | Decision                                                   | Status                                |
-| ---- | ---------- | ---------------------------------------------------------- | ------------------------------------- |
-| D-01 | 2026-11-09 | Track work in GitHub Issues with the default triage labels | Accepted                              |
-| D-02 | 2026-11-09 | Split the spec into six tickets across four milestones     | Accepted                              |
-| D-03 | 2026-11-09 | Vite, React, TypeScript and React Router on Vercel         | Accepted                              |
-| D-04 | 2026-11-09 | Pin Vite as the framework in `vercel.json`                 | Accepted                              |
-| D-05 | 2026-11-09 | One rules contract for every variant                       | Accepted                              |
-| D-06 | 2026-11-09 | A game is the first player plus the move list              | Accepted, reason updated by D-41      |
-| D-07 | 2026-11-09 | A registry of variants, each loaded only when opened       | Accepted                              |
-| D-08 | 2026-11-09 | One contract test suite runs for every variant             | Accepted                              |
-| D-09 | 2026-11-09 | Player 1 is X; the first move alternates per new game      | Accepted                              |
-| D-10 | 2026-11-09 | Undo in memory now, saved across reloads in M4             | Superseded by D-21                    |
-| D-11 | 2026-11-09 | A status line under the board                              | Superseded by D-22                    |
-| D-12 | 2026-11-09 | Light theme A · Clean minimal from the design canvas       | Accepted, O colour superseded by D-23 |
-| D-13 | 2026-11-10 | Tailwind v4 utilities and an app-only token palette        | Accepted                              |
-| D-14 | 2026-11-10 | Lucide icons, with X and O as matched game pieces          | Accepted                              |
-| D-15 | 2026-11-10 | Prettier, four gates, squash-only `main`                   | Accepted                              |
-| D-16 | 2026-11-10 | Agents never commit or push unless asked                   | Accepted                              |
-| D-17 | 2026-11-10 | The theme lives on `<html data-theme>`                     | Accepted                              |
-| D-18 | 2026-11-10 | Dark theme B · Neon arcade, with `dark:`/`light:` variants | Accepted                              |
-| D-19 | 2026-11-10 | Player colour tokens are `player-x` and `player-o`         | Accepted                              |
-| D-20 | 2026-11-10 | Motion only when the device allows it                      | Accepted                              |
-| D-21 | 2026-11-10 | No undo                                                    | Accepted                              |
-| D-22 | 2026-11-10 | The player cards show the turn and the result              | Accepted                              |
-| D-23 | 2026-11-10 | An off-red O in the light theme                            | Accepted                              |
-| D-24 | 2026-11-10 | Winning squares take the winner's tint in light            | Accepted                              |
-| D-25 | 2026-11-10 | One game screen for every variant; only the board varies   | Accepted                              |
-| D-26 | 2026-11-10 | Docs are numbered files under `docs/`                      | Accepted                              |
-| D-27 | 2026-11-10 | Infinite's disappearing piece fades and pulses             | Accepted                              |
-| D-28 | 2026-11-10 | The light 3×3 board is tiles, like the dark one            | Accepted                              |
-| D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                  | Superseded by D-31                    |
-| D-30 | 2026-11-10 | Ultimate's board: rings, tints and a large mark            | Accepted                              |
-| D-31 | 2026-11-10 | Ultimate's board reaches to 6 px from the screen edge      | Accepted                              |
-| D-32 | 2026-11-11 | Shift: a 3×3 window that moves over a 5×5 field            | Accepted                              |
-| D-33 | 2026-11-11 | A draw as soon as no line can be won                       | Accepted                              |
-| D-34 | 2026-11-11 | Shift's window moves only by dragging it                   | Accepted                              |
-| D-35 | 2026-11-11 | A variant has two or three players, fixed per variant      | Accepted                              |
-| D-36 | 2026-11-11 | Player 3 is a gold star                                    | Accepted                              |
-| D-37 | 2026-11-11 | Player 3's card is centred on a second row                 | Accepted                              |
-| D-38 | 2026-11-11 | Trio is played on a 5×5 board                              | Superseded by D-39                    |
-| D-39 | 2026-11-11 | Trio is played on a 4×4 board                              | Accepted                              |
-| D-40 | 2026-11-12 | Misère: a completed line loses                             | Accepted                              |
-| D-41 | 2026-11-12 | No saved games                                             | Accepted                              |
-| D-42 | 2026-11-12 | The score on the player cards, and a flag for the starter  | Accepted                              |
+| #    | Date       | Decision                                                       | Status                                |
+| ---- | ---------- | -------------------------------------------------------------- | ------------------------------------- |
+| D-01 | 2026-11-09 | Track work in GitHub Issues with the default triage labels     | Accepted                              |
+| D-02 | 2026-11-09 | Split the spec into six tickets across four milestones         | Accepted                              |
+| D-03 | 2026-11-09 | Vite, React, TypeScript and React Router on Vercel             | Accepted                              |
+| D-04 | 2026-11-09 | Pin Vite as the framework in `vercel.json`                     | Accepted                              |
+| D-05 | 2026-11-09 | One rules contract for every variant                           | Accepted                              |
+| D-06 | 2026-11-09 | A game is the first player plus the move list                  | Accepted, reason updated by D-41      |
+| D-07 | 2026-11-09 | A registry of variants, each loaded only when opened           | Accepted                              |
+| D-08 | 2026-11-09 | One contract test suite runs for every variant                 | Accepted                              |
+| D-09 | 2026-11-09 | Player 1 is X; the first move alternates per new game          | Accepted                              |
+| D-10 | 2026-11-09 | Undo in memory now, saved across reloads in M4                 | Superseded by D-21                    |
+| D-11 | 2026-11-09 | A status line under the board                                  | Superseded by D-22                    |
+| D-12 | 2026-11-09 | Light theme A · Clean minimal from the design canvas           | Accepted, O colour superseded by D-23 |
+| D-13 | 2026-11-10 | Tailwind v4 utilities and an app-only token palette            | Accepted                              |
+| D-14 | 2026-11-10 | Lucide icons, with X and O as matched game pieces              | Accepted                              |
+| D-15 | 2026-11-10 | Prettier, four gates, squash-only `main`                       | Accepted                              |
+| D-16 | 2026-11-10 | Agents never commit or push unless asked                       | Accepted                              |
+| D-17 | 2026-11-10 | The theme lives on `<html data-theme>`                         | Accepted                              |
+| D-18 | 2026-11-10 | Dark theme B · Neon arcade, with `dark:`/`light:` variants     | Accepted                              |
+| D-19 | 2026-11-10 | Player colour tokens are `player-x` and `player-o`             | Accepted                              |
+| D-20 | 2026-11-10 | Motion only when the device allows it                          | Accepted                              |
+| D-21 | 2026-11-10 | No undo                                                        | Accepted                              |
+| D-22 | 2026-11-10 | The player cards show the turn and the result                  | Accepted                              |
+| D-23 | 2026-11-10 | An off-red O in the light theme                                | Accepted                              |
+| D-24 | 2026-11-10 | Winning squares take the winner's tint in light                | Accepted                              |
+| D-25 | 2026-11-10 | One game screen for every variant; only the board varies       | Accepted                              |
+| D-26 | 2026-11-10 | Docs are numbered files under `docs/`                          | Accepted                              |
+| D-27 | 2026-11-10 | Infinite's disappearing piece fades and pulses                 | Accepted                              |
+| D-28 | 2026-11-10 | The light 3×3 board is tiles, like the dark one                | Accepted                              |
+| D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                      | Superseded by D-31                    |
+| D-30 | 2026-11-10 | Ultimate's board: rings, tints and a large mark                | Accepted                              |
+| D-31 | 2026-11-10 | Ultimate's board reaches to 6 px from the screen edge          | Accepted                              |
+| D-32 | 2026-11-11 | Shift: a 3×3 window that moves over a 5×5 field                | Accepted                              |
+| D-33 | 2026-11-11 | A draw as soon as no line can be won                           | Accepted                              |
+| D-34 | 2026-11-11 | Shift's window moves only by dragging it                       | Accepted                              |
+| D-35 | 2026-11-11 | A variant has two or three players, fixed per variant          | Accepted                              |
+| D-36 | 2026-11-11 | Player 3 is a gold star                                        | Accepted                              |
+| D-37 | 2026-11-11 | Player 3's card is centred on a second row                     | Accepted                              |
+| D-38 | 2026-11-11 | Trio is played on a 5×5 board                                  | Superseded by D-39                    |
+| D-39 | 2026-11-11 | Trio is played on a 4×4 board                                  | Accepted                              |
+| D-40 | 2026-11-12 | Misère: a completed line loses                                 | Accepted                              |
+| D-41 | 2026-11-12 | No saved games                                                 | Accepted                              |
+| D-42 | 2026-11-12 | The score on the player cards, and a flag for the starter      | Accepted                              |
+| D-43 | 2026-11-13 | Shared marks are neutral, and some variants have no draws line | Accepted                              |
+| D-44 | 2026-11-13 | Notakto: three boards, everyone plays X                        | Accepted                              |
 
 ---
 
@@ -456,3 +458,25 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** Grant wanted a running score per variant without changing the shared layout, and chose the cards because the score then sits with its player and Trio's third card gets one too. A plain number read as dull, so it is boxed like a scorecard; the tint fill matches the winning card, and switching to `surface` on that card keeps the score visible at the moment it changes. The box needed room beside the name on a 390 px phone, which the tighter padding gives. The highlighted card already shows who moves first when a game starts, so the text note became a small flag that still shows the starter mid-game. The status line names only the leader, so it stays short with any number of players.
 
 **Considered.** Mocked up in [score on the player cards](https://claude.ai/artifact/QqLNN1J7b8dRCVgbAj1dYG): a score strip under the cards (a fifth part, taking board height), a line in the top bar (small, and awkward with three players), and tally dots (they overflow after about five wins). For the box: a neutral page-coloured slot and a player-coloured frame (Grant preferred the tint). For the starter: a "1st" box stacked under the score (rejected: both boxes became too small), a play triangle, and a coloured dot beside the name or on the box.
+
+## 2026-11-13
+
+### D-43 · Shared marks are neutral, and some variants have no draws line
+
+**Status:** Accepted
+
+**Decision.** A variant whose marks belong to nobody declares `sharedMarks` in its `VariantInfo`: the marks every player places and the cards' detail line. Each player card then shows those marks in that player's colour (Notakto: an X, "Crosses"), while the board and the hub picture draw them neutral, in the normal text colour with no glow in dark. `<Mark>` takes a `tone`: its own player's colour by default, another player's, or `neutral`. A variant that can never end in a draw says `canDraw: false`, and the draws line under the cards is left out; that is Notakto and Infinite.
+
+**Why.** Grant chose neutral marks for Notakto: its whole trick is that the X's belong to nobody, and coloured X's would invite reading lines as mine and yours. The glow means "this belongs to a player", so neutral marks have none. Showing an X in each player's colour on the cards keeps the players apart while saying what they play; Wild (#24) will show an X and O pair the same way. Grant asked for the draws line to go where a draw can't happen; Infinite can't draw either, so it drops the line too.
+
+**Considered.** Colouring each X by the player who placed it (rejected: suggests ownership the rules don't have). Leaving Player 2's card showing an O nobody plays (rejected). Keeping "0 draws" on screen in variants without draws (rejected by Grant).
+
+### D-44 · Notakto: three boards, everyone plays X
+
+**Status:** Accepted
+
+**Decision.** Notakto (#23) is played on three 3×3 boards, and both players place an X. Completing a line kills that board; whoever kills the last live board loses, and their opponent is the winner. There are no draws. The rules record who killed each board, so its completed line can keep that player's colour, as in Misère (D-40). The boards sit two side by side and one centred below, about 52 px squares on a 390 px phone.
+
+**Why.** On one board the first player can always win with perfect play; with three, choosing which board to kill and when decides who faces the last board, which is what makes Notakto worth playing. Grant compared three layouts: two-and-one keeps squares nearly as big as three stacked (52 px against 56) while leaving room on the screen, and three in a row would shrink squares to about 32 px, under the 44 px rule.
+
+**Considered.** One or two boards (rejected: one is a solved first-player win; three is the usual game). A choice of board count (rejected: no variant has settings). Three stacked, or three in a row (rejected, above).

@@ -47,7 +47,7 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade". The current val
 
 **Every icon is a Lucide icon, drawn as `<Icon name="…">` from `src/ui/icon.tsx`**, which imports `lucide-react` for every icon but the game pieces below. Never a hand-drawn inline `<svg>`, an SVG file, or a text character (`✕`, `←`, `+`) standing in for an icon. A new glyph is a semantic name (`newGame`, not `rotate-cw`) added to its `GLYPHS` map. Size it with the numeric `size` prop — a CSS width or height scales the stroke with it — and keep `className` for colour and layout. Icons take `currentColor` and are always decorative: the button or link carries the label (`aria-label` or visible text).
 
-**The game pieces (X, O and Player 3's star) are the one exception: `<Mark player="X">` from `src/ui/Mark.tsx`**, the only other file that imports `lucide-react` and the only icons exported from anywhere but `icon.tsx`. They are pieces, not controls: each takes its player's colour and a stroke weight that varies with where it is shown. They are `X` and `CircleSmall`, a pair picked so both fill the same 12-unit box, and `Star`, drawn at 60 % with a matching stroke to fill that box too (D-36); keep them matched. A piece is always a `<Mark>`, never a letter.
+**The game pieces (X, O and Player 3's star) are the one exception: `<Mark player="X">` from `src/ui/Mark.tsx`**, the only other file that imports `lucide-react` and the only icons exported from anywhere but `icon.tsx`. They are pieces, not controls: each takes its player's colour and a stroke weight that varies with where it is shown. They are `X` and `CircleSmall`, a pair picked so both fill the same 12-unit box, and `Star`, drawn at 60 % with a matching stroke to fill that box too (D-36); keep them matched. Its `tone` draws a piece in another player's colour, or `neutral` for marks nobody owns (D-43). A piece is always a `<Mark>`, never a letter.
 
 # Accessibility
 
@@ -58,7 +58,7 @@ Light is theme A "Clean minimal", dark is theme B "Neon arcade". The current val
 
 # Words
 
-Players are **Player 1 (X)**, **Player 2 (O)** and, in a three-player variant, **Player 3 (★, `S` in code)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate, Shift, Trio, Misère), with a fixed number of players (`VariantInfo.players`); its **id** is its URL slug. The buttons are **New game** (called **Play again** once a game is over) and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
+Players are **Player 1 (X)**, **Player 2 (O)** and, in a three-player variant, **Player 3 (★, `S` in code)** — never "you", "red", or a typed name. A **variant** is one game (Classic, Infinite, Ultimate, Shift, Trio, Misère, Notakto), with a fixed number of players (`VariantInfo.players`); its **id** is its URL slug. The buttons are **New game** (called **Play again** once a game is over) and **How to play**. Use the spec's terms in code, UI copy, issues and tests; once `CONTEXT.md` exists it is the glossary.
 
 # Testing
 
