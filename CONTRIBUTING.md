@@ -33,7 +33,7 @@ One `/`, after the type. `main` is squash-only and the PR title becomes the comm
 
 CI doesn't run these yet: a PR is checked only for its title (`pr-title.yml`) and by Vercel's build of the preview. These four are the whole bar, so run them yourself before opening a PR.
 
-**Once per branch, not once per commit.** Reach for a single gate on its own while working if something needs checking, and run all four when the branch is ready.
+**At each push, not after each change:** run all four right before opening a PR, and again right before pushing more commits to an open PR. While working, reach for a single gate, or one test file, when something needs checking.
 
 ```bash
 npm run lint && npm run format:check && npm run test && npm run build

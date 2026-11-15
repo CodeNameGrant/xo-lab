@@ -33,6 +33,17 @@ describe('app routes', () => {
     expect(screen.getAllByRole('button', { name: /^Row \d, column \d, empty$/ })).toHaveLength(9)
   })
 
+  it('the hub switches to a grid of pictures and names, and remembers it (D-50)', () => {
+    renderAt('/')
+    expect(screen.getByRole('link', { name: /^Classic.+/ })).toBeInTheDocument() // the list shows taglines
+    fireEvent.click(screen.getByRole('button', { name: 'Show as grid' }))
+    expect(screen.getByRole('link', { name: 'Classic' })).toHaveAttribute('href', '/play/classic')
+    cleanup()
+    renderAt('/')
+    expect(screen.getByRole('button', { name: 'Show as list' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Classic' })).toBeInTheDocument()
+  })
+
   it('sends an unknown variant address back to the hub', () => {
     renderAt('/play/not-a-variant')
     expect(screen.getByRole('heading', { name: 'XO Lab' })).toBeInTheDocument()

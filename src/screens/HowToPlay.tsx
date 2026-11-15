@@ -2,6 +2,13 @@ import { useId, useRef } from 'react'
 import type { VariantInfo } from '../variants/types.ts'
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
+import { Tooltip } from '../ui/Tooltip.tsx'
+
+/**
+ * Every two-player variant's How to play ends by saying the AI is there (D-52), so no
+ * variant's info.ts has to repeat it. Trio, with three players, has no AI.
+ */
+const AI_PARAGRAPH = "**Playing alone?** Tap Player 2's card to play against the AI, at Easy, Medium or Hard."
 
 /** The top bar's "?" button and the panel it opens, using the browser's built-in modal dialog. */
 export function HowToPlay({ info }: { info: VariantInfo }) {
@@ -10,9 +17,16 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
 
   return (
     <>
-      <button type="button" className={iconButton} aria-label="How to play" onClick={() => dialog.current?.showModal()}>
-        <Icon name="help" />
-      </button>
+      <Tooltip label="How to play" align="end">
+        <button
+          type="button"
+          className={iconButton}
+          aria-label="How to play"
+          onClick={() => dialog.current?.showModal()}
+        >
+          <Icon name="help" />
+        </button>
+      </Tooltip>
       <dialog
         ref={dialog}
         className="m-auto w-[min(400px,calc(100%-32px))] rounded-board bg-surface text-ink shadow-board backdrop:bg-backdrop"
@@ -29,7 +43,7 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
               <Icon name="close" />
             </button>
           </div>
-          {info.howToPlay.map((paragraph) => (
+          {[...info.howToPlay, ...(info.players === 2 ? [AI_PARAGRAPH] : [])].map((paragraph) => (
             <p key={paragraph} className="mt-3 text-[15px] leading-normal text-ink-muted">
               <Emphasis text={paragraph} />
             </p>
