@@ -14,12 +14,12 @@ A variant that needs anything different does it inside its own board component, 
 
 Top to bottom, in one centred column:
 
-| #   | Part             | What it holds                                                                                                                                                                          |
-| --- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Top bar**      | Back to the hub · the variant's name · How to play and the theme toggle                                                                                                                |
-| 2   | **Player cards** | Player 1 (X) and Player 2 (O), side by side, and Player 3 (★) below in a three-player variant: whose turn it is, then who won or a draw; each player's score, and the draws under them |
-| 3   | **Board**        | The variant's own board, centred in all the remaining height                                                                                                                           |
-| 4   | **Bottom bar**   | One full-width button: New game during play, Play again once the game is over                                                                                                          |
+| #   | Part             | What it holds                                                                                                                                                                                                                                                    |
+| --- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Top bar**      | Back to the hub · the variant's name · How to play and the theme toggle                                                                                                                                                                                          |
+| 2   | **Player cards** | Player 1 (X) and Player 2 (O), side by side, and Player 3 (★) below in a three-player variant: whose turn it is, then who won or a draw; each player's score, and the draws under them; in a two-player variant, Player 2's card also chooses a person or the AI |
+| 3   | **Board**        | The variant's own board, centred in all the remaining height                                                                                                                                                                                                     |
+| 4   | **Bottom bar**   | One full-width button: New game during play, Play again once the game is over                                                                                                                                                                                    |
 
 There is **no visible status text** anywhere on the screen. The player cards carry the turn and the result. A visually hidden line (below) carries them for screen readers.
 
@@ -52,6 +52,16 @@ The reference size is a 390 px-wide phone held upright.
 - **Draws:** "0 draws", "1 draw", "2 draws", 13 px, secondary text, centred **8 px** under the cards (under Player 3's card in a three-player variant). Left out for a variant that can never end in a draw, Infinite and Notakto, whose `VariantInfo` says `canDraw: false` (decision D-43).
 
 The score is kept only while the game screen is open: it starts at 0 whenever the screen opens, including after a reload, and is gone when the player goes back to the hub. A game abandoned with New game doesn't count.
+
+#### Player 2 played by the AI
+
+In every two-player variant, Player 2's card chooses who plays Player 2: a person or the **AI** (see `CONTEXT.md`), at Easy, Medium or Hard (decisions D-46, D-48). Trio's cards are unchanged.
+
+- **The card is a button.** It looks exactly like the other cards, with a **14 px** chevron-down after the name, in the secondary text colour, 3 px from it. Its label says who plays it and what tapping does: "AI, Medium, Noughts. Change who plays Player 2". While its menu is open, its border is Player 2's colour.
+- **Against the AI**, the name is "AI" instead of "Player 2", and the detail line is the level, "Easy", "Medium" or "Hard", instead of "Noughts" or the variant's shared-marks detail. Everything else (piece, starter flag, score box, the five looks) is as for any card.
+- **The menu** opens 8 px under the card, its right edge on the card's right edge, over the board: **230 px** wide, `surface`, a 1 px `grid` border (`line` in dark), radius 14 px, `shadow-board`, 6 px padding. A heading, "Player 2 is played by", is 12 px, medium, uppercase, secondary text, with the top bar label's letter spacing. Then four rows, **44 px** tall, radius 10 px, 15 px text: "A person", "AI · Easy", "AI · Medium", "AI · Hard". The current row is filled with `tint-o`, semibold, with an 18 px check in Player 2's colour at its right. Last, under a 1 px `grid` line, a 12 px note in secondary text: "Changing this starts a new game and sets the score back to 0."
+- **Choosing a row** closes the menu. A different choice changes the address to `?ai=easy`, `?ai=medium`, `?ai=hard`, or no parameter for a person, which opens the screen afresh: a new game with Player 1 to start, and every score and the draws at 0. Choosing the current row, tapping outside the menu, or Escape closes it with no change. The menu is a `menu` of `menuitemradio` buttons; focus moves to the current row when it opens and back to the card when it closes.
+- **While the AI thinks**, its card has the Turn look, the board's squares are all `aria-disabled` (the board is given the rules with no legal moves), and its move appears no sooner than **400 ms** after the person's.
 
 A card has one of five looks:
 
@@ -98,6 +108,8 @@ A visually hidden `aria-live="polite"` line is always on the page and says the g
 | Three   | One leads            | "Player 3 wins! Player 3 leads with 3 games."                    |
 | Three   | Two level at the top | "Player 3 wins! Player 1 and Player 3 are tied at 2 games each." |
 | Three   | All level            | "It's a draw. All three players are tied at 2 games each."       |
+
+Against the AI, Player 2 is "AI" throughout: "AI is thinking" while it searches, "AI wins! AI leads 3 games to 1.", "Player 1 wins! The score is tied at 2 games each."
 
 Each player card also says its score and, on the starter's card, "started this game", in visually hidden text.
 

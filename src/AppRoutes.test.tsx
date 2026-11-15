@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { AppRoutes } from './AppRoutes.tsx'
@@ -33,5 +33,34 @@ describe('app routes', () => {
   it('sends an unknown variant address back to the hub', () => {
     renderAt('/play/not-a-variant')
     expect(screen.getByRole('heading', { name: 'XO Lab' })).toBeInTheDocument()
+  })
+
+  describe('the AI as Player 2 (D-46)', () => {
+    it('?ai=hard gives Player 2 to the AI, and its card opens the menu', async () => {
+      await act(async () => renderAt('/play/classic?ai=hard'))
+      const card = await screen.findByRole('button', { name: /^AI.*Hard.*Change who plays Player 2$/ })
+      fireEvent.click(card)
+      expect(screen.getByRole('menuitemradio', { name: 'AI · Hard' })).toHaveAttribute('aria-checked', 'true')
+      expect(screen.getByRole('menuitemradio', { name: 'A person' })).toHaveAttribute('aria-checked', 'false')
+    })
+
+    it('an unknown level gives a person', async () => {
+      await act(async () => renderAt('/play/classic?ai=impossible'))
+      expect(await screen.findByRole('button', { name: /^Player 2.*Change who plays Player 2$/ })).toBeInTheDocument()
+    })
+
+    it('Trio has no AI, and no menu on its cards', async () => {
+      await act(async () => renderAt('/play/trio?ai=hard'))
+      await screen.findByRole('heading', { name: 'Trio' })
+      expect(screen.queryByRole('button', { name: /Change who plays Player 2/ })).not.toBeInTheDocument()
+    })
+
+    it('the AI answers a move: after Player 1 plays, it is Player 1 to move again', async () => {
+      await act(async () => renderAt('/play/classic?ai=medium'))
+      fireEvent.click(await screen.findByRole('button', { name: 'Row 2, column 2, empty' }))
+      expect(screen.getByText('AI is thinking')).toBeInTheDocument()
+      expect(await screen.findByText('Player 1 to move', {}, { timeout: 3000 })).toBeInTheDocument()
+      expect(screen.getAllByRole('button', { name: /^Row \d, column \d, O$/ })).toHaveLength(1)
+    })
   })
 })

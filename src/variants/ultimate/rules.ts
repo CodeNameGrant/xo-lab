@@ -58,29 +58,32 @@ function smallBoardResult(state: UltimateState, board: number): SmallBoardResult
   return cells.includes(null) ? null : 'draw'
 }
 
-/** The big board as a 3×3 grid: each small board counts as its winner's mark, or as empty. */
-function bigBoard(state: UltimateState): readonly Cell[] {
-  return BOARDS.map((board) => {
-    const result = smallBoardResult(state, board)
-    return result === 'draw' ? null : result
-  })
+/**
+ * Every small board's result, worked out once. The AI asks for the outcome
+ * and the legal moves thousands of times per turn (D-47), so the functions
+ * below share this instead of each checking all nine boards again.
+ */
+function smallBoardResults(state: UltimateState): readonly SmallBoardResult[] {
+  return BOARDS.map((board) => smallBoardResult(state, board))
 }
 
 /** The boards open to the player to move, ignoring whether the game is over. */
-function openBoards(state: UltimateState): readonly number[] {
-  const open = BOARDS.filter((board) => smallBoardResult(state, board) === null)
+function openBoards(state: UltimateState, results = smallBoardResults(state)): readonly number[] {
+  const open = BOARDS.filter((board) => results[board] === null)
   return state.sentTo !== null && open.includes(state.sentTo) ? [state.sentTo] : open
 }
 
-function outcome(state: UltimateState): Outcome {
-  const found = findLine(bigBoard(state))
+function outcome(state: UltimateState, results = smallBoardResults(state)): Outcome {
+  // The big board as a 3×3 grid: each small board counts as its winner's mark, or as empty.
+  const found = findLine(results.map((result) => (result === 'draw' ? null : result)))
   if (found) return { kind: 'won', winner: found.winner, highlight: found.line }
   // Nobody has three boards in a row and every small board is won or full: no legal move remains.
-  return openBoards(state).length === 0 ? { kind: 'draw' } : IN_PROGRESS
+  return openBoards(state, results).length === 0 ? { kind: 'draw' } : IN_PROGRESS
 }
 
 function allowedBoards(state: UltimateState): readonly number[] {
-  return outcome(state).kind === 'in-progress' ? openBoards(state) : []
+  const results = smallBoardResults(state)
+  return outcome(state, results).kind === 'in-progress' ? openBoards(state, results) : []
 }
 
 const isIndex = (n: number) => Number.isInteger(n) && n >= 0 && n <= 8
@@ -97,10 +100,11 @@ export const ultimateRules: VariantRules<UltimateState, UltimateMove, UltimateSe
   },
 
   applyMove(state, move) {
-    if (outcome(state).kind !== 'in-progress') throw new IllegalMoveError('The game is over')
+    const results = smallBoardResults(state)
+    if (outcome(state, results).kind !== 'in-progress') throw new IllegalMoveError('The game is over')
     const { board, square } = move
     if (!isIndex(board) || !isIndex(square)) throw new IllegalMoveError(`No square ${square} on board ${board}`)
-    if (!openBoards(state).includes(board)) throw new IllegalMoveError(`Board ${board} can't be played in now`)
+    if (!openBoards(state, results).includes(board)) throw new IllegalMoveError(`Board ${board} can't be played in now`)
     const index = board * 9 + square
     if (state.cells[index] !== null) throw new IllegalMoveError(`Square ${square} on board ${board} is taken`)
 
@@ -108,7 +112,8 @@ export const ultimateRules: VariantRules<UltimateState, UltimateMove, UltimateSe
     return { cells, turn: otherPlayer(state.turn), sentTo: square }
   },
 
-  outcome,
+  // Wrapped so a caller can never pass a second argument as `results`.
+  outcome: (state) => outcome(state),
 
   selectors: { smallBoard, smallBoardResult, allowedBoards },
 }

@@ -7,12 +7,16 @@ A hub of tic-tac-toe variants played on one device. This is the glossary: the wo
 ### Games
 
 **Variant**:
-One game in the hub (Classic, Infinite, Ultimate, Shift, Trio, Misère), with its own rules, board and fixed number of players.
+One game in the hub (Classic, Infinite, Ultimate, Shift, Trio, Misère, Notakto, Wild), with its own rules, board and fixed number of players.
 _Avoid_: mode, game type
 
 **Player**:
-One of the people at the device: Player 1 (X), Player 2 (O), or, in a three-player variant, Player 3 (the star).
+A seat in the turn order: Player 1 (X), Player 2 (O), or, in a three-player variant, Player 3 (the star). Each is played by a person at the device, or Player 2 by the AI.
 _Avoid_: you, red, blue, a typed name
+
+**AI**:
+The app playing Player 2's seat instead of a person. Its card and the game's words call it "AI" rather than "Player 2".
+_Avoid_: computer, bot, CPU
 
 **Starter**:
 The player who makes the first move of a game; it passes one place along the turn order with each new game.

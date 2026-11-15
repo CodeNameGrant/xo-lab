@@ -1,14 +1,20 @@
-import { use, useMemo, useState } from 'react'
-import { Link } from 'react-router'
+import { use, useCallback, useEffect, useMemo, useRef, useState, type Ref } from 'react'
+import { Link, useSearchParams } from 'react-router'
+import { askAi } from '../ai/askAi.ts'
+import { AI_LEVEL_NAMES, type AiLevel } from '../game/ai.ts'
 import { playerName, playersOf, type Outcome, type Player } from '../game/rules.ts'
 import { addResult, describeScore, NO_SCORE } from '../game/score.ts'
-import { currentState, newGame, playMove, startGame } from '../game/session.ts'
+import { currentState, newGame, playMove, startGame, type Game } from '../game/session.ts'
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import type { AnyBoard, AnyRules, VariantEntry, VariantInfo } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
+import { PlayerTwoMenu } from './PlayerTwoMenu.tsx'
+
+/** The AI's move appears no sooner than this after the person's, so both can be seen landing (D-47). */
+const AI_PAUSE_MS = 400
 
 interface LoadedVariant {
   readonly rules: AnyRules
@@ -35,19 +41,12 @@ function loadVariant(entry: VariantEntry): Promise<LoadedVariant> {
  * every game played since the screen opened, and flag who started this one.
  * Must be rendered inside <Suspense>, which shows while the variant loads.
  */
-export function GameScreen({ entry }: { entry: VariantEntry }) {
+export function GameScreen({ entry, ai }: { entry: VariantEntry; ai: AiLevel | null }) {
   const { rules, Board } = use(loadVariant(entry))
   const [game, setGame] = useState(() => startGame<unknown>())
   // Kept beside the game, never in it, and only while this screen is open (D-42).
   const [score, setScore] = useState(NO_SCORE)
-
-  /** Plays `move` and, if it ends the game, adds the result to the score. */
-  function play(move: unknown) {
-    const next = playMove(rules, game, move)
-    if (next === game) return
-    setGame(next)
-    setScore((s) => addResult(s, rules.outcome(currentState(rules, next))))
-  }
+  const [, setParams] = useSearchParams()
 
   const state = useMemo(() => currentState(rules, game), [rules, game])
   const outcome = rules.outcome(state)
@@ -55,13 +54,71 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
   const over = outcome.kind !== 'in-progress'
   const winner = outcome.kind === 'won' ? outcome.winner : null
   const players = playersOf(entry.info.players)
+  /** Player 2 is the AI's seat against the AI (D-46). */
+  const aiThinking = ai !== null && !over && turn === 'O'
+  const name = (player: Player) => (ai !== null && player === 'O' ? 'AI' : playerName(player))
+
+  /**
+   * Records `next` as the game and, if it has ended, adds the result to the score.
+   * useCallback keeps it the same function from render to render while `rules` is, so the
+   * effect below, which lists it, doesn't rerun just because the screen rendered again.
+   */
+  const commit = useCallback(
+    (next: Game<unknown>) => {
+      setGame(next)
+      setScore((s) => addResult(s, rules.outcome(currentState(rules, next))))
+    },
+    [rules],
+  )
+
+  /** A move from the board. Ignored while the AI is thinking: the board is the AI's then. */
+  function play(move: unknown) {
+    if (aiThinking) return
+    const next = playMove(rules, game, move)
+    if (next !== game) commit(next)
+  }
+
+  // On the AI's turn, ask it for a move and play it, no sooner than AI_PAUSE_MS after the
+  // person's move (D-47). If the game changes first (New game, or the screen closes), the
+  // cleanup marks this answer stale and it is dropped.
+  useEffect(() => {
+    if (!aiThinking) return
+    let live = true
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const asked = Date.now()
+    askAi(entry.id, game, ai).then(
+      (move) => {
+        if (!live) return
+        timer = setTimeout(() => commit(playMove(rules, game, move)), Math.max(0, AI_PAUSE_MS - (Date.now() - asked)))
+      },
+      (error: unknown) => console.error('The AI could not choose a move', error),
+    )
+    return () => {
+      live = false
+      clearTimeout(timer)
+    }
+  }, [aiThinking, ai, entry.id, game, rules, commit])
+
+  /*
+   * The rules the board sees. While the AI is thinking, no move is legal for the person, so
+   * every square is aria-disabled, as the board would draw it at the end of a game, without
+   * the board knowing anything about the AI.
+   */
+  const boardRules = useMemo(() => (aiThinking ? { ...rules, legalMoves: () => [] } : rules), [rules, aiThinking])
+
+  /** Choosing who plays Player 2 changes the address, which starts a fresh screen (D-48). */
+  function choosePlayerTwo(level: AiLevel | null) {
+    setParams(level ? { ai: level } : {}, { replace: true })
+  }
 
   const status =
     outcome.kind === 'won'
-      ? `${playerName(outcome.winner)} wins! ${describeScore(score, players)}`
+      ? `${name(outcome.winner)} wins! ${describeScore(score, players, name)}`
       : outcome.kind === 'draw'
-        ? `It's a draw. ${describeScore(score, players)}`
-        : `${playerName(turn)} to move`
+        ? `It's a draw. ${describeScore(score, players, name)}`
+        : aiThinking
+          ? 'AI is thinking'
+          : `${name(turn)} to move`
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-110 flex-col gap-6 px-6 pt-4 pb-8">
@@ -92,17 +149,31 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
       */}
       <div className="flex flex-col gap-2">
         <div className="grid grid-cols-2 gap-3">
-          {players.map((player) => (
-            <PlayerCard
-              key={player}
-              player={player}
-              look={cardLook(player, outcome, turn)}
-              starter={game.firstPlayer === player}
-              wins={score.wins[player]}
-              sharedMarks={entry.info.sharedMarks}
-              className={player === 'S' ? 'col-span-2 w-[calc(50%-6px)] justify-self-center' : ''}
-            />
-          ))}
+          {players.map((player) =>
+            // In a two-player variant, Player 2's card also chooses a person or the AI (D-48).
+            player === 'O' && players.length === 2 ? (
+              <PlayerTwoCard
+                key={player}
+                ai={ai}
+                onChoose={choosePlayerTwo}
+                look={cardLook(player, outcome, turn)}
+                starter={game.firstPlayer === player}
+                wins={score.wins[player]}
+                sharedMarks={entry.info.sharedMarks}
+              />
+            ) : (
+              <PlayerCard
+                key={player}
+                player={player}
+                name={playerName(player)}
+                look={cardLook(player, outcome, turn)}
+                starter={game.firstPlayer === player}
+                wins={score.wins[player]}
+                sharedMarks={entry.info.sharedMarks}
+                className={player === 'S' ? 'col-span-2 w-[calc(50%-6px)] justify-self-center' : ''}
+              />
+            ),
+          )}
         </div>
         {entry.info.canDraw !== false && (
           <p className="text-center text-[13px] text-ink-muted">
@@ -112,7 +183,7 @@ export function GameScreen({ entry }: { entry: VariantEntry }) {
       </div>
 
       <div className="flex grow items-center justify-center">
-        <Board state={state} rules={rules} onMove={play} />
+        <Board state={state} rules={boardRules} onMove={play} />
       </div>
 
       {/*
@@ -202,6 +273,8 @@ const SCORE_BOX = { X: 'bg-tint-x', O: 'bg-tint-o', S: 'bg-tint-s' } as const
 
 interface PlayerCardProps {
   readonly player: Player
+  /** "Player 1", or "AI" for Player 2 against the AI. */
+  readonly name: string
   readonly look: CardLook
   /** This player made the first move of this game. */
   readonly starter: boolean
@@ -209,17 +282,40 @@ interface PlayerCardProps {
   readonly wins: number
   /** The variant's shared marks, if its players share them, drawn in this player's colour. */
   readonly sharedMarks?: VariantInfo['sharedMarks']
+  /** The detail line in place of "Noughts" or the shared marks' detail: the AI's level. */
+  readonly detail?: string
+  /** Makes the card a button that opens Player 2's menu (D-48). */
+  readonly chooser?: { readonly open: boolean; readonly onToggle: () => void }
+  /** The card's button, when it has a `chooser`. React 19 passes `ref` as an ordinary prop. */
+  readonly ref?: Ref<HTMLButtonElement>
   /** For layout only: where the card sits in the grid. */
   readonly className?: string
 }
 
-function PlayerCard({ player, look, starter, wins, sharedMarks, className }: PlayerCardProps) {
-  const role = sharedMarks ? sharedMarks.detail : ROLE[player]
-  const detail = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : role
-  return (
-    <div
-      className={`flex items-center gap-1.5 rounded-card border-2 px-1.75 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${CARD[look][player]} ${className ?? ''}`}
-    >
+/*
+ * The card's parts are spans, not divs, because the card can be a button, which may hold
+ * only text-level elements; `block` and `flex` give the spans the same layout.
+ */
+function PlayerCard({
+  player,
+  name,
+  look,
+  starter,
+  wins,
+  sharedMarks,
+  detail,
+  chooser,
+  ref,
+  className,
+}: PlayerCardProps) {
+  const role = detail ?? (sharedMarks ? sharedMarks.detail : ROLE[player])
+  const line = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : role
+  // While its menu is open, the card takes its Turn border, so the menu reads as coming from it.
+  const colours = chooser?.open ? CARD.turn[player] : CARD[look][player]
+  const classes = `flex items-center gap-1.5 rounded-card border-2 px-1.75 py-3 motion-safe:transition-[border-color,box-shadow,background-color,opacity] motion-safe:duration-200 ${colours} ${className ?? ''}`
+
+  const content = (
+    <>
       {sharedMarks ? (
         // The marks every player places, in this player's colour: one at full size, two side by side.
         <span className="flex shrink-0">
@@ -236,16 +332,19 @@ function PlayerCard({ player, look, starter, wins, sharedMarks, className }: Pla
       ) : (
         <Mark player={player} size={28} stroke={2.5} className="shrink-0" />
       )}
-      <div className="min-w-0 grow">
-        <div className="flex items-center gap-1 text-[15px] font-semibold">
-          {playerName(player)}
+      <span className="block min-w-0 grow">
+        <span className="flex items-center gap-1 text-[15px] font-semibold">
+          {name}
+          {chooser && <Icon name="chooser" size={14} className="-ml-0.25 shrink-0 text-ink-muted" />}
           {starter && <Icon name="starter" size={13} className="shrink-0 text-ink-muted" />}
           {starter && <span className="sr-only">, started this game</span>}
           {look === 'turn' && <span className="sr-only"> (to move)</span>}
-        </div>
-        <div className={`text-[13px] ${look === 'won' ? 'font-semibold text-ink' : 'text-ink-muted'}`}>{detail}</div>
-      </div>
-      <div
+        </span>
+        <span className={`block text-[13px] ${look === 'won' ? 'font-semibold text-ink' : 'text-ink-muted'}`}>
+          {line}
+        </span>
+      </span>
+      <span
         className={`ml-0.5 flex h-6.5 min-w-6.5 shrink-0 items-center justify-center rounded-score px-1.5 text-[15px] font-semibold tabular-nums dark:font-bold ${look === 'won' ? 'bg-surface' : SCORE_BOX[player]}`}
       >
         {/* A new key on each change remounts the number, so its pop plays again. */}
@@ -253,7 +352,68 @@ function PlayerCard({ player, look, starter, wins, sharedMarks, className }: Pla
           {wins}
         </span>
         <span className="sr-only">{wins === 1 ? ' win' : ' wins'}</span>
-      </div>
+      </span>
+      {chooser && <span className="sr-only">. Change who plays Player 2</span>}
+    </>
+  )
+
+  if (!chooser) return <div className={classes}>{content}</div>
+  return (
+    <button
+      ref={ref}
+      type="button"
+      aria-haspopup="menu"
+      aria-expanded={chooser.open}
+      onClick={chooser.onToggle}
+      className={`${classes} w-full text-left`}
+    >
+      {content}
+    </button>
+  )
+}
+
+interface PlayerTwoCardProps extends Omit<
+  PlayerCardProps,
+  'player' | 'name' | 'detail' | 'chooser' | 'ref' | 'className'
+> {
+  /** The AI's level, or null when a person plays Player 2. */
+  readonly ai: AiLevel | null
+  /** Called with a different choice: a level, or null for a person. */
+  readonly onChoose: (level: AiLevel | null) => void
+}
+
+/** Player 2's card in a two-player variant: tapping it opens the menu choosing a person or the AI (D-48). */
+function PlayerTwoCard({ ai, onChoose, ...card }: PlayerTwoCardProps) {
+  const [open, setOpen] = useState(false)
+  const cardRef = useRef<HTMLButtonElement>(null)
+
+  function close(returnFocus: boolean) {
+    setOpen(false)
+    if (returnFocus) cardRef.current?.focus()
+  }
+
+  return (
+    <div className="relative">
+      <PlayerCard
+        {...card}
+        player="O"
+        name={ai ? 'AI' : playerName('O')}
+        detail={ai ? AI_LEVEL_NAMES[ai] : undefined}
+        chooser={{ open, onToggle: () => setOpen((o) => !o) }}
+        ref={cardRef}
+        className="h-full"
+      />
+      {open && (
+        <PlayerTwoMenu
+          current={ai}
+          anchor={cardRef}
+          onChoose={(level) => {
+            close(true)
+            if (level !== ai) onChoose(level)
+          }}
+          onClose={close}
+        />
+      )}
     </div>
   )
 }

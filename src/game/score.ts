@@ -34,8 +34,14 @@ export function addResult(score: Score, outcome: Outcome): Score {
  * Two players: "Player 1 leads 3 games to 1." or "The score is tied at 3 games each."
  * Three: "Player 3 leads with 3 games.", "Player 1 and Player 3 are tied at 2 games each."
  * or "All three players are tied at 2 games each."
+ *
+ * `name` says what to call each player: "AI" for Player 2 against the AI (D-46).
  */
-export function describeScore(score: Score, players: readonly Player[]): string {
+export function describeScore(
+  score: Score,
+  players: readonly Player[],
+  name: (player: Player) => string = playerName,
+): string {
   const top = Math.max(...players.map((player) => score.wins[player]))
   const leaders = players.filter((player) => score.wins[player] === top)
 
@@ -45,14 +51,14 @@ export function describeScore(score: Score, players: readonly Player[]): string 
       : `All three players are tied at ${games(top)} each.`
   }
   if (leaders.length > 1) {
-    return `${leaders.map(playerName).join(' and ')} are tied at ${games(top)} each.`
+    return `${leaders.map(name).join(' and ')} are tied at ${games(top)} each.`
   }
   const leader = leaders[0]
   if (players.length === 2) {
     const other = players.find((player) => player !== leader)!
-    return `${playerName(leader)} leads ${games(top)} to ${score.wins[other]}.`
+    return `${name(leader)} leads ${games(top)} to ${score.wins[other]}.`
   }
-  return `${playerName(leader)} leads with ${games(top)}.`
+  return `${name(leader)} leads with ${games(top)}.`
 }
 
 function games(count: number): string {
