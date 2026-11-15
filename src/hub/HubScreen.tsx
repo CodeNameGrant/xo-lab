@@ -36,7 +36,7 @@ export function HubScreen() {
           </div>
         </div>
         <p className="mt-2 leading-normal text-ink-muted">
-          Tic-tac-toe, and its stranger cousins. Pick a variant to play on this device.
+          Tic-tac-toe, and its stranger cousins. Pick a variant to play with a friend on this device, or against the AI.
         </p>
       </header>
       <ul className={view === 'grid' ? 'mt-6 grid grid-cols-3 gap-3' : 'mt-6 flex flex-col gap-3'}>

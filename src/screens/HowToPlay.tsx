@@ -4,6 +4,12 @@ import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Tooltip } from '../ui/Tooltip.tsx'
 
+/**
+ * Every two-player variant's How to play ends by saying the AI is there (D-52), so no
+ * variant's info.ts has to repeat it. Trio, with three players, has no AI.
+ */
+const AI_PARAGRAPH = "**Playing alone?** Tap Player 2's card to play against the AI, at Easy, Medium or Hard."
+
 /** The top bar's "?" button and the panel it opens, using the browser's built-in modal dialog. */
 export function HowToPlay({ info }: { info: VariantInfo }) {
   const dialog = useRef<HTMLDialogElement>(null)
@@ -37,7 +43,7 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
               <Icon name="close" />
             </button>
           </div>
-          {info.howToPlay.map((paragraph) => (
+          {[...info.howToPlay, ...(info.players === 2 ? [AI_PARAGRAPH] : [])].map((paragraph) => (
             <p key={paragraph} className="mt-3 text-[15px] leading-normal text-ink-muted">
               <Emphasis text={paragraph} />
             </p>

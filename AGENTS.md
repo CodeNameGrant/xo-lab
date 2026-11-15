@@ -6,11 +6,11 @@ XO Lab: a mobile-first hub for tic-tac-toe variants (Classic, Infinite, Ultimate
 
 - `npm run dev` (port 5173), `npm run test`, `npm run test:watch`, `npm run lint` (oxlint), `npm run format` / `format:check` (Prettier), `npm run build`.
 - **Run `npm run format` after editing**, so the diff carries no style noise; never hand-format against `.prettierrc.json`.
-- **Run the four gates once, when the branch is ready for a PR — not before each commit.** The list is in `CONTRIBUTING.md` → The four gates. There is no `typecheck` script: `build` runs `tsc -b`, and it is the only gate that type-checks the test files.
+- **Run the four gates at a push: right before opening a PR, and right before pushing more commits to an open PR.** After an ordinary change, check only what it touched: the one test file, or `npx tsc -b`. The list is in `CONTRIBUTING.md` → The four gates. There is no `typecheck` script: `build` runs `tsc -b`, and it is the only gate that type-checks the test files.
 
 # Process
 
-**Never commit, and never push, unless you are asked to in that message.** Finish the work, run the gates, and stop with the change in the working tree — the diff is what gets reviewed, and a commit made before that review is a commit whose contents nobody chose. "You have permission to edit these files" is not permission to commit them, an approval to commit one change does not carry to the next, and neither does having been asked to commit earlier in the same session. This applies to `git commit`, `git push`, opening a PR, and anything that writes to a branch on the user's behalf. Branching is fine unasked; recording history is not.
+**Never commit, and never push, unless you are asked to in that message.** Finish the work and stop with the change in the working tree — the diff is what gets reviewed, and a commit made before that review is a commit whose contents nobody chose. "You have permission to edit these files" is not permission to commit them, an approval to commit one change does not carry to the next, and neither does having been asked to commit earlier in the same session. This applies to `git commit`, `git push`, opening a PR, and anything that writes to a branch on the user's behalf. Branching is fine unasked; recording history is not.
 
 Before opening a PR, read **`CONTRIBUTING.md`**: branch names, PR titles, the gates, issues, milestones and labels. Two of its rules bite mid-change: never commit to `main`, and a PR body carries `Closes #<n>` whenever an issue exists. Merging to `main` deploys to production.
 

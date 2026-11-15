@@ -37,7 +37,7 @@ The reference size is a 390 px-wide phone held upright.
 - **48 px** tall, three columns. The outer two are equal, so the name stays centred whatever buttons sit either side.
 - **Left:** back to the hub, a chevron icon button labelled "Back to all variants".
 - **Centre:** the label "Tic-Tac-Toe" (shown in capitals) over the variant's name.
-- **Right:** How to play (question-mark icon), then the theme toggle (moon in light, sun in dark), 4 px apart.
+- **Right:** How to play (question-mark icon), then the theme toggle (moon in light, sun in dark), 4 px apart. How to play opens a panel with the variant's own paragraphs; in a two-player variant it ends with a shared one: "**Playing alone?** Tap Player 2's card to play against the AI, at Easy, Medium or Hard." (decision D-52).
 - Icon buttons are **44 × 44 px**, radius 12 px, icons 24 px. In dark they get a 1 px border and 22 px icons.
 - Each icon button shows its label as a **tooltip** on hover, keyboard focus or a long press (`<Tooltip>`, decision D-51): back's lines up with its left edge, the right-hand buttons' with their right edge.
 

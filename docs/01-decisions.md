@@ -61,6 +61,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-49 | 2026-11-15 | Who plays Player 2 is remembered on the device                 | Accepted                                        |
 | D-50 | 2026-11-15 | The hub shows a list or a grid, remembered on the device       | Accepted                                        |
 | D-51 | 2026-11-15 | Tooltips on the header buttons, and a long press on touch      | Accepted                                        |
+| D-52 | 2026-11-15 | The hub and How to play say the AI is there                    | Accepted                                        |
 
 ---
 
@@ -559,3 +560,13 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** Grant wanted the icon buttons explained, and asked for the app's look over the browser's. Phones have no hover, and a long press is how Android shows an icon button's tooltip, so it is the gesture people expect; dropping the click that follows keeps a long press on the theme toggle from switching the theme. Hover is behind Tailwind's `hover:` variant, which only applies on devices that can hover, so a tap never leaves a tooltip stuck on a phone.
 
 **Considered.** The browser's `title` attribute (rejected by Grant: shows late, only on hover, never on keyboard focus or touch, and in the system's style). New wording, "Toggle light/dark theme", "Toggle view", "Read rules" (not taken: the labels are what screen readers and voice control already use, and "How to play" is the words rule's name for that button).
+
+### D-52 · The hub and How to play say the AI is there
+
+**Status:** Accepted
+
+**Decision.** Two lines of text tell players they can play the AI. The hub's intro reads "Tic-tac-toe, and its stranger cousins. Pick a variant to play with a friend on this device, or against the AI." Every two-player variant's How to play ends with a shared paragraph, "**Playing alone?** Tap Player 2's card to play against the AI, at Easy, Medium or Hard.", added by the How to play panel itself, so no variant's `info.ts` carries it and Trio never shows it.
+
+**Why.** The chevron on Player 2's card (D-48) was the only sign the AI existed, and it is small. Grant chose the two cheapest ways to say so: everyone reads the hub's intro once, and How to play reaches people as they learn a game. Neither adds a part to the screen or anything saved on the device.
+
+**Considered.** A one-time hint under Player 2's card on the first visit (kept in reserve, in case test-playing shows people still miss the AI: it adds a part to the shared screen, covers the board the first time, and needs a fourth thing saved on the device). A longer detail line on the card ("Noughts · tap to change") or a "vs AI" chip in place of the chevron (rejected: the card is already tight on a 390 px phone, D-42).
