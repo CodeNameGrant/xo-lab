@@ -1,6 +1,7 @@
 import { use, useCallback, useEffect, useMemo, useRef, useState, type Ref } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { askAi } from '../ai/askAi.ts'
+import { rememberPlayerTwo } from '../ai/remembered.ts'
 import { AI_LEVEL_NAMES, type AiLevel } from '../game/ai.ts'
 import { playerName, playersOf, type Outcome, type Player } from '../game/rules.ts'
 import { addResult, describeScore, NO_SCORE } from '../game/score.ts'
@@ -106,8 +107,12 @@ export function GameScreen({ entry, ai }: { entry: VariantEntry; ai: AiLevel | n
    */
   const boardRules = useMemo(() => (aiThinking ? { ...rules, legalMoves: () => [] } : rules), [rules, aiThinking])
 
-  /** Choosing who plays Player 2 changes the address, which starts a fresh screen (D-48). */
+  /**
+   * Choosing who plays Player 2 changes the address, which starts a fresh screen (D-48), and is
+   * remembered on the device, so the next variant opened from the hub starts with it (D-49).
+   */
   function choosePlayerTwo(level: AiLevel | null) {
+    rememberPlayerTwo(level)
     setParams(level ? { ai: level } : {}, { replace: true })
   }
 

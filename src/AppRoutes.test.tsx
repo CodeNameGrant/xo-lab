@@ -1,6 +1,6 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { AppRoutes } from './AppRoutes.tsx'
 
 function renderAt(address: string) {
@@ -12,6 +12,9 @@ function renderAt(address: string) {
 }
 
 describe('app routes', () => {
+  // Who plays Player 2 is remembered on the device (D-49): start every test with nothing saved.
+  afterEach(() => localStorage.clear())
+
   it('shows the hub at the root address', () => {
     renderAt('/')
     expect(screen.getByRole('heading', { name: 'XO Lab' })).toBeInTheDocument()
@@ -61,6 +64,16 @@ describe('app routes', () => {
       expect(screen.getByText('AI is thinking')).toBeInTheDocument()
       expect(await screen.findByText('Player 1 to move', {}, { timeout: 3000 })).toBeInTheDocument()
       expect(screen.getAllByRole('button', { name: /^Row \d, column \d, O$/ })).toHaveLength(1)
+    })
+
+    it('remembers the choice: the hub then opens two-player variants against the AI, but not Trio', async () => {
+      await act(async () => renderAt('/play/classic'))
+      fireEvent.click(await screen.findByRole('button', { name: /Change who plays Player 2$/ }))
+      fireEvent.click(screen.getByRole('menuitemradio', { name: 'AI · Hard' }))
+      cleanup()
+      renderAt('/')
+      expect(screen.getByRole('link', { name: /^Infinite/ })).toHaveAttribute('href', '/play/infinite?ai=hard')
+      expect(screen.getByRole('link', { name: /^Trio/ })).toHaveAttribute('href', '/play/trio')
     })
   })
 })
