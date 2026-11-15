@@ -8,21 +8,14 @@
 import { describe, expect, it } from 'vitest'
 import { variants } from '../variants/registry.ts'
 import type { AnyRules } from '../variants/types.ts'
+import { chooseMove, type AiSettings } from './ai.ts'
+import { seededRandom } from './random.ts'
 import { nextPlayer, playersOf, type Player } from './rules.ts'
 import { currentState, playMove, startGame, type Game } from './session.ts'
 
 const loaded = await Promise.all(
   variants.map(async (entry) => [entry.id, await entry.loadRules(), playersOf(entry.info.players)] as const),
 )
-
-/** A small seeded random number generator, so a failing game can be replayed exactly. */
-function seededRandom(seed: number) {
-  let value = seed
-  return () => {
-    value = (value * 1103515245 + 12345) % 2147483648
-    return value / 2147483648
-  }
-}
 
 /** Plays random legal moves until the game ends or `cap` moves are made. Never throws. */
 function randomGame(rules: AnyRules, seed: number, first: Player = 'X', cap = 200): Game<unknown> {
@@ -108,5 +101,28 @@ describe.each(loaded)('%s follows the rules contract', (_, rules, players) => {
     expect(JSON.parse(JSON.stringify(game.moves))).toEqual(game.moves)
     const outcome = rules.outcome(state)
     if (outcome.kind === 'in-progress') expect(rules.legalMoves(state).length).toBeGreaterThan(0)
+  })
+
+  /*
+   * The AI (D-47) plays every variant through this contract alone, so it is checked here for all
+   * of them, with small searches to keep the suite quick. A careful search and a slip (a random
+   * move) both have to come back with a legal move, and the same seed with the same move.
+   */
+  const SEARCHES: readonly AiSettings[] = [
+    { budget: 300, slip: 0, careful: true },
+    { budget: 300, slip: 0, careful: false },
+    { budget: 300, slip: 1, careful: false },
+  ]
+
+  it.each(SEEDS)('the AI always chooses a legal move, the same one for the same seed (game %i)', (seed) => {
+    const game = randomGame(rules, seed)
+    for (let n = 0; n < game.moves.length; n += 3) {
+      const state = currentState(rules, { ...game, moves: game.moves.slice(0, n) })
+      for (const settings of SEARCHES) {
+        const move = chooseMove(rules, state, settings, seededRandom(seed + n))
+        expect(rules.legalMoves(state)).toContainEqual(move)
+        expect(chooseMove(rules, state, settings, seededRandom(seed + n))).toEqual(move)
+      }
+    }
   })
 })

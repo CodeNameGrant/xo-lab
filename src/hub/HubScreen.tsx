@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { playAddress } from '../ai/remembered.ts'
 import { Icon } from '../ui/icon.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import { Mark } from '../ui/Mark.tsx'
@@ -23,7 +24,8 @@ export function HubScreen() {
         {variants.map((variant) => (
           <li key={variant.id}>
             <Link
-              to={`/play/${variant.id}`}
+              // A two-player variant opens with whoever last played Player 2: a person or the AI (D-49).
+              to={playAddress(variant.id, variant.info.players)}
               // Dark has no panel shadows (artboard B), so the card gets a dim border instead.
               className="flex min-h-11 items-center gap-4 rounded-card bg-surface px-4 py-3.5 text-ink shadow-board hover:text-ink dark:border dark:border-grid"
             >

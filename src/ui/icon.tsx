@@ -1,4 +1,6 @@
 import {
+  Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   CircleQuestionMark,
@@ -22,6 +24,10 @@ const GLYPHS = {
   help: CircleQuestionMark,
   newGame: RotateCw,
   close: X,
+  /** After Player 2's name: the card opens a menu choosing a person or the AI. */
+  chooser: ChevronDown,
+  /** The current choice in a menu. */
+  chosen: Check,
   /** On the player card of whoever made the first move of this game. */
   starter: Flag,
   /** The theme toggle shows the theme it switches to. */

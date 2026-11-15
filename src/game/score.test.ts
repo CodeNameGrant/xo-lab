@@ -79,6 +79,12 @@ describe('the score in words', () => {
     expect(describeScore(score(2, 2, 2), THREE)).toBe('All three players are tied at 2 games each.')
   })
 
+  it('against the AI, Player 2 is called AI', () => {
+    const name = (player: Player) => (player === 'O' ? 'AI' : `Player ${player === 'X' ? 1 : 3}`)
+    expect(describeScore(score(1, 3), TWO, name)).toBe('AI leads 3 games to 1.')
+    expect(describeScore(score(2, 0), TWO, name)).toBe('Player 1 leads 2 games to 0.')
+  })
+
   it("ignores Player 3's count in a two-player variant", () => {
     expect(describeScore(score(1, 1, 5), TWO)).toBe('The score is tied at 1 game each.')
   })
