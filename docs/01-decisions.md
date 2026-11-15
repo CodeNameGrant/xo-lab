@@ -8,57 +8,59 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 
 ## Index
 
-| #    | Date       | Decision                                                       | Status                                 |
-| ---- | ---------- | -------------------------------------------------------------- | -------------------------------------- |
-| D-01 | 2026-11-09 | Track work in GitHub Issues with the default triage labels     | Accepted                               |
-| D-02 | 2026-11-09 | Split the spec into six tickets across four milestones         | Accepted                               |
-| D-03 | 2026-11-09 | Vite, React, TypeScript and React Router on Vercel             | Accepted                               |
-| D-04 | 2026-11-09 | Pin Vite as the framework in `vercel.json`                     | Accepted                               |
-| D-05 | 2026-11-09 | One rules contract for every variant                           | Accepted                               |
-| D-06 | 2026-11-09 | A game is the first player plus the move list                  | Accepted, reason updated by D-41       |
-| D-07 | 2026-11-09 | A registry of variants, each loaded only when opened           | Accepted                               |
-| D-08 | 2026-11-09 | One contract test suite runs for every variant                 | Accepted                               |
-| D-09 | 2026-11-09 | Player 1 is X; the first move alternates per new game          | Accepted                               |
-| D-10 | 2026-11-09 | Undo in memory now, saved across reloads in M4                 | Superseded by D-21                     |
-| D-11 | 2026-11-09 | A status line under the board                                  | Superseded by D-22                     |
-| D-12 | 2026-11-09 | Light theme A · Clean minimal from the design canvas           | Accepted, O colour superseded by D-23  |
-| D-13 | 2026-11-10 | Tailwind v4 utilities and an app-only token palette            | Accepted                               |
-| D-14 | 2026-11-10 | Lucide icons, with X and O as matched game pieces              | Accepted                               |
-| D-15 | 2026-11-10 | Prettier, four gates, squash-only `main`                       | Accepted                               |
-| D-16 | 2026-11-10 | Agents never commit or push unless asked                       | Accepted                               |
-| D-17 | 2026-11-10 | The theme lives on `<html data-theme>`                         | Accepted                               |
-| D-18 | 2026-11-10 | Dark theme B · Neon arcade, with `dark:`/`light:` variants     | Accepted                               |
-| D-19 | 2026-11-10 | Player colour tokens are `player-x` and `player-o`             | Accepted                               |
-| D-20 | 2026-11-10 | Motion only when the device allows it                          | Accepted                               |
-| D-21 | 2026-11-10 | No undo                                                        | Accepted                               |
-| D-22 | 2026-11-10 | The player cards show the turn and the result                  | Accepted                               |
-| D-23 | 2026-11-10 | An off-red O in the light theme                                | Accepted                               |
-| D-24 | 2026-11-10 | Winning squares take the winner's tint in light                | Accepted                               |
-| D-25 | 2026-11-10 | One game screen for every variant; only the board varies       | Accepted                               |
-| D-26 | 2026-11-10 | Docs are numbered files under `docs/`                          | Accepted                               |
-| D-27 | 2026-11-10 | Infinite's disappearing piece fades and pulses                 | Accepted                               |
-| D-28 | 2026-11-10 | The light 3×3 board is tiles, like the dark one                | Accepted                               |
-| D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                      | Superseded by D-31                     |
-| D-30 | 2026-11-10 | Ultimate's board: rings, tints and a large mark                | Accepted                               |
-| D-31 | 2026-11-10 | Ultimate's board reaches to 6 px from the screen edge          | Accepted                               |
-| D-32 | 2026-11-11 | Shift: a 3×3 window that moves over a 5×5 field                | Accepted                               |
-| D-33 | 2026-11-11 | A draw as soon as no line can be won                           | Accepted                               |
-| D-34 | 2026-11-11 | Shift's window moves only by dragging it                       | Accepted                               |
-| D-35 | 2026-11-11 | A variant has two or three players, fixed per variant          | Accepted                               |
-| D-36 | 2026-11-11 | Player 3 is a gold star                                        | Accepted                               |
-| D-37 | 2026-11-11 | Player 3's card is centred on a second row                     | Accepted                               |
-| D-38 | 2026-11-11 | Trio is played on a 5×5 board                                  | Superseded by D-39                     |
-| D-39 | 2026-11-11 | Trio is played on a 4×4 board                                  | Accepted                               |
-| D-40 | 2026-11-12 | Misère: a completed line loses                                 | Accepted                               |
-| D-41 | 2026-11-12 | No saved games                                                 | Accepted, what is kept widened by D-49 |
-| D-42 | 2026-11-12 | The score on the player cards, and a flag for the starter      | Accepted                               |
-| D-43 | 2026-11-13 | Shared marks are neutral, and some variants have no draws line | Accepted                               |
-| D-44 | 2026-11-13 | Notakto: three boards, everyone plays X                        | Accepted                               |
-| D-45 | 2026-11-13 | Wild: 4×4, X or O each turn, chosen in a callout               | Accepted                               |
-| D-46 | 2026-11-15 | An AI can play Player 2 in every two-player variant            | Accepted, saving changed by D-49       |
-| D-47 | 2026-11-15 | The AI is our own Monte Carlo tree search over the contract    | Accepted                               |
-| D-48 | 2026-11-15 | The AI is chosen on Player 2's card                            | Accepted                               |
-| D-49 | 2026-11-15 | Who plays Player 2 is remembered on the device                 | Accepted                               |
+| #    | Date       | Decision                                                       | Status                                          |
+| ---- | ---------- | -------------------------------------------------------------- | ----------------------------------------------- |
+| D-01 | 2026-11-09 | Track work in GitHub Issues with the default triage labels     | Accepted                                        |
+| D-02 | 2026-11-09 | Split the spec into six tickets across four milestones         | Accepted                                        |
+| D-03 | 2026-11-09 | Vite, React, TypeScript and React Router on Vercel             | Accepted                                        |
+| D-04 | 2026-11-09 | Pin Vite as the framework in `vercel.json`                     | Accepted                                        |
+| D-05 | 2026-11-09 | One rules contract for every variant                           | Accepted                                        |
+| D-06 | 2026-11-09 | A game is the first player plus the move list                  | Accepted, reason updated by D-41                |
+| D-07 | 2026-11-09 | A registry of variants, each loaded only when opened           | Accepted                                        |
+| D-08 | 2026-11-09 | One contract test suite runs for every variant                 | Accepted                                        |
+| D-09 | 2026-11-09 | Player 1 is X; the first move alternates per new game          | Accepted                                        |
+| D-10 | 2026-11-09 | Undo in memory now, saved across reloads in M4                 | Superseded by D-21                              |
+| D-11 | 2026-11-09 | A status line under the board                                  | Superseded by D-22                              |
+| D-12 | 2026-11-09 | Light theme A · Clean minimal from the design canvas           | Accepted, O colour superseded by D-23           |
+| D-13 | 2026-11-10 | Tailwind v4 utilities and an app-only token palette            | Accepted                                        |
+| D-14 | 2026-11-10 | Lucide icons, with X and O as matched game pieces              | Accepted                                        |
+| D-15 | 2026-11-10 | Prettier, four gates, squash-only `main`                       | Accepted                                        |
+| D-16 | 2026-11-10 | Agents never commit or push unless asked                       | Accepted                                        |
+| D-17 | 2026-11-10 | The theme lives on `<html data-theme>`                         | Accepted                                        |
+| D-18 | 2026-11-10 | Dark theme B · Neon arcade, with `dark:`/`light:` variants     | Accepted                                        |
+| D-19 | 2026-11-10 | Player colour tokens are `player-x` and `player-o`             | Accepted                                        |
+| D-20 | 2026-11-10 | Motion only when the device allows it                          | Accepted                                        |
+| D-21 | 2026-11-10 | No undo                                                        | Accepted                                        |
+| D-22 | 2026-11-10 | The player cards show the turn and the result                  | Accepted                                        |
+| D-23 | 2026-11-10 | An off-red O in the light theme                                | Accepted                                        |
+| D-24 | 2026-11-10 | Winning squares take the winner's tint in light                | Accepted                                        |
+| D-25 | 2026-11-10 | One game screen for every variant; only the board varies       | Accepted                                        |
+| D-26 | 2026-11-10 | Docs are numbered files under `docs/`                          | Accepted                                        |
+| D-27 | 2026-11-10 | Infinite's disappearing piece fades and pulses                 | Accepted                                        |
+| D-28 | 2026-11-10 | The light 3×3 board is tiles, like the dark one                | Accepted                                        |
+| D-29 | 2026-11-10 | Ultimate's squares are smaller than 44 px                      | Superseded by D-31                              |
+| D-30 | 2026-11-10 | Ultimate's board: rings, tints and a large mark                | Accepted                                        |
+| D-31 | 2026-11-10 | Ultimate's board reaches to 6 px from the screen edge          | Accepted                                        |
+| D-32 | 2026-11-11 | Shift: a 3×3 window that moves over a 5×5 field                | Accepted                                        |
+| D-33 | 2026-11-11 | A draw as soon as no line can be won                           | Accepted                                        |
+| D-34 | 2026-11-11 | Shift's window moves only by dragging it                       | Accepted                                        |
+| D-35 | 2026-11-11 | A variant has two or three players, fixed per variant          | Accepted                                        |
+| D-36 | 2026-11-11 | Player 3 is a gold star                                        | Accepted                                        |
+| D-37 | 2026-11-11 | Player 3's card is centred on a second row                     | Accepted                                        |
+| D-38 | 2026-11-11 | Trio is played on a 5×5 board                                  | Superseded by D-39                              |
+| D-39 | 2026-11-11 | Trio is played on a 4×4 board                                  | Accepted                                        |
+| D-40 | 2026-11-12 | Misère: a completed line loses                                 | Accepted                                        |
+| D-41 | 2026-11-12 | No saved games                                                 | Accepted, what is kept widened by D-49 and D-50 |
+| D-42 | 2026-11-12 | The score on the player cards, and a flag for the starter      | Accepted                                        |
+| D-43 | 2026-11-13 | Shared marks are neutral, and some variants have no draws line | Accepted                                        |
+| D-44 | 2026-11-13 | Notakto: three boards, everyone plays X                        | Accepted                                        |
+| D-45 | 2026-11-13 | Wild: 4×4, X or O each turn, chosen in a callout               | Accepted                                        |
+| D-46 | 2026-11-15 | An AI can play Player 2 in every two-player variant            | Accepted, saving changed by D-49                |
+| D-47 | 2026-11-15 | The AI is our own Monte Carlo tree search over the contract    | Accepted                                        |
+| D-48 | 2026-11-15 | The AI is chosen on Player 2's card                            | Accepted                                        |
+| D-49 | 2026-11-15 | Who plays Player 2 is remembered on the device                 | Accepted                                        |
+| D-50 | 2026-11-15 | The hub shows a list or a grid, remembered on the device       | Accepted                                        |
+| D-51 | 2026-11-15 | Tooltips on the header buttons, and a long press on touch      | Accepted                                        |
 
 ---
 
@@ -444,7 +446,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 
 ### D-41 · No saved games
 
-**Status:** Accepted, what is kept widened by D-49
+**Status:** Accepted, what is kept widened by D-49 and D-50
 
 **Decision.** The app does not keep a game in progress across a reload or a closed tab: reloading a variant starts a fresh game. Ticket #7 (M4 · Saving) is closed as not planned, the M4 milestone is closed with it, and the spec (#1) is closed with milestones M1 to M3 shipped. Nothing is stored on the device except the theme choice (D-17), and the starting player is not remembered between visits.
 
@@ -537,3 +539,23 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** Grant didn't want to choose the AI again in every variant, and chose to keep it across reloads rather than only for one visit. Putting it into the hub's links rather than having the game screen read it keeps one source of truth for a screen, the address, so a shared or bookmarked link means the same thing on any device.
 
 **Considered.** Remembering it only while the app is open (rejected by Grant: a reload would forget it). Letting the game screen fall back to the saved choice when the address has no `?ai` (rejected: the same link would mean different things on different devices, and a person would need an address of their own, such as `?ai=off`).
+
+### D-50 · The hub shows a list or a grid, remembered on the device
+
+**Status:** Accepted
+
+**Decision.** The hub has a view toggle, a 44 px icon button just left of the theme toggle. Like the theme toggle, it shows what it switches to: a grid icon ("Show as grid") in the list, a list icon ("Show as list") in the grid. The **list** is the hub as it was: one card per row with the picture, name and tagline. The **grid** shows three cards across, 12 px apart, each with the 56 px picture over the name (15 px, semibold, centred), on the same card surface. The choice is saved on the device in local storage under `xo-lab:hub-view`; the list is the default. Storage that can't be used keeps the choice until the page closes, as with the theme. This widens D-41 again: the device keeps the theme, who plays Player 2 (D-49) and the hub's view, and still no game, score or starter. The variants stay in registry order in both views.
+
+**Why.** With eight variants the list runs past one phone screen, so reaching Wild means scrolling past every other variant first. The grid fits all eight in three rows above the fold. Grant chose three across and picture plus name; the tagline is left to the list and to How to play.
+
+**Considered.** Two or four across (Grant chose three: two still leaves Wild below the fold, and four shrinks the names to fit about 75 px). Keeping the tagline in the grid (rejected: it doesn't fit three across).
+
+### D-51 · Tooltips on the header buttons, and a long press on touch
+
+**Status:** Accepted
+
+**Decision.** Every icon button in a header (the hub's view and theme toggles; the game screen's back, How to play and theme toggle) shows a tooltip, drawn by `<Tooltip>` in `src/ui/Tooltip.tsx`. Its text is the button's own label ("Switch to dark theme", "Show as grid", "How to play", "Back to all variants"), so each button has one name for sight, screen readers and voice control; the tooltip is `aria-hidden`, since the label already says it. It is a small pill under the button, 6 px below it: `ink` behind `page`-coloured 12 px medium text, radius 8 px, lined up with the button's left edge (back), or right edge (the buttons on the right), so it never runs off the screen. It shows after 400 ms of mouse hover, at once on keyboard focus, and on a touch screen after a 500 ms long press, staying 1.5 s after the finger lifts. A long press never presses the button, and the browser's own long-press menu and callout are turned off on these buttons. A finger that moves more than 10 px is scrolling and shows nothing. With reduced motion it appears without fading.
+
+**Why.** Grant wanted the icon buttons explained, and asked for the app's look over the browser's. Phones have no hover, and a long press is how Android shows an icon button's tooltip, so it is the gesture people expect; dropping the click that follows keeps a long press on the theme toggle from switching the theme. Hover is behind Tailwind's `hover:` variant, which only applies on devices that can hover, so a tap never leaves a tooltip stuck on a phone.
+
+**Considered.** The browser's `title` attribute (rejected by Grant: shows late, only on hover, never on keyboard focus or touch, and in the system's style). New wording, "Toggle light/dark theme", "Toggle view", "Read rules" (not taken: the labels are what screen readers and voice control already use, and "How to play" is the words rule's name for that button).

@@ -39,6 +39,7 @@ The reference size is a 390 px-wide phone held upright.
 - **Centre:** the label "Tic-Tac-Toe" (shown in capitals) over the variant's name.
 - **Right:** How to play (question-mark icon), then the theme toggle (moon in light, sun in dark), 4 px apart.
 - Icon buttons are **44 × 44 px**, radius 12 px, icons 24 px. In dark they get a 1 px border and 22 px icons.
+- Each icon button shows its label as a **tooltip** on hover, keyboard focus or a long press (`<Tooltip>`, decision D-51): back's lines up with its left edge, the right-hand buttons' with their right edge.
 
 ### 2 · Player cards
 

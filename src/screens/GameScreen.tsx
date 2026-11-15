@@ -10,6 +10,7 @@ import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
+import { Tooltip } from '../ui/Tooltip.tsx'
 import type { AnyBoard, AnyRules, VariantEntry, VariantInfo } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
 import { PlayerTwoMenu } from './PlayerTwoMenu.tsx'
@@ -131,9 +132,11 @@ export function GameScreen({ entry, ai }: { entry: VariantEntry; ai: AiLevel | n
 
       {/* Equal outer columns keep the variant name centred, with one button on the left and two on the right. */}
       <header className="grid h-12 grid-cols-[1fr_auto_1fr] items-center">
-        <Link to="/" className={`${iconButton} justify-self-start`} aria-label="Back to all variants">
-          <Icon name="back" />
-        </Link>
+        <Tooltip label="Back to all variants" align="start" className="justify-self-start">
+          <Link to="/" className={iconButton} aria-label="Back to all variants">
+            <Icon name="back" />
+          </Link>
+        </Tooltip>
         <div className="text-center">
           <div className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase dark:tracking-[0.2em]">
             Tic-Tac-Toe

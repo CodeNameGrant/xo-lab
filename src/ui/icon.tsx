@@ -5,6 +5,8 @@ import {
   ChevronRight,
   CircleQuestionMark,
   Flag,
+  LayoutGrid,
+  List,
   Moon,
   RotateCw,
   Sun,
@@ -30,6 +32,9 @@ const GLYPHS = {
   chosen: Check,
   /** On the player card of whoever made the first move of this game. */
   starter: Flag,
+  /** The hub's view toggle shows the view it switches to. */
+  gridView: LayoutGrid,
+  listView: List,
   /** The theme toggle shows the theme it switches to. */
   lightTheme: Sun,
   darkTheme: Moon,

@@ -2,6 +2,7 @@ import { useId, useRef } from 'react'
 import type { VariantInfo } from '../variants/types.ts'
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
+import { Tooltip } from '../ui/Tooltip.tsx'
 
 /** The top bar's "?" button and the panel it opens, using the browser's built-in modal dialog. */
 export function HowToPlay({ info }: { info: VariantInfo }) {
@@ -10,9 +11,16 @@ export function HowToPlay({ info }: { info: VariantInfo }) {
 
   return (
     <>
-      <button type="button" className={iconButton} aria-label="How to play" onClick={() => dialog.current?.showModal()}>
-        <Icon name="help" />
-      </button>
+      <Tooltip label="How to play" align="end">
+        <button
+          type="button"
+          className={iconButton}
+          aria-label="How to play"
+          onClick={() => dialog.current?.showModal()}
+        >
+          <Icon name="help" />
+        </button>
+      </Tooltip>
       <dialog
         ref={dialog}
         className="m-auto w-[min(400px,calc(100%-32px))] rounded-board bg-surface text-ink shadow-board backdrop:bg-backdrop"
