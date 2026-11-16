@@ -62,6 +62,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-50 | 2026-11-15 | The hub shows a list or a grid, remembered on the device       | Accepted                                        |
 | D-51 | 2026-11-15 | Tooltips on the header buttons, and a long press on touch      | Accepted                                        |
 | D-52 | 2026-11-15 | The hub and How to play say the AI is there                    | Accepted                                        |
+| D-53 | 2026-11-16 | XO Lab is an installable app that plays offline                | Accepted                                        |
 
 ---
 
@@ -570,3 +571,15 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** The chevron on Player 2's card (D-48) was the only sign the AI existed, and it is small. Grant chose the two cheapest ways to say so: everyone reads the hub's intro once, and How to play reaches people as they learn a game. Neither adds a part to the screen or anything saved on the device.
 
 **Considered.** A one-time hint under Player 2's card on the first visit (kept in reserve, in case test-playing shows people still miss the AI: it adds a part to the shared screen, covers the board the first time, and needs a fourth thing saved on the device). A longer detail line on the card ("Noughts · tap to change") or a "vs AI" chip in place of the chevron (rejected: the card is already tight on a 390 px phone, D-42).
+
+## 2026-11-16
+
+### D-53 · XO Lab is an installable app that plays offline
+
+**Status:** Accepted
+
+**Decision.** XO Lab is a progressive web app: it has a web app manifest, so a phone or desktop browser offers to install it, and it then opens in its own window with no address bar (`display: standalone`). A service worker caches the whole build, every variant's chunk included, so the installed app opens and plays with no connection; the Google Fonts are cached once fetched. Both are made at build time by `vite-plugin-pwa` (Workbox), configured in `vite.config.ts`. A new deploy's service worker waits until every XO Lab tab and window is closed before it takes over, so an update shows the next time the app is opened and never reloads a game in progress, which D-41 would lose. The app icon is Classic's hub picture (X.O / .X. / O.X) in the dark theme, drawn in `public/icon.svg` on the dark page colour, with the board inside a maskable icon's safe circle so one drawing serves every platform; the PNG sizes and the favicon are generated from it with `npm run icons` (`@vite-pwa/assets-generator`) and committed. The manifest's theme and background colour are the dark page colour, `#0b1020`, which the icon is drawn on.
+
+**Why.** Grant wanted XO Lab on the home screen like any other app. Two people passing a phone are often somewhere with a poor connection, and every rule runs on the device already, so offline play costs only the cache. Waiting for every window to close, rather than taking over at once, is the default service worker lifecycle and the only one that can't interrupt a game: there is no update prompt to design, and nothing is saved that a reload could keep. Classic's picture is the one people already know from the hub, and the dark theme's neon reads better as a small icon than the light theme's thin lines on white.
+
+**Considered.** Taking over at once and reloading (rejected: a reload mid-game loses it, D-41). An "Update available" prompt (not needed yet: a game is short and the update arrives on the next launch). A hand-written service worker (rejected: it would have to list every hashed chunk of each build itself). The light theme's colours for the icon or the title bar (rejected: the icon would sit on white, and one static colour has to be picked; the dark one matches the icon and the splash screen). A separate drawing for the maskable icon (not needed: the one drawing already keeps the board in the safe circle).

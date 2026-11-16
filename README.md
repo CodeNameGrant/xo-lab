@@ -2,7 +2,7 @@
 
 Tic-tac-toe and its variants, for two or three players sharing one phone or browser.
 
-XO Lab is a hub: the home screen lists each variant as a card, and tapping one opens its game at its own address, such as `/play/classic`. Every variant is played on the same screen (top bar, player cards, board, Play again) with a How to play panel for its rules. The app follows the device's light or dark setting, or a theme chosen with the sun/moon toggle.
+XO Lab is a hub: the home screen lists each variant as a card, and tapping one opens its game at its own address, such as `/play/classic`. Every variant is played on the same screen (top bar, player cards, board, Play again) with a How to play panel for its rules. The app follows the device's light or dark setting, or a theme chosen with the sun/moon toggle. It can be installed to a phone's home screen or a desktop like any app, and plays offline once installed (decision D-53).
 
 ## Variants
 
@@ -37,6 +37,7 @@ The dev server runs on http://localhost:5173.
 | `npm run lint`   | Check the code with oxlint                                   |
 | `npm run format` | Format everything with Prettier (`format:check` only checks) |
 | `npm run build`  | Type-check, then build for production into `dist/`           |
+| `npm run icons`  | Regenerate the app icons in `public/` from `public/icon.svg` |
 
 Before opening a pull request, run all four gates: `npm run lint && npm run format:check && npm run test && npm run build`.
 
