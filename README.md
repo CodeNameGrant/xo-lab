@@ -1,23 +1,59 @@
 # XO Lab
 
-Tic-tac-toe and its variants, for two or three players sharing one phone or browser.
+Tic-tac-toe, and its stranger cousins. XO Lab is a collection of thirteen tic-tac-toe variants for two or three players sharing one phone or browser, or for one player against the AI.
 
-XO Lab is a hub: the home screen lists each variant as a card, and tapping one opens its game at its own address, such as `/play/classic`. Every variant is played on the same screen (top bar, player cards, board, Play again) with a How to play panel for its rules. The app follows the device's light or dark setting, or a theme chosen with the sun/moon toggle. It can be installed to a phone's home screen or a desktop like any app, and plays offline once installed (decision D-53).
+**Play it at [xo-lab.vercel.app](https://xo-lab.vercel.app).**
+
+The home screen lists each variant as a card, and tapping one opens its game at its own address, such as `/play/classic`. Every variant is played on the same screen (top bar, player cards, board, New game) with a How to play panel for its rules. The app follows the device's light or dark setting, or a theme chosen with the sun/moon toggle. It can be installed to a phone's home screen or a desktop like any app, and plays offline once installed (decision D-53).
 
 ## Variants
 
-All six are playable. Player 1 is X, Player 2 is O, and in Trio Player 3 is a star.
+Player 1 is X, Player 2 is O, and in Trio Player 3 is a star.
 
-| Variant      | Players | How it plays                                                                                                                    |
-| ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Classic**  | 2       | The standard 3×3 game. Three in a row wins; a full board with no line is a draw.                                                |
-| **Infinite** | 2       | Each player keeps at most three marks; placing a fourth removes their oldest. There is no draw.                                 |
-| **Ultimate** | 2       | Nine small boards in a 3×3 grid. The square you play in sends your opponent to that small board; win three boards in a row.     |
-| **Shift**    | 2       | A 3×3 board over a 5×5 field. Each turn, place a mark inside the board or slide the board one step; only marks inside it count. |
-| **Trio**     | 3       | Three players on a 4×4 board, taking turns 1, 2, 3. First to three in a row wins.                                               |
-| **Misère**   | 2       | Classic turned round: making three in a row loses.                                                                              |
+| Variant       | Players | How it plays                                                               |
+| ------------- | ------- | -------------------------------------------------------------------------- |
+| **Classic**   | 2       | The original 3×3 game. Three in a row wins.                                |
+| **Infinite**  | 2       | Three marks each. Place a fourth and your oldest disappears.               |
+| **Ultimate**  | 2       | Nine boards in one. Where you play decides where your opponent plays next. |
+| **Shift**     | 2       | A 3×3 board that slides over a 5×5 field. Place a mark, or move the board. |
+| **Trio**      | 3       | Three players, one 4×4 board. First to three in a row wins.                |
+| **Misère**    | 2       | Classic, but inverted. Three in a row loses.                               |
+| **Notakto**   | 2       | Three boards, and everyone plays X. Don't make the last line.              |
+| **Wild**      | 2       | A 4×4 board. Play X or O, your choice. Any three in a row wins.            |
+| **Pyramid**   | 2       | Nine squares stacked in a pyramid. Three in a row wins.                    |
+| **Harvest**   | 2       | A 5×5 board and 12 marks each. Make the most lines of three.               |
+| **March**     | 2       | Four pieces each on a 4×4 board. March three into a row.                   |
+| **Numerical** | 2       | Odds against evens. Make a line add up to 15.                              |
+| **SOS**       | 2       | S or O, your choice. Spell SOS to score, and score to go again.            |
 
-Games aren't saved: reloading a variant starts a fresh game, and only the theme choice is kept on the device (decision D-41). The original plan is the spec, issue #1.
+### A closer look
+
+Some of these are further from the original game than their names suggest.
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/shift.png" alt="Shift: a 5×5 field with the 3×3 board, drawn as a red grid, slid to the right. An O left outside the board is faded." width="100%">
+      <p><strong>Shift.</strong> Only the 3×3 board counts, and it sits on a bigger 5×5 field. On your turn you either place a mark inside the board or drag the whole board one square. Marks left outside it fade and stop counting, until the board slides back over them.</p>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/notakto.png" alt="Notakto in the dark theme: three boards of crosses, the first dead after a diagonal line of three." width="100%">
+      <p><strong>Notakto.</strong> Both players play X on three boards. A board with three in a row is dead, and whoever kills the last live board loses, so the game is about forcing your opponent into it. Shown here in the dark theme.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/numerical.png" alt="Numerical: a 3×3 board holding 8, 3, 5 and 4, with each player's unused numbers in trays above." width="100%">
+      <p><strong>Numerical.</strong> One player has the odd numbers 1–9 and the other the even ones 2–8, each usable once. Pick a number from your tray and place it; whoever completes a line that adds up to exactly 15 wins, even if most of it is the other player’s numbers.</p>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/sos.png" alt="SOS: a 6×6 board of S and O letters, with four SOSs struck through in blue and red." width="100%">
+      <p><strong>SOS.</strong> On a 6×6 board, each turn you write S or O in any square. Spelling S-O-S in a line scores a point and gives you another turn straight away. When the board is full, whoever made the most SOSs wins.</p>
+    </td>
+  </tr>
+</table>
+
+Games aren't saved: reloading a variant starts a fresh game. The device keeps only the theme, who plays Player 2 (a person or the AI) and the hub's list or grid view (decisions D-41, D-49, D-50). The original plan is the spec, issue #1.
 
 ## Running it
 
@@ -66,5 +102,3 @@ Adding a variant is a new folder under `src/variants/` and one entry in `src/var
 | [02 · The game screen](docs/02-game-screen.md) | The layout, sizes and colours every variant uses, and what each variant changes  |
 | [Contributing](CONTRIBUTING.md)                | Branches, pull requests, the gates, issues and milestones                        |
 | [Agents](AGENTS.md)                            | How the code is written: architecture, theming, icons, accessibility and testing |
-
-New docs take the next number in `docs/` (decision D-26).
