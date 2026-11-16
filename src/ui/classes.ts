@@ -21,3 +21,18 @@ export const iconButton =
  */
 export const boardTile =
   'flex min-h-11 min-w-11 items-center justify-center rounded-tile border border-grid bg-surface data-[win=O]:border-player-o data-[win=S]:border-player-s data-[win=X]:border-player-x motion-safe:transition-colors motion-safe:duration-300 dark:data-win:bg-win light:data-[win=O]:bg-tint-o light:data-[win=S]:bg-tint-s light:data-[win=X]:bg-tint-x'
+
+/**
+ * The callout that opens beside a square to choose what to place there (Wild's X or O,
+ * Numerical's numbers): a surface panel with the board's shadow, popping in like a piece.
+ * Placed by the board with `style`.
+ */
+export const callout =
+  'absolute z-10 flex gap-2 rounded-card border border-grid bg-surface p-2 shadow-board motion-safe:animate-place dark:border-line'
+
+/** The callout's pointer: a small square turned 45°, half hidden behind the callout, pointing at the square. */
+export const calloutPointer = 'absolute size-3 -translate-x-1/2 rotate-45 border-grid bg-surface dark:border-line'
+
+/** One button in a callout. */
+export const calloutButton =
+  'relative flex items-center justify-center rounded-xl border border-line bg-page hover:bg-grid dark:bg-surface'

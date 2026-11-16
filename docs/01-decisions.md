@@ -66,6 +66,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-54 | 2026-11-16 | Pyramid: nine squares, seven lines                             | Accepted                                        |
 | D-55 | 2026-11-16 | Harvest: 24 moves, and the most lines wins                     | Accepted                                        |
 | D-56 | 2026-11-16 | March: four pieces each, moved one step at a time              | Accepted                                        |
+| D-57 | 2026-11-16 | Numerical: numbers as pieces, odd and even swapping each game  | Accepted                                        |
 
 ---
 
@@ -616,3 +617,15 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** The source, [What Do We Do All Day](https://www.whatdowedoallday.com/tic-tac-toe-variations/)'s "4 x 4 Tic-Tac-Toe", sets the starting position and the moves. Grant chose a draw for a player who can't move, and no repetition rule, as for Shift (D-33); the AI caps every game it simulates (D-47), so a loop can't stall it. Tap-tap works with a screen reader and a keyboard, where drag-only (Shift's window, D-34) doesn't, and there's no undo to worry about, since nothing happens until a dot is tapped.
 
 **Considered.** Dragging pieces (not now: it could be added later beside tap-tap). A loss for a player who can't move (rejected by Grant for a draw). The names Advance, Muster, Stride, Patrol and Skirmish (Grant chose March).
+
+### D-57 · Numerical: numbers as pieces, odd and even swapping each game
+
+**Status:** Accepted
+
+**Decision.** Numerical (#37) is Ronald Graham's game: a 3×3 board and the numbers 1 to 9, each used once. The starter plays the odd numbers and the other player the even ones, so odd and even swap with each new game, as the starter does; the state records who has the odd numbers. When a line of three is full and adds up to exactly 15, whoever completed it wins, whatever it holds; other totals count for nothing; a full board with no 15 is a draw. A move is `{ square, number }`.
+
+The pieces are numbers, drawn by a new `<NumberPiece>` in `src/ui/`: real text in the theme's font, semibold with tabular figures, with a numeric `size` and a `tone` like `<Mark>`, and the same glow in dark. The rule in `AGENTS.md` becomes "a piece is always a `<Mark>` or a `<NumberPiece>`". Each number takes the colour of the player who owns it this game. A number is chosen in Wild's callout (D-45), whose classes and dismiss behaviour are now shared (`callout`, `calloutPointer`, `calloutButton` in `classes.ts`, and `useCalloutDismiss`). A row per player above the board shows their numbers left. `VariantInfo.numberSides` gives each card a sample of its player's numbers and the detail line "Odd numbers" or "Even numbers", chosen by who started, so the cards swap with each game too. The hub picture's `preview` accepts digits.
+
+**Why.** Grant asked for odd and even to change with new games; tying them to the starter does that, keeps the five odd numbers with the player who moves first, and needs nothing new from the session. Lucide has no digit glyphs, and hand-drawn SVG digits would break the icon rule and look worse than type, so numbers are text in a component that behaves like a mark. Grant reviewed a playable mockup of the callout, the numbers-left rows and the coloured digits; its hint about a number completing 15 was only for the mockup.
+
+**Considered.** Fixed colours for odd (Player 1's) and even (Player 2's) (rejected: odd and even now swap between players). Hand-drawn SVG digits (rejected, above). A 4×4 board with 1–16 and lines of 34 (not built: the arithmetic becomes the hard part).

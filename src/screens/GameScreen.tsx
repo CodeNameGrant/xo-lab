@@ -9,9 +9,10 @@ import { currentState, newGame, playMove, startGame, type Game } from '../game/s
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
+import { NumberPiece } from '../ui/NumberPiece.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import { Tooltip } from '../ui/Tooltip.tsx'
-import type { AnyBoard, AnyRules, VariantEntry, VariantInfo } from '../variants/types.ts'
+import type { AnyBoard, AnyRules, NumberSide, VariantEntry, VariantInfo } from '../variants/types.ts'
 import { HowToPlay } from './HowToPlay.tsx'
 import { PlayerTwoMenu } from './PlayerTwoMenu.tsx'
 
@@ -168,6 +169,7 @@ export function GameScreen({ entry, ai }: { entry: VariantEntry; ai: AiLevel | n
                 starter={game.firstPlayer === player}
                 wins={score.wins[player]}
                 sharedMarks={entry.info.sharedMarks}
+                numbers={numberSide(entry.info, game.firstPlayer === player)}
               />
             ) : (
               <PlayerCard
@@ -178,6 +180,7 @@ export function GameScreen({ entry, ai }: { entry: VariantEntry; ai: AiLevel | n
                 starter={game.firstPlayer === player}
                 wins={score.wins[player]}
                 sharedMarks={entry.info.sharedMarks}
+                numbers={numberSide(entry.info, game.firstPlayer === player)}
                 className={player === 'S' ? 'col-span-2 w-[calc(50%-6px)] justify-self-center' : ''}
               />
             ),
@@ -290,6 +293,8 @@ interface PlayerCardProps {
   readonly wins: number
   /** The variant's shared marks, if its players share them, drawn in this player's colour. */
   readonly sharedMarks?: VariantInfo['sharedMarks']
+  /** This game's numbers for this player, in a numbers variant (D-57): they swap with each new game. */
+  readonly numbers?: NumberSide
   /** The detail line in place of "Noughts" or the shared marks' detail: the AI's level. */
   readonly detail?: string
   /** Makes the card a button that opens Player 2's menu (D-48). */
@@ -311,12 +316,13 @@ function PlayerCard({
   starter,
   wins,
   sharedMarks,
+  numbers,
   detail,
   chooser,
   ref,
   className,
 }: PlayerCardProps) {
-  const role = detail ?? (sharedMarks ? sharedMarks.detail : ROLE[player])
+  const role = detail ?? numbers?.detail ?? (sharedMarks ? sharedMarks.detail : ROLE[player])
   const line = look === 'won' ? 'Wins!' : look === 'draw' ? 'Draw' : role
   // While its menu is open, the card takes its Turn border, so the menu reads as coming from it.
   const colours = chooser?.open ? CARD.turn[player] : CARD[look][player]
@@ -324,7 +330,14 @@ function PlayerCard({
 
   const content = (
     <>
-      {sharedMarks ? (
+      {numbers ? (
+        // A sample of the numbers this player plays this game, in their colour.
+        <span className="flex w-7 shrink-0 justify-center gap-0.5">
+          {numbers.sample.map((number) => (
+            <NumberPiece key={number} value={number} tone={player} size={18} />
+          ))}
+        </span>
+      ) : sharedMarks ? (
         // The marks every player places, in this player's colour: one at full size, two side by side.
         <span className="flex shrink-0">
           {sharedMarks.marks.map((mark) => (
@@ -424,4 +437,10 @@ function PlayerTwoCard({ ai, onChoose, ...card }: PlayerTwoCardProps) {
       )}
     </div>
   )
+}
+
+/** In a numbers variant, the card for the starter or for the other player this game (D-57). */
+function numberSide(info: VariantInfo, isStarter: boolean): NumberSide | undefined {
+  if (!info.numberSides) return undefined
+  return isStarter ? info.numberSides.starter : info.numberSides.other
 }

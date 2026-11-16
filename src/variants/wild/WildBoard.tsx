@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useRef, useState, type CSSProperties } from 'react'
 import { GridBoard } from '../../boards/GridBoard.tsx'
+import { useCalloutDismiss } from '../../boards/useCalloutDismiss.ts'
+import { callout, calloutButton, calloutPointer } from '../../ui/classes.ts'
 import { Mark } from '../../ui/Mark.tsx'
 import type { BoardProps } from '../types.ts'
 import type { WildMove, WildSelectors, WildState } from './rules.ts'
@@ -33,23 +35,13 @@ export function WildBoard({ state, rules, onMove }: BoardProps<WildState, WildMo
     setChosen(null)
   }
 
-  useEffect(() => {
-    if (chosen === null) return
-    firstPick.current?.focus({ preventScroll: true })
-    // A press anywhere outside the board closes the callout; presses on the board handle themselves.
-    function outside(event: PointerEvent) {
-      if (!wrapper.current?.contains(event.target as Node)) setChosen(null)
-    }
-    function escape(event: KeyboardEvent) {
-      if (event.key === 'Escape') setChosen(null)
-    }
-    document.addEventListener('pointerdown', outside)
-    document.addEventListener('keydown', escape)
-    return () => {
-      document.removeEventListener('pointerdown', outside)
-      document.removeEventListener('keydown', escape)
-    }
-  }, [chosen])
+  // A press anywhere outside the board, or Escape, closes the callout; presses on the board handle themselves.
+  useCalloutDismiss(
+    chosen !== null,
+    wrapper,
+    firstPick,
+    useCallback(() => setChosen(null), []),
+  )
 
   const row = chosen === null ? 0 : Math.floor(chosen / SIZE)
   const column = chosen === null ? 0 : chosen % SIZE
@@ -90,20 +82,20 @@ export function WildBoard({ state, rules, onMove }: BoardProps<WildState, WildMo
           data-callout
           role="group"
           aria-label={`Choose a mark for row ${row + 1}, column ${column + 1}`}
-          className={`absolute z-10 flex -translate-x-1/2 gap-2 rounded-card border border-grid bg-surface p-2 shadow-board motion-safe:animate-place dark:border-line ${above ? '-translate-y-full' : ''}`}
+          className={`${callout} -translate-x-1/2 ${above ? '-translate-y-full' : ''}`}
           style={position}
         >
           {/* The callout's pointer: a small square turned 45°, half hidden behind the callout. */}
           <span
             aria-hidden="true"
-            className={`absolute left-1/2 size-3 -translate-x-1/2 rotate-45 border-grid bg-surface dark:border-line ${above ? '-bottom-1.5 border-r border-b' : '-top-1.5 border-t border-l'}`}
+            className={`${calloutPointer} left-1/2 ${above ? '-bottom-1.5 border-r border-b' : '-top-1.5 border-t border-l'}`}
           />
           {(['X', 'O'] as const).map((mark) => (
             <button
               key={mark}
               ref={mark === 'X' ? firstPick : undefined}
               type="button"
-              className="relative flex size-13 items-center justify-center rounded-xl border border-line bg-page hover:bg-grid dark:bg-surface"
+              className={`${calloutButton} size-13`}
               aria-label={`Place ${mark}`}
               onClick={() => {
                 setChosen(null)
