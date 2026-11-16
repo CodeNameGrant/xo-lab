@@ -1,0 +1,63 @@
+name: Propose a variant
+description: Suggest a new tic-tac-toe variant for XO Lab.
+title: 'Variant proposal: '
+labels: ['enhancement', 'needs-triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a variant! Check the [list in the README](https://github.com/CodeNameGrant/xo-lab#variants) first, so it isn't one XO Lab already has.
+
+        Every variant is played by two or three people sharing one device, on one screen with a board in the middle, so it needs no hidden information, dice or timers.
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: What the variant is called, or what you'd call it.
+      placeholder: e.g. Gravity
+    validations:
+      required: true
+  - type: dropdown
+    id: players
+    attributes:
+      label: Players
+      options:
+        - '2'
+        - '3'
+    validations:
+      required: true
+  - type: textarea
+    id: board
+    attributes:
+      label: The board
+      description: Its shape and size, and what's on it when a game starts.
+      placeholder: e.g. A 7-wide, 6-tall grid, empty at the start.
+    validations:
+      required: true
+  - type: textarea
+    id: turn
+    attributes:
+      label: A turn
+      description: What a player does on their turn, and which moves aren't allowed.
+      placeholder: e.g. Drop your mark into a column; it falls to the lowest empty square. A full column can't be played.
+    validations:
+      required: true
+  - type: textarea
+    id: end
+    attributes:
+      label: How it ends
+      description: How a player wins, and whether the game can be a draw.
+      placeholder: e.g. Three in a row wins. A full board with no line is a draw.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What makes it fun
+      description: What's different about playing it, compared with the variants already in XO Lab.
+  - type: input
+    id: source
+    attributes:
+      label: Where it's from
+      description: A link or book where the rules are written down, if it's an existing game.
+      placeholder: https://
