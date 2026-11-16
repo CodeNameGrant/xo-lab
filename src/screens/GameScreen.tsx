@@ -9,7 +9,7 @@ import { currentState, newGame, playMove, startGame, type Game } from '../game/s
 import { iconButton } from '../ui/classes.ts'
 import { Icon } from '../ui/icon.tsx'
 import { Mark } from '../ui/Mark.tsx'
-import { NumberPiece } from '../ui/NumberPiece.tsx'
+import { GlyphPiece } from '../ui/GlyphPiece.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import { Tooltip } from '../ui/Tooltip.tsx'
 import type { AnyBoard, AnyRules, NumberSide, VariantEntry, VariantInfo } from '../variants/types.ts'
@@ -334,19 +334,26 @@ function PlayerCard({
         // A sample of the numbers this player plays this game, in their colour.
         <span className="flex w-7 shrink-0 justify-center gap-0.5">
           {numbers.sample.map((number) => (
-            <NumberPiece key={number} value={number} tone={player} size={18} />
+            <GlyphPiece key={number} value={number} tone={player} size={18} />
           ))}
         </span>
-      ) : sharedMarks ? (
+      ) : sharedMarks?.letters ? (
+        // The letters every player writes (SOS), in this player's colour, side by side.
+        <span className="flex w-7 shrink-0 justify-center gap-0.5">
+          {sharedMarks.letters.map((letter) => (
+            <GlyphPiece key={letter} value={letter} tone={player} size={18} />
+          ))}
+        </span>
+      ) : sharedMarks?.marks ? (
         // The marks every player places, in this player's colour: one at full size, two side by side.
         <span className="flex shrink-0">
-          {sharedMarks.marks.map((mark) => (
+          {sharedMarks.marks.map((mark, _, marks) => (
             <Mark
               key={mark}
               player={mark}
               tone={player}
-              size={sharedMarks.marks.length > 1 ? 18 : 28}
-              stroke={sharedMarks.marks.length > 1 ? 3 : 2.5}
+              size={marks.length > 1 ? 18 : 28}
+              stroke={marks.length > 1 ? 3 : 2.5}
             />
           ))}
         </span>

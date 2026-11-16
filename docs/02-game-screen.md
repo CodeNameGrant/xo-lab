@@ -48,7 +48,7 @@ The reference size is a 390 px-wide phone held upright.
 - Each card: radius **14 px**, padding 12 px × 7 px, a **2 px** border. The player's piece at 28 px, 6 px from two lines: the name ("Player 1", 15 px, semibold) and a detail line (13 px, secondary text). Then, 8 px after the text and centred on the card, the score box (decision D-42).
 - The detail line is "Crosses", "Noughts" or "Stars".
 - **Number sides** (a variant whose `VariantInfo` has `numberSides`, Numerical): each card shows a sample of the numbers its player plays this game, two digits at 18 px in their colour, and that side's detail line ("Odd numbers" or "Even numbers"). The starter has one side and the other player the other, so **they swap with each new game** (decision D-57).
-- **Shared marks** (a variant whose `VariantInfo` has `sharedMarks`, such as Notakto): each card shows the marks every player places, in that card's player's colour, and the variant's detail line instead ("Crosses" in Notakto). One mark is 28 px; two sit side by side at 18 px. On the board those marks are neutral: the normal text colour, with no glow in dark (decision D-43).
+- **Shared marks** (a variant whose `VariantInfo` has `sharedMarks`, such as Notakto; SOS gives `letters` instead of `marks`, drawn by `<GlyphPiece>`): each card shows the marks every player places, in that card's player's colour, and the variant's detail line instead ("Crosses" in Notakto). One mark is 28 px; two sit side by side at 18 px. On the board those marks are neutral: the normal text colour, with no glow in dark (decision D-43).
 - **Starter:** the card of the player who started this game shows a flag icon after the name, 13 px, in the secondary text colour, 4 px from it.
 - **Score box:** the player's **Score** (see `CONTEXT.md`), their wins since the game screen opened: 15 px semibold (bold in dark), tabular figures, in the normal text colour, in a box **26 px** tall and at least 26 px wide, with 6 px side padding, radius 7 px and no border. The box is filled with the player's tint, or with `surface` on the Won card, whose background is already the tint. It shows 0 before any game finishes, and the number pops in (180 ms) when it changes.
 - **Draws:** "0 draws", "1 draw", "2 draws", 13 px, secondary text, centred **8 px** under the cards (under Player 3's card in a three-player variant). Left out for a variant that can never end in a draw, Infinite and Notakto, whose `VariantInfo` says `canDraw: false` (decision D-43).
@@ -178,6 +178,7 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Harvest**   | The shared grid board at 5×5 with every line lit as it's made, and a line count above it (`src/variants/harvest/HarvestBoard.tsx`), described below                                                                                             | None                                                                    | Built (#33) |
 | **March**     | The shared grid board at 4×4 with pieces that move, by tap-tap (`src/variants/march/MarchBoard.tsx`), described below                                                                                                                           | None                                                                    | Built (#34) |
 | **Numerical** | Its own 3×3 board with numbers for pieces, a callout to choose one, and each player's numbers left above it (`src/variants/numerical/NumericalBoard.tsx`), described below                                                                      | Number sides on the cards, swapping each game (D-57)                    | Built (#37) |
+| **SOS**       | Its own 6×6 board of neutral letters with strokes through each SOS, a tinted S/O tray and a count above it (`src/variants/sos/SosBoard.tsx`), described below                                                                                   | Shared letters on the cards, "S or O" (D-59)                            | Built (#39) |
 
 ### Ultimate's board
 
@@ -250,7 +251,7 @@ The shared grid board at 4×4, as Trio's (decision D-28): 16 tiles 8 px apart, a
 
 The tile shape of the 3×3 board (decision D-28): 342 px wide at most, squares 10 px apart, about 107 px on the 390 px phone (decision D-57).
 
-- **Pieces:** numbers drawn by `<NumberPiece>` at 60 px, each in the colour of the player who owns it this game (the odd numbers are the starter's), with the player's glow in dark.
+- **Pieces:** numbers drawn by `<GlyphPiece>` at 60 px, each in the colour of the player who owns it this game (the odd numbers are the starter's), with the player's glow in dark.
 - **Trays:** above the board, 12 px from it, a tray per player, 8 px apart: "Player 1" (13 px, secondary text) and then their five or four numbers as chips (see **Piece trays** below), digits at 20 px in their colour. Only the tray of the player to move is live; the other is at 40 %. A used number stays in its tray, struck through on a dashed chip. Groups are named "Player 1's numbers".
 - **Placing:** pick a number up, then tap an empty square. While a number is picked up, the empty squares have a dashed border in the mover's colour, and their labels add ", place 7 here". The pick clears after every move.
 - **Completed line:** a full line of 15 takes the colour of the player who completed it, whatever numbers it holds.
@@ -262,5 +263,15 @@ Numerical and Wild choose what to place from a **tray** above the board, the sam
 - **Chips:** 44 px toggle buttons, radius 12 px, 1 px `line` border on `surface`, 6 px apart, the piece in the player's colour (Numerical) or neutral (Wild).
 - **Picked:** the chip fills with the player's colour, its piece turns the on-colour, and it lifts 4 px and grows 5 % with the board's shadow (the player's glow in dark). It's `aria-pressed`. Tapping it again puts it down. Nothing is ever picked at the start of a turn.
 - **Nudge:** tapping an empty square with nothing picked up places nothing and shakes the live tray (320 ms); with reduced motion it gets a 2 px outline in the player's colour instead.
+
+### SOS's board
+
+Thirty-six tiles in the tile shape of the 3×3 board (decision D-28) at radius 6 px, 6 px apart, about 52 px on the 390 px phone (decision D-59).
+
+- **Letters:** S and O drawn by `<GlyphPiece>` at 30 px, neutral: the text colour with no glow.
+- **Strokes:** each SOS is struck through from the centre of its first square to the centre of its last, 4 px with rounded ends, at 80 % in the colour of the player who made it (+ glow in dark). It's drawn with positioned, rotated elements over the board, not an SVG. Strokes stay for the rest of the game and may cross.
+- **The count:** above everything, centred: a 10 px dot in each player's colour and "2 SOS", 15 px semibold with tabular figures, the two 16 px apart. It's a polite live region, always on the page ("Player 1: 2 SOS").
+- **The tray:** S and O chips (see **Piece trays**), with neutral letters at 22 px, on a panel tinted in the colour of the player to move, radius 14 px, 8 px padding. An extra turn shows as the tint staying put.
+- **Placing:** pick a letter up, then tap an empty square; the empty squares have a dashed border in the mover's colour, and their labels add ", place S here". The pick clears after every move, scoring or not.
 
 When a new variant is built, fill in its row with what was actually built, and add its board's sizes and colours here.

@@ -68,6 +68,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-56 | 2026-11-16 | March: four pieces each, moved one step at a time              | Accepted                                        |
 | D-57 | 2026-11-16 | Numerical: numbers as pieces, odd and even swapping each game  | Accepted, callout superseded by D-58            |
 | D-58 | 2026-11-16 | Pick a piece from a tray, then tap a square                    | Accepted                                        |
+| D-59 | 2026-11-17 | SOS: score an SOS, go again, most SOSs wins                    | Accepted                                        |
 
 ---
 
@@ -640,3 +641,15 @@ The pieces are numbers, drawn by a new `<NumberPiece>` in `src/ui/`: real text i
 **Why.** Grant liked March's tap-tap and asked for it here. A tray covers none of the board, shows the choice before it is placed and lets it change freely, and gives three games one way to play; in Numerical it also replaces two parts with one. Clearing the pick after every move answers the risk that ruled out a switch for Wild (D-45): with no undo, a mark left set from an earlier turn could be placed by mistake. Grant asked for the picked chip to be unmistakable, and for no status line under the board, which the app never had.
 
 **Considered.** Keeping the callouts beside the trays (rejected: two ways to do one thing). A pick that stays set between turns (rejected by Grant: clear after every move). Opening a callout when a square is tapped with nothing picked up (rejected by Grant for the nudge).
+
+## 2026-11-17
+
+### D-59 · SOS: score an SOS, go again, most SOSs wins
+
+**Status:** Accepted
+
+**Decision.** SOS (#39) is played on a 6×6 board. On a turn the player to move writes S or O in any empty square; a move that spells S-O-S along a line of three, across, down or diagonally, scores 1 for that player for each SOS it makes, and earns them another turn straight away. When the board is full, the most SOSs wins and equal counts are a draw. A move is `{ square, letter }`; the state keeps each SOS made and who made it, which the letters alone can't tell. On the board, letters are neutral and each SOS is struck through in its maker's colour; a count of each player's SOSs sits above, and the S/O tray (D-58) is tinted in the colour of the player to move. Shared changes: `<NumberPiece>` becomes `<GlyphPiece>`, drawing letters as well as numbers; `sharedMarks` takes `letters` as well as `marks`; the hub picture reads lowercase `s` and `o` as SOS letters; `PieceTray` gains `tinted`; and `VariantInfo.extraTurns` lets the contract suite accept the turn staying with the player who moved, for SOS only.
+
+**Why.** The rules are the [Wikipedia](<https://en.wikipedia.org/wiki/SOS_(paper-and-pencil_game)>) game's main version; Grant chose most SOSs over first SOS, which would play like Wild, and kept the extra turn, the heart of the game. 6×6 is the largest board whose squares stay over 44 px. One square can be part of SOSs for both players, so tinting squares can't show who made what; a stroke through each, like crossing out on paper, can. Grant asked for the tray to be tinted so an extra turn shows. The strict turn check has caught real bugs, so it stays for every variant but SOS. Lucide has no plain S, and a text S beside a Lucide circle wouldn't match, so both letters are text.
+
+**Considered.** First SOS wins (rejected: close to Wild). No extra turn (rejected: the game's heart). 7×7 or 8×8 (rejected: squares under 44 px). Rings around each SOS (rejected: hard to read when they overlap). An "Again!" note on the scorer's card (rejected: a shared-screen change; the stroke, the count and the tint say it). Loosening the turn check for every variant (rejected for a per-variant opt-out).

@@ -1,11 +1,11 @@
 import type { Player } from '../game/rules.ts'
 
-interface NumberPieceProps {
-  /** The number to draw, 1–9. */
-  readonly value: number
+interface GlyphPieceProps {
+  /** What to draw: a number (Numerical's 1–9) or a letter (SOS's S and O). */
+  readonly value: number | string
   /** Whose colour to draw it in, 'neutral' for the text colour, or 'inherit' for the colour around it; the last two with no glow. */
   readonly tone: Player | 'neutral' | 'inherit'
-  /** The digit's height in pixels: 60 on the 3×3 board, as a mark is. */
+  /** The glyph's height in pixels: 60 on the 3×3 board, as a mark is. */
   readonly size: number
   /** For layout only. */
   readonly className?: string
@@ -26,12 +26,13 @@ const SMALL_GLOW = {
 const SMALL = 28
 
 /**
- * A number used as a game piece, in Numerical (D-57): the second kind of piece beside
- * `<Mark>`. Lucide has no digit glyphs, so a number is real text in the theme's font,
- * semibold with tabular figures so every digit is as wide as the next, coloured like a mark.
- * Decorative: the square's button carries the label.
+ * A number or letter used as a game piece: Numerical's 1–9 (D-57) and SOS's S and O (D-59), the
+ * second kind of piece beside `<Mark>`. Lucide has no digits or plain letters, so a glyph is real
+ * text in the theme's font, semibold with tabular figures so every digit is as wide as the next,
+ * coloured like a mark. It was `<NumberPiece>` until SOS needed letters. Decorative: the square's
+ * button carries the label.
  */
-export function NumberPiece({ value, tone, size, className }: NumberPieceProps) {
+export function GlyphPiece({ value, tone, size, className }: GlyphPieceProps) {
   const colour = tone === 'inherit' ? '' : tone === 'neutral' ? 'text-ink' : COLOUR[tone]
   const glow = tone === 'neutral' || tone === 'inherit' ? '' : size <= SMALL ? SMALL_GLOW[tone] : GLOW[tone]
   return (
