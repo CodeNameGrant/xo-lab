@@ -74,21 +74,26 @@ export function HubScreen() {
 
 /** The hub card's picture is 56 px whatever the board, so pieces shrink as the board grows: 14 px on 3×3, 9 on 4×4, 7 on 5×5. */
 function Preview({ rows, neutral }: { rows: VariantInfo['preview']; neutral: boolean }) {
-  const piece = rows.length >= 5 ? 7 : rows.length === 4 ? 9 : 14
+  // A picture can be wider than it is tall (Pyramid's is 5 × 3). Its squares stay square: the
+  // columns share the width, each row is as tall as a square is wide, and the rows sit centred.
+  const columns = rows[0].length
+  const across = Math.max(columns, rows.length)
+  const piece = across >= 5 ? 7 : across === 4 ? 9 : 14
   return (
     <span
-      className="grid size-14 shrink-0 gap-0.5 rounded-[10px] bg-grid p-1"
+      className="grid size-14 shrink-0 content-center gap-0.5 rounded-[10px] bg-grid p-1"
       aria-hidden="true"
-      style={{
-        gridTemplateColumns: `repeat(${rows.length}, minmax(0, 1fr))`,
-        gridTemplateRows: `repeat(${rows.length}, minmax(0, 1fr))`,
-      }}
+      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
     >
       {rows
         .join('')
         .split('')
         .map((cell, index) => (
-          <span key={index} className="flex items-center justify-center rounded-[3px] bg-surface">
+          // A space is a square that isn't there: an empty slot with no tile.
+          <span
+            key={index}
+            className={`flex aspect-square items-center justify-center rounded-[3px] ${cell === ' ' ? '' : 'bg-surface'}`}
+          >
             {(cell === 'X' || cell === 'O' || cell === 'S') && (
               <Mark player={cell} tone={neutral ? 'neutral' : cell} size={piece} stroke={3} />
             )}

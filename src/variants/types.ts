@@ -10,7 +10,7 @@ export interface VariantInfo {
   readonly tagline: string
   /** The "How to play" panel, one paragraph per entry. Words marked `**like this**` are drawn in bold. */
   readonly howToPlay: readonly string[]
-  /** A small static picture for the hub card: rows of "X", "O", "S" (a star) and "." (empty). */
+  /** A small static picture for the hub card: rows of "X", "O", "S" (a star), "." (empty) and " " (no square there, for a board that isn't square). */
   readonly preview: readonly string[]
   /**
    * For a variant where the marks belong to nobody (Notakto, Wild): the marks every player
