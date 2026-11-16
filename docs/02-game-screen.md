@@ -213,12 +213,11 @@ Three 3×3 boards in the tile shape of the 3×3 board, the same shape in both th
 
 ### Wild's board
 
-The shared grid board at 4×4, as Trio's (decision D-28): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px. Its marks are neutral, and a callout chooses the mark (decision D-45).
+The shared grid board at 4×4, as Trio's (decision D-28): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px. Its marks are neutral, and the mark is picked up from a tray above the board (decisions D-45, D-58).
 
 - **Marks:** X's and O's are both neutral, in the normal text colour with no glow. The completed line takes the colour of the player who completed it, the winner, whatever its marks are.
-- **Choosing a mark:** tapping an empty square gives it a 2 px border in the colour of the player to move and opens a callout 8 px above it, or 8 px below it on the top row, centred on the square: a `surface` panel with a 1 px `grid` border (`line` in dark), radius 14 px, the board's shadow, 8 px padding and a small pointer towards the square. In it are two **52 px** buttons, X and O, 8 px apart, radius 12 px, on `page` (`surface` in dark), with 30 px neutral marks. The callout pops in like a piece.
-- **Closing it:** tapping X or O places that mark. Tapping another empty square moves the callout there; tapping the chosen square again, a taken square, a gap, anywhere off the board, or pressing Escape closes it with no move. A move or a new game also closes it.
-- **Labels:** the callout is a group, "Choose a mark for row 2, column 3", and its buttons read "Place X" and "Place O". When it opens, focus moves to "Place X".
+- **The tray:** 12 px above the board and centred, one X and one O chip (see **Piece trays** below), with neutral marks at 24 px. It belongs to whoever is to move: the picked chip fills with their colour.
+- **Placing:** pick X or O up, then tap an empty square. While a mark is picked up, the empty squares have a dashed border in the mover's colour, and their labels add ", place X here". The pick clears after every move.
 
 ### Pyramid's board
 
@@ -252,8 +251,16 @@ The shared grid board at 4×4, as Trio's (decision D-28): 16 tiles 8 px apart, a
 The tile shape of the 3×3 board (decision D-28): 342 px wide at most, squares 10 px apart, about 107 px on the 390 px phone (decision D-57).
 
 - **Pieces:** numbers drawn by `<NumberPiece>` at 60 px, each in the colour of the player who owns it this game (the odd numbers are the starter's), with the player's glow in dark.
-- **Numbers left:** above the board, 12 px from it, a row per player: "Player 1" (13 px, secondary text), then their five or four numbers in 26 px boxes on their tint, in their colour at 15 px. A used number turns neutral, struck through, at 40 %. Screen readers read each row as a sentence: "Player 1 has 3, 7 and 9 left".
-- **Choosing a number:** Wild's callout (D-45), with the player's remaining numbers as 44 px buttons, 8 px apart, digits at 22 px in their colour. It's 270 px wide with five numbers, so it slides sideways to stay within 8 px of the board's edges, and its pointer is placed on its own so it still points at the square. Labels: "Choose a number for row 2, column 3" and "Place 7".
+- **Trays:** above the board, 12 px from it, a tray per player, 8 px apart: "Player 1" (13 px, secondary text) and then their five or four numbers as chips (see **Piece trays** below), digits at 20 px in their colour. Only the tray of the player to move is live; the other is at 40 %. A used number stays in its tray, struck through on a dashed chip. Groups are named "Player 1's numbers".
+- **Placing:** pick a number up, then tap an empty square. While a number is picked up, the empty squares have a dashed border in the mover's colour, and their labels add ", place 7 here". The pick clears after every move.
 - **Completed line:** a full line of 15 takes the colour of the player who completed it, whatever numbers it holds.
+
+### Piece trays
+
+Numerical and Wild choose what to place from a **tray** above the board, the same "pick, then tap" as March's pieces (decision D-58; `src/boards/PieceTray.tsx`).
+
+- **Chips:** 44 px toggle buttons, radius 12 px, 1 px `line` border on `surface`, 6 px apart, the piece in the player's colour (Numerical) or neutral (Wild).
+- **Picked:** the chip fills with the player's colour, its piece turns the on-colour, and it lifts 4 px and grows 5 % with the board's shadow (the player's glow in dark). It's `aria-pressed`. Tapping it again puts it down. Nothing is ever picked at the start of a turn.
+- **Nudge:** tapping an empty square with nothing picked up places nothing and shakes the live tray (320 ms); with reduced motion it gets a 2 px outline in the player's colour instead.
 
 When a new variant is built, fill in its row with what was actually built, and add its board's sizes and colours here.

@@ -54,7 +54,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-42 | 2026-11-12 | The score on the player cards, and a flag for the starter      | Accepted                                        |
 | D-43 | 2026-11-13 | Shared marks are neutral, and some variants have no draws line | Accepted                                        |
 | D-44 | 2026-11-13 | Notakto: three boards, everyone plays X                        | Accepted                                        |
-| D-45 | 2026-11-13 | Wild: 4×4, X or O each turn, chosen in a callout               | Accepted                                        |
+| D-45 | 2026-11-13 | Wild: 4×4, X or O each turn, chosen in a callout               | Accepted, callout superseded by D-58            |
 | D-46 | 2026-11-15 | An AI can play Player 2 in every two-player variant            | Accepted, saving changed by D-49                |
 | D-47 | 2026-11-15 | The AI is our own Monte Carlo tree search over the contract    | Accepted                                        |
 | D-48 | 2026-11-15 | The AI is chosen on Player 2's card                            | Accepted                                        |
@@ -66,7 +66,8 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-54 | 2026-11-16 | Pyramid: nine squares, seven lines                             | Accepted                                        |
 | D-55 | 2026-11-16 | Harvest: 24 moves, and the most lines wins                     | Accepted                                        |
 | D-56 | 2026-11-16 | March: four pieces each, moved one step at a time              | Accepted                                        |
-| D-57 | 2026-11-16 | Numerical: numbers as pieces, odd and even swapping each game  | Accepted                                        |
+| D-57 | 2026-11-16 | Numerical: numbers as pieces, odd and even swapping each game  | Accepted, callout superseded by D-58            |
+| D-58 | 2026-11-16 | Pick a piece from a tray, then tap a square                    | Accepted                                        |
 
 ---
 
@@ -496,7 +497,7 @@ The game session stays as D-06 describes it, the first player plus the move list
 
 ### D-45 · Wild: 4×4, X or O each turn, chosen in a callout
 
-**Status:** Accepted
+**Status:** Accepted (its callout is superseded by D-58)
 
 **Decision.** Wild (#24) is played on a 4×4 board, three in a row to win. On every turn, the player to move chooses to place an X or an O; whoever completes a line of three matching marks wins, whoever placed the rest, and a full board with no line is a draw. A move is `{ square, mark }`. The marks are shared (D-43): neutral on the board, and an X and O pair in each player's colour on the cards, with the detail line "X or O". The completed line takes the winner's colour, which the shared grid board now accepts as `lineOwner`, since a neutral mark doesn't say whose it is. The mark is chosen in a small callout next to the tapped square, with an X and an O button: tapping another empty square moves it, and tapping anywhere else closes it.
 
@@ -620,7 +621,7 @@ The game session stays as D-06 describes it, the first player plus the move list
 
 ### D-57 · Numerical: numbers as pieces, odd and even swapping each game
 
-**Status:** Accepted
+**Status:** Accepted (its callout and numbers-left rows are superseded by D-58)
 
 **Decision.** Numerical (#37) is Ronald Graham's game: a 3×3 board and the numbers 1 to 9, each used once. The starter plays the odd numbers and the other player the even ones, so odd and even swap with each new game, as the starter does; the state records who has the odd numbers. When a line of three is full and adds up to exactly 15, whoever completed it wins, whatever it holds; other totals count for nothing; a full board with no 15 is a draw. A move is `{ square, number }`.
 
@@ -629,3 +630,13 @@ The pieces are numbers, drawn by a new `<NumberPiece>` in `src/ui/`: real text i
 **Why.** Grant asked for odd and even to change with new games; tying them to the starter does that, keeps the five odd numbers with the player who moves first, and needs nothing new from the session. Lucide has no digit glyphs, and hand-drawn SVG digits would break the icon rule and look worse than type, so numbers are text in a component that behaves like a mark. Grant reviewed a playable mockup of the callout, the numbers-left rows and the coloured digits; its hint about a number completing 15 was only for the mockup.
 
 **Considered.** Fixed colours for odd (Player 1's) and even (Player 2's) (rejected: odd and even now swap between players). Hand-drawn SVG digits (rejected, above). A 4×4 board with 1–16 and lines of 34 (not built: the arithmetic becomes the hard part).
+
+### D-58 · Pick a piece from a tray, then tap a square
+
+**Status:** Accepted (supersedes the callouts of D-45 and D-57)
+
+**Decision.** Wild and Numerical no longer open a callout beside the tapped square. The player picks what to place up from a tray above the board, then taps an empty square, the same "pick, then tap" as March's pieces (D-56). Numerical has a tray per player holding their numbers, which replaces its numbers-left rows; only the mover's is live. Wild has one tray, X and O, for whoever is to move. The picked chip fills with the player's colour, its piece in the on-colour, and lifts; the empty squares get a dashed border in that colour. The pick clears after every move, so a turn always starts with nothing picked. Tapping a square with nothing picked up places nothing and shakes the tray (an outline with reduced motion). The tray is `PieceTray` in `src/boards/`; the callout's shared classes and its `useCalloutDismiss` hook are removed. `<Mark>` and `<NumberPiece>` gain `tone="inherit"` so a piece takes the chip's colour, the shared grid board gains `ready` (the dashed border), and `tokens.css` gains `animate-shake`.
+
+**Why.** Grant liked March's tap-tap and asked for it here. A tray covers none of the board, shows the choice before it is placed and lets it change freely, and gives three games one way to play; in Numerical it also replaces two parts with one. Clearing the pick after every move answers the risk that ruled out a switch for Wild (D-45): with no undo, a mark left set from an earlier turn could be placed by mistake. Grant asked for the picked chip to be unmistakable, and for no status line under the board, which the app never had.
+
+**Considered.** Keeping the callouts beside the trays (rejected: two ways to do one thing). A pick that stays set between turns (rejected by Grant: clear after every move). Opening a callout when a square is tapped with nothing picked up (rejected by Grant for the nudge).

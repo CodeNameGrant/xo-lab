@@ -3,8 +3,8 @@ import type { Player } from '../game/rules.ts'
 interface NumberPieceProps {
   /** The number to draw, 1–9. */
   readonly value: number
-  /** Whose colour to draw it in, or 'neutral' for the text colour with no glow. */
-  readonly tone: Player | 'neutral'
+  /** Whose colour to draw it in, 'neutral' for the text colour, or 'inherit' for the colour around it; the last two with no glow. */
+  readonly tone: Player | 'neutral' | 'inherit'
   /** The digit's height in pixels: 60 on the 3×3 board, as a mark is. */
   readonly size: number
   /** For layout only. */
@@ -32,8 +32,8 @@ const SMALL = 28
  * Decorative: the square's button carries the label.
  */
 export function NumberPiece({ value, tone, size, className }: NumberPieceProps) {
-  const colour = tone === 'neutral' ? 'text-ink' : COLOUR[tone]
-  const glow = tone === 'neutral' ? '' : size <= SMALL ? SMALL_GLOW[tone] : GLOW[tone]
+  const colour = tone === 'inherit' ? '' : tone === 'neutral' ? 'text-ink' : COLOUR[tone]
+  const glow = tone === 'neutral' || tone === 'inherit' ? '' : size <= SMALL ? SMALL_GLOW[tone] : GLOW[tone]
   return (
     <span
       className={`leading-none font-semibold tabular-nums ${colour} ${glow} ${className ?? ''}`}

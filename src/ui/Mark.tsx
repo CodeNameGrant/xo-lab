@@ -7,9 +7,10 @@ interface MarkProps {
   /**
    * Whose colour to draw it in. By default the piece's own player's; another player's to draw,
    * say, Player 2's X on their card in Notakto; or 'neutral' for a mark nobody owns, in the text
-   * colour with no glow (D-43).
+   * colour with no glow (D-43); or 'inherit' to take the colour of the text around it, with no
+   * glow, as on a picked tray chip (D-58).
    */
-  readonly tone?: Player | 'neutral'
+  readonly tone?: Player | 'neutral' | 'inherit'
   readonly size: number
   /** Line thickness in Lucide's 24-unit box: 2 on the board, thicker on small marks so they stay legible. */
   readonly stroke?: number
@@ -54,8 +55,8 @@ const SMALL = 28
 /** An X, O or star drawn in its player's colour (or another player's, or neutral). Decorative: the label lives on the button around it. */
 export function Mark({ player, tone = player, size, stroke = 2, className }: MarkProps) {
   const Glyph = GLYPHS[player]
-  const colour = tone === 'neutral' ? 'text-ink' : COLOUR[tone]
-  const glow = tone === 'neutral' ? '' : size <= SMALL ? SMALL_GLOW[tone] : GLOW[tone]
+  const colour = tone === 'inherit' ? '' : tone === 'neutral' ? 'text-ink' : COLOUR[tone]
+  const glow = tone === 'neutral' || tone === 'inherit' ? '' : size <= SMALL ? SMALL_GLOW[tone] : GLOW[tone]
   return (
     <Glyph
       size={size}
