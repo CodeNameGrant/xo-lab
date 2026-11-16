@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!--
+    The app icon: Classic's hub preview (X.O / .X. / O.X) in the dark theme, "Neon arcade".
+    The board is drawn in the preview's own 56 px units (src/hub/HubScreen.tsx → Preview)
+    and scaled up to 288 px, centred, so it sits inside a maskable icon's safe circle.
+    The PNG icons in public/ are generated from this file: npm run icons.
+  -->
+  <defs>
+    <!-- The pieces are Lucide's X and CircleSmall, in its 24-unit box, as in src/ui/Mark.tsx. -->
+    <path id="x" d="M18 6 6 18M6 6l12 12" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <circle id="o" cx="12" cy="12" r="6" fill="none" stroke-width="3" />
+    <!-- The dark theme's small-piece glow, drop-shadow(0 0 4px): a blur of the piece under it. -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- page -->
+  <rect width="512" height="512" fill="#0b1020" />
+
+  <g transform="translate(112 112) scale(5.142857)">
+    <!-- grid behind the tiles, 4 px padding -->
+    <rect width="56" height="56" rx="10" fill="#26304f" />
+    <!-- nine surface tiles, 14.667 across with 2 px gaps -->
+    <g fill="#141b33">
+      <rect x="4" y="4" width="14.667" height="14.667" rx="3" />
+      <rect x="20.667" y="4" width="14.667" height="14.667" rx="3" />
+      <rect x="37.333" y="4" width="14.667" height="14.667" rx="3" />
+      <rect x="4" y="20.667" width="14.667" height="14.667" rx="3" />
+      <rect x="20.667" y="20.667" width="14.667" height="14.667" rx="3" />
+      <rect x="37.333" y="20.667" width="14.667" height="14.667" rx="3" />
+      <rect x="4" y="37.333" width="14.667" height="14.667" rx="3" />
+      <rect x="20.667" y="37.333" width="14.667" height="14.667" rx="3" />
+      <rect x="37.333" y="37.333" width="14.667" height="14.667" rx="3" />
+    </g>
+    <!-- 14 px pieces centred on their tiles: X (player-x) on the diagonal, O (player-o) in two corners -->
+    <g stroke="#3de0ff" filter="url(#glow)">
+      <use href="#x" transform="translate(4.333 4.333) scale(0.583333)" />
+      <use href="#x" transform="translate(21 21) scale(0.583333)" />
+      <use href="#x" transform="translate(37.667 37.667) scale(0.583333)" />
+    </g>
+    <g stroke="#ff4fb0" filter="url(#glow)">
+      <use href="#o" transform="translate(37.667 4.333) scale(0.583333)" />
+      <use href="#o" transform="translate(4.333 37.667) scale(0.583333)" />
+    </g>
+  </g>
+</svg>
