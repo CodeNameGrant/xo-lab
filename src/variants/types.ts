@@ -10,7 +10,7 @@ export interface VariantInfo {
   readonly tagline: string
   /** The "How to play" panel, one paragraph per entry. Words marked `**like this**` are drawn in bold. */
   readonly howToPlay: readonly string[]
-  /** A small static picture for the hub card: rows of "X", "O", "S" (a star), "." (empty) and " " (no square there, for a board that isn't square). */
+  /** A small static picture for the hub card: rows of "X", "O", "S" (a star), "1"–"9" (a number piece), "." (empty) and " " (no square there, for a board that isn't square). */
   readonly preview: readonly string[]
   /**
    * For a variant where the marks belong to nobody (Notakto, Wild): the marks every player
@@ -19,8 +19,20 @@ export interface VariantInfo {
    * Left out when each player has a mark of their own.
    */
   readonly sharedMarks?: { readonly marks: readonly ('X' | 'O')[]; readonly detail: string }
+  /**
+   * For a variant where the starter and the other player play different sets of numbers, which
+   * swap with each new game as the starter does (Numerical: odd and even, D-57). Each player
+   * card shows a sample of its player's numbers this game, in their colour, and the detail line.
+   */
+  readonly numberSides?: { readonly starter: NumberSide; readonly other: NumberSide }
   /** False for a variant that can never end in a draw: the draws line under the cards is left out (D-43). */
   readonly canDraw?: boolean
+}
+
+/** One side's card in a numbers variant: a sample of its numbers, and the detail line. */
+export interface NumberSide {
+  readonly sample: readonly number[]
+  readonly detail: string
 }
 
 /** What every variant's board component receives, and nothing else. */

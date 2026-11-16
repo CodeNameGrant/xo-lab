@@ -4,6 +4,7 @@ import { infiniteInfo } from './infinite/info.ts'
 import { marchInfo } from './march/info.ts'
 import { misereInfo } from './misere/info.ts'
 import { notaktoInfo } from './notakto/info.ts'
+import { numericalInfo } from './numerical/info.ts'
 import { pyramidInfo } from './pyramid/info.ts'
 import { shiftInfo } from './shift/info.ts'
 import { trioInfo } from './trio/info.ts'
@@ -82,6 +83,12 @@ export const variants: readonly VariantEntry[] = [
     info: marchInfo,
     loadRules: () => import('./march/rules.ts').then((m) => m.marchRules),
     loadBoard: () => import('./march/MarchBoard.tsx').then((m) => m.MarchBoard),
+  },
+  {
+    id: 'numerical',
+    info: numericalInfo,
+    loadRules: () => import('./numerical/rules.ts').then((m) => m.numericalRules),
+    loadBoard: () => import('./numerical/NumericalBoard.tsx').then((m) => m.NumericalBoard),
   },
 ]
 

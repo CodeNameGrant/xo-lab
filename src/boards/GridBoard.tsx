@@ -39,6 +39,8 @@ interface GridBoardProps {
   readonly chosenBy?: Player
   /** March: the empty squares the chosen piece can move to, each marked with a dot in `chosenBy`'s colour. */
   readonly targets?: readonly number[]
+  /** Wild: the player with a piece picked up from the tray; the empty playable squares are outlined, dashed, in their colour (D-58). */
+  readonly ready?: Player
   /** March: words added to a square's label, such as "can move" or "move here". */
   readonly labelExtra?: (index: number) => string | null
 }
@@ -78,6 +80,7 @@ export function GridBoard({
   chosenBy,
   targets,
   labelExtra,
+  ready,
 }: GridBoardProps) {
   const { grid, piece, mark } = SIZES[size]
   return (
@@ -95,9 +98,10 @@ export function GridBoard({
             // its border, and in light its player's tint (D-24); dark keeps one shared highlight. That player
             // usually won, but not always: in Misère they lost (D-40). The highlight fades in, unless the
             // device asks for reduced motion.
-            className={`${boardTile} data-chosen:border-2 data-[chosen=O]:border-player-o data-[chosen=X]:border-player-x`}
+            className={`${boardTile} data-chosen:border-2 data-ready:border-dashed data-[chosen=O]:border-player-o data-[chosen=X]:border-player-x data-[ready=O]:border-player-o data-[ready=X]:border-player-x`}
             data-win={(highlight.includes(index) && (lineOwner ?? cell)) || undefined}
             data-chosen={(index === chosen && chosenBy) || undefined}
+            data-ready={(playable && cell === null && ready) || undefined}
             aria-label={`Row ${row}, column ${column}, ${cell ?? 'empty'}${fading ? ', disappears next' : ''}${labelExtra?.(index) ? `, ${labelExtra(index)}` : ''}`}
             // aria-disabled (not disabled) keeps every square reachable for screen readers.
             aria-disabled={!playable}

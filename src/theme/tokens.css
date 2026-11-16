@@ -94,6 +94,27 @@
   /* The score box on a player card. */
   --radius-score: 7px;
 
+  /*
+   * A piece tray shakes when a square is tapped with nothing picked up (D-58). Always used as
+   * `motion-safe:animate-shake`; with reduced motion the tray is outlined instead.
+   */
+  --animate-shake: shake 320ms ease-in-out;
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: none;
+    }
+    20%,
+    60% {
+      transform: translateX(-5px);
+    }
+    40%,
+    80% {
+      transform: translateX(5px);
+    }
+  }
+
   /* A piece pops in when placed. Always used as `motion-safe:animate-place`. */
   --animate-place: place 180ms cubic-bezier(0.2, 0.8, 0.3, 1.2);
 

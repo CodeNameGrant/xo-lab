@@ -5,6 +5,7 @@ import { Icon } from '../ui/icon.tsx'
 import { Tooltip } from '../ui/Tooltip.tsx'
 import { ThemeToggle } from '../ui/ThemeToggle.tsx'
 import { Mark } from '../ui/Mark.tsx'
+import { NumberPiece } from '../ui/NumberPiece.tsx'
 import { variants } from '../variants/registry.ts'
 import type { VariantInfo } from '../variants/types.ts'
 import { useHubView } from './hubView.ts'
@@ -96,6 +97,10 @@ function Preview({ rows, neutral }: { rows: VariantInfo['preview']; neutral: boo
           >
             {(cell === 'X' || cell === 'O' || cell === 'S') && (
               <Mark player={cell} tone={neutral ? 'neutral' : cell} size={piece} stroke={3} />
+            )}
+            {/* A digit is a number piece (Numerical): odd in Player 1's colour, even in Player 2's, as when Player 1 starts. */}
+            {/[1-9]/.test(cell) && (
+              <NumberPiece value={Number(cell)} tone={Number(cell) % 2 ? 'X' : 'O'} size={piece} />
             )}
           </span>
         ))}

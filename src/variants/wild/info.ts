@@ -6,7 +6,7 @@ export const wildInfo: VariantInfo = {
   sharedMarks: { marks: ['X', 'O'], detail: 'X or O' },
   tagline: 'A 4×4 board. Play X or O, your choice. Any three in a row wins.',
   howToPlay: [
-    'The board is 4×4. On your turn, tap an empty square, then choose X or O. Either player can place either symbol, every turn.',
+    'The board is 4×4. On your turn, pick up X or O from the tray above the board, then tap an empty square to place it. Either player can place either symbol, every turn.',
     'Complete a line of three matching symbols, **XXX or OOO**, across, down or diagonally, and **you win**, even if the other player placed most of them.',
     'So watch both symbols: two matching symbols in a line with the third square empty are a win for whoever moves next. Try not to leave one behind.',
     "If the board fills up with no line, it's a draw. Who goes first swaps with each new game.",
