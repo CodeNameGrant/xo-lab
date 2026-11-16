@@ -653,3 +653,13 @@ The pieces are numbers, drawn by a new `<NumberPiece>` in `src/ui/`: real text i
 **Why.** The rules are the [Wikipedia](<https://en.wikipedia.org/wiki/SOS_(paper-and-pencil_game)>) game's main version; Grant chose most SOSs over first SOS, which would play like Wild, and kept the extra turn, the heart of the game. 6×6 is the largest board whose squares stay over 44 px. One square can be part of SOSs for both players, so tinting squares can't show who made what; a stroke through each, like crossing out on paper, can. Grant asked for the tray to be tinted so an extra turn shows. The strict turn check has caught real bugs, so it stays for every variant but SOS. Lucide has no plain S, and a text S beside a Lucide circle wouldn't match, so both letters are text.
 
 **Considered.** First SOS wins (rejected: close to Wild). No extra turn (rejected: the game's heart). 7×7 or 8×8 (rejected: squares under 44 px). Rings around each SOS (rejected: hard to read when they overlap). An "Again!" note on the scorer's card (rejected: a shared-screen change; the stroke, the count and the tint say it). Loosening the turn check for every variant (rejected for a per-variant opt-out).
+
+### D-60 · A GitHub link on the hub, and brand logos from simple-icons
+
+**Status:** Accepted
+
+**Decision.** The hub's top right gains a link to the source code on GitHub, left of the view and theme toggles, drawn with the GitHub logo and opening in a new tab. It is an icon button like its neighbours, with a tooltip and the label "XO Lab on GitHub". Brand logos are the one exception to Lucide-only icons: they come from the `simple-icons` package as filled paths, drawn by `<Icon>` from a `BRANDS` map in `src/ui/icon.tsx` beside the Lucide `GLYPHS`, so a brand icon is still `<Icon name="…">`.
+
+**Why.** Grant asked for the GitHub logo. Lucide removed its brand icons, so it has no GitHub mark; simple-icons is the maintained source of brand logos as SVG paths, and keeping them behind `<Icon>` leaves one way to draw an icon.
+
+**Considered.** A Lucide git icon in its place (rejected by Grant: not the GitHub logo). The logo's path pasted into `icon.tsx` (rejected: a hand-drawn SVG to maintain by hand).

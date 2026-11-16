@@ -27,6 +27,18 @@ export function HubScreen() {
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-[32px] font-bold">XO Lab</h1>
           <div className="flex gap-1">
+            {/* The source code, in a new tab so the hub stays open. */}
+            <Tooltip label="XO Lab on GitHub" align="end">
+              <a
+                href="https://github.com/CodeNameGrant/xo-lab"
+                target="_blank"
+                rel="noreferrer"
+                className={iconButton}
+                aria-label="XO Lab on GitHub"
+              >
+                <Icon name="sourceCode" size={20} />
+              </a>
+            </Tooltip>
             {/* Like the theme toggle, it shows the view it switches to. */}
             <Tooltip label={`Show as ${next}`} align="end">
               <button type="button" className={iconButton} aria-label={`Show as ${next}`} onClick={() => setView(next)}>

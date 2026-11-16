@@ -13,12 +13,14 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react'
+import { siGithub, type SimpleIcon } from 'simple-icons'
 
 /**
  * Every icon in the app, by what it means rather than what it looks like.
  * A new icon is a new entry here, named for its job (`newGame`, not
  * `rotate-cw`). The only other file that imports lucide-react is Mark.tsx,
- * for the X and O game pieces.
+ * for the game pieces. Brand logos, which Lucide lacks, come
+ * from simple-icons in `BRANDS` below.
  */
 const GLYPHS = {
   back: ChevronLeft,
@@ -40,7 +42,17 @@ const GLYPHS = {
   darkTheme: Moon,
 } satisfies Record<string, LucideIcon>
 
-export type IconName = keyof typeof GLYPHS
+/**
+ * Brand logos, which Lucide doesn't draw: the one exception to Lucide-only
+ * icons (D-60). Each is a filled path from the `simple-icons` package, on the
+ * same 24-unit box, named for its job like the glyphs above.
+ */
+const BRANDS = {
+  /** The hub's link to the source code. */
+  sourceCode: siGithub,
+} satisfies Record<string, SimpleIcon>
+
+export type IconName = keyof typeof GLYPHS | keyof typeof BRANDS
 
 interface IconProps {
   readonly name: IconName
@@ -52,6 +64,22 @@ interface IconProps {
 
 /** A Lucide icon in the current text colour. Always decorative: the button or link around it carries the label. */
 export function Icon({ name, size = 24, className }: IconProps) {
-  const Glyph = GLYPHS[name]
+  if (name in BRANDS) {
+    const brand = BRANDS[name as keyof typeof BRANDS]
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        width={size}
+        height={size}
+        fill="currentColor"
+        className={className}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d={brand.path} />
+      </svg>
+    )
+  }
+  const Glyph = GLYPHS[name as keyof typeof GLYPHS]
   return <Glyph size={size} className={className} aria-hidden="true" focusable="false" />
 }
