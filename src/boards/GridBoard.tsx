@@ -12,8 +12,8 @@ export interface LeavingMark {
 }
 
 interface GridBoardProps {
-  /** Squares across: 3 (Classic, Infinite) or 4 (Trio). The board is always square. */
-  readonly size?: 3 | 4
+  /** Squares across: 3 (Classic, Infinite, Misère), 4 (Trio, Wild) or 5 (Harvest). The board is always square. */
+  readonly size?: 3 | 4 | 5
   readonly cells: readonly Cell[]
   /** Squares to light up: the completed line, in the colour of the player whose marks it holds. */
   readonly highlight: readonly number[]
@@ -31,24 +31,35 @@ interface GridBoardProps {
    * either player's). Left out, each square takes the colour of the mark on it.
    */
   readonly lineOwner?: Player
-  /** Wild: the square the player to move is choosing a mark for, outlined in `chosenBy`'s colour. */
+  /**
+   * Wild: the square the player to move is choosing a mark for; March: the piece they're about to
+   * move. Outlined in `chosenBy`'s colour.
+   */
   readonly chosen?: number | null
   readonly chosenBy?: Player
+  /** March: the empty squares the chosen piece can move to, each marked with a dot in `chosenBy`'s colour. */
+  readonly targets?: readonly number[]
+  /** March: words added to a square's label, such as "can move" or "move here". */
+  readonly labelExtra?: (index: number) => string | null
 }
+
+/** A target square's dot, in the colour of the player who would move there. */
+const DOT = { X: 'bg-player-x', O: 'bg-player-o', S: 'bg-player-s' } as const
 
 /**
  * The grid and its pieces at each size. 3×3: tiles 10 px apart, pieces 60 px
  * on a full-size tile. 4×4: tiles 8 px apart (about 80 px on a 390 px phone),
- * pieces 48 px.
+ * pieces 48 px. 5×5: tiles 8 px apart (about 62 px), pieces 40 px.
  */
 const SIZES = {
   3: { grid: 'grid-cols-3 grid-rows-3 gap-2.5', piece: 'size-3/4 max-h-15 max-w-15', mark: 60 },
   4: { grid: 'grid-cols-4 grid-rows-4 gap-2', piece: 'size-3/5 max-h-12 max-w-12', mark: 48 },
+  5: { grid: 'grid-cols-5 grid-rows-5 gap-2', piece: 'size-2/3 max-h-10 max-w-10', mark: 40 },
 } as const
 
 /**
- * The shared square grid: 3×3 for Classic, Infinite and Misère, 4×4 for Trio and Wild. It only draws cells and
- * reports taps; the variant's board decides what a tap means.
+ * The shared square grid: 3×3 for Classic, Infinite and Misère, 4×4 for Trio, Wild and March,
+ * 5×5 for Harvest. It only draws cells and reports taps; the variant's board decides what a tap means.
  *
  * Both themes draw separate tiles with a gap and no panel (decision
  * D-28); only the colours differ between them.
@@ -65,6 +76,8 @@ export function GridBoard({
   lineOwner,
   chosen,
   chosenBy,
+  targets,
+  labelExtra,
 }: GridBoardProps) {
   const { grid, piece, mark } = SIZES[size]
   return (
@@ -85,7 +98,7 @@ export function GridBoard({
             className={`${boardTile} data-chosen:border-2 data-[chosen=O]:border-player-o data-[chosen=X]:border-player-x`}
             data-win={(highlight.includes(index) && (lineOwner ?? cell)) || undefined}
             data-chosen={(index === chosen && chosenBy) || undefined}
-            aria-label={`Row ${row}, column ${column}, ${cell ?? 'empty'}${fading ? ', disappears next' : ''}`}
+            aria-label={`Row ${row}, column ${column}, ${cell ?? 'empty'}${fading ? ', disappears next' : ''}${labelExtra?.(index) ? `, ${labelExtra(index)}` : ''}`}
             // aria-disabled (not disabled) keeps every square reachable for screen readers.
             aria-disabled={!playable}
             onClick={() => playable && onPlay(index)}
@@ -100,6 +113,9 @@ export function GridBoard({
                   fading ? `${piece} opacity-40 motion-safe:animate-fade-pulse` : `${piece} motion-safe:animate-place`
                 }
               />
+            ) : targets?.includes(index) && chosenBy ? (
+              // A square the chosen piece can move to.
+              <span className={`size-3 rounded-full opacity-60 ${DOT[chosenBy]}`} aria-hidden="true" />
             ) : (
               leaving?.square === index && (
                 <Mark

@@ -64,6 +64,8 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-52 | 2026-11-15 | The hub and How to play say the AI is there                    | Accepted                                        |
 | D-53 | 2026-11-16 | XO Lab is an installable app that plays offline                | Accepted                                        |
 | D-54 | 2026-11-16 | Pyramid: nine squares, seven lines                             | Accepted                                        |
+| D-55 | 2026-11-16 | Harvest: 24 moves, and the most lines wins                     | Accepted                                        |
+| D-56 | 2026-11-16 | March: four pieces each, moved one step at a time              | Accepted                                        |
 
 ---
 
@@ -594,3 +596,23 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** The source, [What Do We Do All Day](https://www.whatdowedoallday.com/tic-tac-toe-variations/), says only "vertically, horizontally, or diagonally" and shows its examples as pictures; Grant confirmed this reading. The short slants inside the pyramid (1–5, 3–7) are only two squares long, so they are no lines. The AI plays it with no changes, through the contract.
 
 **Considered.** Counting two-square diagonals (rejected: they can't hold three). Drawing the pyramid with the shared grid board and hiding four squares (rejected: the grid board assumes every square exists and is playable, so it would need gaps in its numbering and labels).
+
+### D-55 · Harvest: 24 moves, and the most lines wins
+
+**Status:** Accepted
+
+**Decision.** Harvest (#33) is played on a 5×5 board. A line of three doesn't end the game: it ends after 24 moves, 12 each, with one square left empty, and whoever has made more lines of three wins; equal counts are a draw. Every distinct line of three counts, so a run of four scores 2 and a run of five scores 3. Lines light up in their player's colour as they're made, and the board shows each player's line count above it. The outcome's `highlight` is every line's squares. The shared grid board gains a 5×5 size.
+
+**Why.** The source, [What Do We Do All Day](https://www.whatdowedoallday.com/tic-tac-toe-variations/)'s "5 x 5 Tic-Tac-Toe", plays 24 squares and leaves two choices to the players. Grant chose that marks count in every line they're part of, and that the game simply ends after 24 moves with every square open until then, rather than blocking the centre or making it wild. The count lives in the board because the player cards already carry the session's score (D-42), and a game-in-progress count is Harvest's alone.
+
+**Considered.** Counting each mark in only one line (rejected by Grant). A blocked or wild centre square, the source's optional variations (rejected: ending after 24 moves needs no extra rule). The line count on the player cards (rejected: they keep the session's score, and changing them for one variant would change the shared screen). The names Triples, Hat-trick, Trifecta, Hoard, Bumper and Stack Up (Grant chose Harvest).
+
+### D-56 · March: four pieces each, moved one step at a time
+
+**Status:** Accepted
+
+**Decision.** March (#34) is played on a 4×4 board where each player starts with four pieces and nothing is placed: the top row is X O X O and the bottom O X O X. On a turn, a player moves one of their pieces one square up, down, left or right into an empty square, with no diagonal moves and no jumping. The first to get three of their pieces in a row, across, down or diagonally, wins. A player with no legal move ends the game in a draw. There is no repetition rule. A move is `{ from, to }`. Pieces are moved by tap-tap: pick up a piece, then tap one of the dots that mark where it can go. The shared grid board gains `targets` (the dots) and `labelExtra` (words added to a square's label).
+
+**Why.** The source, [What Do We Do All Day](https://www.whatdowedoallday.com/tic-tac-toe-variations/)'s "4 x 4 Tic-Tac-Toe", sets the starting position and the moves. Grant chose a draw for a player who can't move, and no repetition rule, as for Shift (D-33); the AI caps every game it simulates (D-47), so a loop can't stall it. Tap-tap works with a screen reader and a keyboard, where drag-only (Shift's window, D-34) doesn't, and there's no undo to worry about, since nothing happens until a dot is tapped.
+
+**Considered.** Dragging pieces (not now: it could be added later beside tap-tap). A loss for a player who can't move (rejected by Grant for a draw). The names Advance, Muster, Stride, Patrol and Skirmish (Grant chose March).
