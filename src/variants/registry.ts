@@ -1,5 +1,7 @@
 import { classicInfo } from './classic/info.ts'
+import { harvestInfo } from './harvest/info.ts'
 import { infiniteInfo } from './infinite/info.ts'
+import { marchInfo } from './march/info.ts'
 import { misereInfo } from './misere/info.ts'
 import { notaktoInfo } from './notakto/info.ts'
 import { pyramidInfo } from './pyramid/info.ts'
@@ -68,6 +70,18 @@ export const variants: readonly VariantEntry[] = [
     info: pyramidInfo,
     loadRules: () => import('./pyramid/rules.ts').then((m) => m.pyramidRules),
     loadBoard: () => import('./pyramid/PyramidBoard.tsx').then((m) => m.PyramidBoard),
+  },
+  {
+    id: 'harvest',
+    info: harvestInfo,
+    loadRules: () => import('./harvest/rules.ts').then((m) => m.harvestRules),
+    loadBoard: () => import('./harvest/HarvestBoard.tsx').then((m) => m.HarvestBoard),
+  },
+  {
+    id: 'march',
+    info: marchInfo,
+    loadRules: () => import('./march/rules.ts').then((m) => m.marchRules),
+    loadBoard: () => import('./march/MarchBoard.tsx').then((m) => m.MarchBoard),
   },
 ]
 

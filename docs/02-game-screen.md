@@ -174,6 +174,8 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Notakto**  | Its own three boards (`src/variants/notakto/NotaktoBoard.tsx`), described below                                                                                                                                                                 | Shared marks on the cards; no draws line (D-43)                         | Built (#23) |
 | **Wild**     | The shared grid board at 4×4 with neutral marks, plus a callout to choose X or O (`src/variants/wild/WildBoard.tsx`), described below                                                                                                           | Shared marks on the cards: an X and O pair, "X or O" (D-43)             | Built (#24) |
 | **Pyramid**  | Its own pyramid of nine tiles (`src/variants/pyramid/PyramidBoard.tsx`), described below                                                                                                                                                        | None                                                                    | Built (#32) |
+| **Harvest**  | The shared grid board at 5×5 with every line lit as it's made, and a line count above it (`src/variants/harvest/HarvestBoard.tsx`), described below                                                                                             | None                                                                    | Built (#33) |
+| **March**    | The shared grid board at 4×4 with pieces that move, by tap-tap (`src/variants/march/MarchBoard.tsx`), described below                                                                                                                           | None                                                                    | Built (#34) |
 
 ### Ultimate's board
 
@@ -225,5 +227,22 @@ Nine tiles in the tile shape of the 3×3 board (decision D-28), stacked 1, 3 and
 - **Completed line:** as on the 3×3 board, in its player's colour.
 - **Labels:** rows and columns count in the 5-wide grid: the apex is "Row 1, column 3", the middle row is columns 2–4, the base columns 1–5.
 - **Hub picture:** a space in `preview` is a square that isn't there, and the picture's columns come from its row length, so Pyramid's is 5 wide and 3 tall.
+
+### Harvest's board
+
+The shared grid board at 5×5 (decision D-55): 25 tiles 8 px apart, about 62 px on the 390 px phone, pieces 40 px.
+
+- **Lines light up as they're made**, not only at the end: every square of every line takes its player's colour as on the 3×3 board. A square can belong to lines of both players only if it held both marks, which it can't, so each square has one colour.
+- **The line count** sits 12 px above the board, centred: each player's mark at 16 px, then "2 lines", 15 px semibold with tabular figures, the two 16 px apart. It's a polite live region, always on the page, so screen readers hear each new line ("Player 1: 2 lines").
+- The player cards keep the session's score; the count above the board is this game's lines.
+
+### March's board
+
+The shared grid board at 4×4, as Trio's (decision D-28): 16 tiles 8 px apart, about 80 px on the 390 px phone, pieces 48 px in their players' colours. Nothing is placed: the pieces start on the board and move (decision D-56).
+
+- **Picking up a piece:** tapping one of your pieces that can move gives its square a 2 px border in your colour, and marks each empty square it can step to with a **12 px dot** in your colour at 60 %.
+- **Moving it:** tapping a dot moves the piece there. Tapping another of your movable pieces picks that one up instead; tapping the chosen piece again, any other square, a gap or anywhere off the board puts it down. A move or a new game also clears it.
+- **Labels:** a piece that can move adds ", can move" ("Row 1, column 3, X, can move"); a dot's square adds ", move here".
+- **Completed line:** as on the 3×3 board, in its player's colour.
 
 When a new variant is built, fill in its row with what was actually built, and add its board's sizes and colours here.
