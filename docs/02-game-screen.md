@@ -173,6 +173,7 @@ What each variant does differently from the shared screen. All of it is inside t
 | **Misère**   | The shared 3×3 board (`src/boards/GridBoard.tsx`); the completed line keeps the colour of the player who made it, the loser (D-40)                                                                                                              | None                                                                    | Built (#19) |
 | **Notakto**  | Its own three boards (`src/variants/notakto/NotaktoBoard.tsx`), described below                                                                                                                                                                 | Shared marks on the cards; no draws line (D-43)                         | Built (#23) |
 | **Wild**     | The shared grid board at 4×4 with neutral marks, plus a callout to choose X or O (`src/variants/wild/WildBoard.tsx`), described below                                                                                                           | Shared marks on the cards: an X and O pair, "X or O" (D-43)             | Built (#24) |
+| **Pyramid**  | Its own pyramid of nine tiles (`src/variants/pyramid/PyramidBoard.tsx`), described below                                                                                                                                                        | None                                                                    | Built (#32) |
 
 ### Ultimate's board
 
@@ -214,5 +215,15 @@ The shared grid board at 4×4, as Trio's (decision D-28): 16 tiles 8 px apart, a
 - **Choosing a mark:** tapping an empty square gives it a 2 px border in the colour of the player to move and opens a callout 8 px above it, or 8 px below it on the top row, centred on the square: a `surface` panel with a 1 px `grid` border (`line` in dark), radius 14 px, the board's shadow, 8 px padding and a small pointer towards the square. In it are two **52 px** buttons, X and O, 8 px apart, radius 12 px, on `page` (`surface` in dark), with 30 px neutral marks. The callout pops in like a piece.
 - **Closing it:** tapping X or O places that mark. Tapping another empty square moves the callout there; tapping the chosen square again, a taken square, a gap, anywhere off the board, or pressing Escape closes it with no move. A move or a new game also closes it.
 - **Labels:** the callout is a group, "Choose a mark for row 2, column 3", and its buttons read "Place X" and "Place O". When it opens, focus moves to "Place X".
+
+### Pyramid's board
+
+Nine tiles in the tile shape of the 3×3 board (decision D-28), stacked 1, 3 and 5 in a grid 5 squares wide and 3 tall, so the base sets the size (decision D-54).
+
+- **Size:** 342 px wide at most, squares **8 px** apart; on the 390 px phone each square is about **62 px**. Pieces are 40 px.
+- **Shape:** the apex sits over the middle square of the base, and the middle row over the base's three middle squares. The empty grid corners show the page behind them.
+- **Completed line:** as on the 3×3 board, in its player's colour.
+- **Labels:** rows and columns count in the 5-wide grid: the apex is "Row 1, column 3", the middle row is columns 2–4, the base columns 1–5.
+- **Hub picture:** a space in `preview` is a square that isn't there, and the picture's columns come from its row length, so Pyramid's is 5 wide and 3 tall.
 
 When a new variant is built, fill in its row with what was actually built, and add its board's sizes and colours here.

@@ -63,6 +63,7 @@ Every decision about XO Lab that is worth defending later, in the order it was m
 | D-51 | 2026-11-15 | Tooltips on the header buttons, and a long press on touch      | Accepted                                        |
 | D-52 | 2026-11-15 | The hub and How to play say the AI is there                    | Accepted                                        |
 | D-53 | 2026-11-16 | XO Lab is an installable app that plays offline                | Accepted                                        |
+| D-54 | 2026-11-16 | Pyramid: nine squares, seven lines                             | Accepted                                        |
 
 ---
 
@@ -583,3 +584,13 @@ The game session stays as D-06 describes it, the first player plus the move list
 **Why.** Grant wanted XO Lab on the home screen like any other app. Two people passing a phone are often somewhere with a poor connection, and every rule runs on the device already, so offline play costs only the cache. Waiting for every window to close, rather than taking over at once, is the default service worker lifecycle and the only one that can't interrupt a game: there is no update prompt to design, and nothing is saved that a reload could keep. Classic's picture is the one people already know from the hub, and the dark theme's neon reads better as a small icon than the light theme's thin lines on white.
 
 **Considered.** Taking over at once and reloading (rejected: a reload mid-game loses it, D-41). An "Update available" prompt (not needed yet: a game is short and the update arrives on the next launch). A hand-written service worker (rejected: it would have to list every hashed chunk of each build itself). The light theme's colours for the icon or the title bar (rejected: the icon would sit on white, and one static colour has to be picked; the dark one matches the icon and the splash screen). A separate drawing for the maskable icon (not needed: the one drawing already keeps the board in the safe circle).
+
+### D-54 · Pyramid: nine squares, seven lines
+
+**Status:** Accepted
+
+**Decision.** Pyramid (#32) is played on nine squares in three centred rows, 1, 3 and 5, numbered 0 at the apex to 8 at the base's right. The first to three in a row wins along one of seven lines: the middle row (1–2–3), the three runs of three in the base (4–5–6, 5–6–7, 6–7–8), the centre column (0–2–6) and the two sloping edges (0–1–4, 0–3–8). A full board with no line is a draw. Its board sits in a 5 × 3 grid with the empty corners left open. The hub picture's `preview` gains a space for "no square here", and its columns come from the row length, so a picture can be wider than it is tall. The tile's class list, now used by two boards, moved to `boardTile` in `src/ui/classes.ts`.
+
+**Why.** The source, [What Do We Do All Day](https://www.whatdowedoallday.com/tic-tac-toe-variations/), says only "vertically, horizontally, or diagonally" and shows its examples as pictures; Grant confirmed this reading. The short slants inside the pyramid (1–5, 3–7) are only two squares long, so they are no lines. The AI plays it with no changes, through the contract.
+
+**Considered.** Counting two-square diagonals (rejected: they can't hold three). Drawing the pyramid with the shared grid board and hiding four squares (rejected: the grid board assumes every square exists and is playable, so it would need gaps in its numbering and labels).

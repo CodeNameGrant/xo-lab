@@ -2,6 +2,7 @@ import { classicInfo } from './classic/info.ts'
 import { infiniteInfo } from './infinite/info.ts'
 import { misereInfo } from './misere/info.ts'
 import { notaktoInfo } from './notakto/info.ts'
+import { pyramidInfo } from './pyramid/info.ts'
 import { shiftInfo } from './shift/info.ts'
 import { trioInfo } from './trio/info.ts'
 import type { VariantEntry } from './types.ts'
@@ -61,6 +62,12 @@ export const variants: readonly VariantEntry[] = [
     info: wildInfo,
     loadRules: () => import('./wild/rules.ts').then((m) => m.wildRules),
     loadBoard: () => import('./wild/WildBoard.tsx').then((m) => m.WildBoard),
+  },
+  {
+    id: 'pyramid',
+    info: pyramidInfo,
+    loadRules: () => import('./pyramid/rules.ts').then((m) => m.pyramidRules),
+    loadBoard: () => import('./pyramid/PyramidBoard.tsx').then((m) => m.PyramidBoard),
   },
 ]
 

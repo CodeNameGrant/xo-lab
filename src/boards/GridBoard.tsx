@@ -1,5 +1,6 @@
 import type { Cell } from '../game/lines.ts'
 import type { Player } from '../game/rules.ts'
+import { boardTile } from '../ui/classes.ts'
 import { Mark } from '../ui/Mark.tsx'
 
 /** A piece that has just been taken off the board, drawn once more while it fades out. */
@@ -81,7 +82,7 @@ export function GridBoard({
             // its border, and in light its player's tint (D-24); dark keeps one shared highlight. That player
             // usually won, but not always: in Misère they lost (D-40). The highlight fades in, unless the
             // device asks for reduced motion.
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-tile border border-grid bg-surface data-chosen:border-2 data-[chosen=O]:border-player-o data-[chosen=X]:border-player-x data-[win=O]:border-player-o data-[win=S]:border-player-s data-[win=X]:border-player-x motion-safe:transition-colors motion-safe:duration-300 dark:data-win:bg-win light:data-[win=O]:bg-tint-o light:data-[win=S]:bg-tint-s light:data-[win=X]:bg-tint-x"
+            className={`${boardTile} data-chosen:border-2 data-[chosen=O]:border-player-o data-[chosen=X]:border-player-x`}
             data-win={(highlight.includes(index) && (lineOwner ?? cell)) || undefined}
             data-chosen={(index === chosen && chosenBy) || undefined}
             aria-label={`Row ${row}, column ${column}, ${cell ?? 'empty'}${fading ? ', disappears next' : ''}`}
