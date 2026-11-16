@@ -7,6 +7,7 @@ import { notaktoInfo } from './notakto/info.ts'
 import { numericalInfo } from './numerical/info.ts'
 import { pyramidInfo } from './pyramid/info.ts'
 import { shiftInfo } from './shift/info.ts'
+import { sosInfo } from './sos/info.ts'
 import { trioInfo } from './trio/info.ts'
 import type { VariantEntry } from './types.ts'
 import { ultimateInfo } from './ultimate/info.ts'
@@ -89,6 +90,12 @@ export const variants: readonly VariantEntry[] = [
     info: numericalInfo,
     loadRules: () => import('./numerical/rules.ts').then((m) => m.numericalRules),
     loadBoard: () => import('./numerical/NumericalBoard.tsx').then((m) => m.NumericalBoard),
+  },
+  {
+    id: 'sos',
+    info: sosInfo,
+    loadRules: () => import('./sos/rules.ts').then((m) => m.sosRules),
+    loadBoard: () => import('./sos/SosBoard.tsx').then((m) => m.SosBoard),
   },
 ]
 

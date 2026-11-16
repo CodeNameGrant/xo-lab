@@ -30,7 +30,12 @@ interface PieceTrayProps<Key extends string | number> {
   readonly title?: string
   /** Counts the times a square was tapped with nothing picked up; each new count shakes the tray. */
   readonly nudges: number
+  /** A shared tray (SOS) sits on its player's tint, so whose turn it is, and an extra turn, show at a glance. */
+  readonly tinted?: boolean
 }
+
+/** A tinted tray's background, in the colour of the player to move. */
+const TINT = { X: 'bg-tint-x', O: 'bg-tint-o' } as const
 
 /** The picked chip: filled with its player's colour, lifted a little, its piece in the on-colour (D-58). */
 const PICKED = {
@@ -63,6 +68,7 @@ export function PieceTray<Key extends string | number>({
   label,
   title,
   nudges,
+  tinted,
 }: PieceTrayProps<Key>) {
   return (
     <div
@@ -70,7 +76,7 @@ export function PieceTray<Key extends string | number>({
       key={live ? nudges : 0}
       role="group"
       aria-label={label}
-      className={`flex items-center justify-center gap-1.5 rounded-xl ${live ? '' : 'opacity-40'} ${
+      className={`flex items-center justify-center gap-1.5 rounded-xl ${tinted ? `rounded-card p-2 ${TINT[player]} motion-safe:transition-colors motion-safe:duration-200` : ''} ${live ? '' : 'opacity-40'} ${
         live && nudges > 0
           ? `motion-safe:animate-shake motion-reduce:outline-2 motion-reduce:outline-offset-4 ${NUDGE_OUTLINE[player]}`
           : ''

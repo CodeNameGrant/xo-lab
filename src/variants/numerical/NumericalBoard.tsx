@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { PieceTray } from '../../boards/PieceTray.tsx'
 import type { TwoPlayer } from '../../game/rules.ts'
 import { boardTile } from '../../ui/classes.ts'
-import { NumberPiece } from '../../ui/NumberPiece.tsx'
+import { GlyphPiece } from '../../ui/GlyphPiece.tsx'
 import type { BoardProps } from '../types.ts'
 import type { NumericalMove, NumericalSelectors, NumericalState } from './rules.ts'
 
@@ -64,7 +64,7 @@ export function NumericalBoard({
           key: number,
           label: String(number),
           used: !left.includes(number),
-          piece: <NumberPiece value={number} tone="inherit" size={20} />,
+          piece: <GlyphPiece value={number} tone="inherit" size={20} />,
         }))}
       />
     )
@@ -101,7 +101,7 @@ export function NumericalBoard({
               }}
             >
               {number !== null && (
-                <NumberPiece value={number} tone={owner(number)} size={60} className="motion-safe:animate-place" />
+                <GlyphPiece value={number} tone={owner(number)} size={60} className="motion-safe:animate-place" />
               )}
             </button>
           )

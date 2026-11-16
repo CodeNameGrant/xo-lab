@@ -14,7 +14,10 @@ import { nextPlayer, playersOf, type Player } from './rules.ts'
 import { currentState, playMove, startGame, type Game } from './session.ts'
 
 const loaded = await Promise.all(
-  variants.map(async (entry) => [entry.id, await entry.loadRules(), playersOf(entry.info.players)] as const),
+  variants.map(
+    async (entry) =>
+      [entry.id, await entry.loadRules(), playersOf(entry.info.players), entry.info.extraTurns === true] as const,
+  ),
 )
 
 /** Plays random legal moves until the game ends or `cap` moves are made. Never throws. */
@@ -31,7 +34,7 @@ function randomGame(rules: AnyRules, seed: number, first: Player = 'X', cap = 20
 
 const SEEDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-describe.each(loaded)('%s follows the rules contract', (_, rules, players) => {
+describe.each(loaded)('%s follows the rules contract', (_, rules, players, extraTurns) => {
   it.each(players)('a new game is in progress with %s to move', (first) => {
     const state = rules.initialState(first)
     expect(rules.outcome(state)).toEqual({ kind: 'in-progress' })
@@ -84,7 +87,10 @@ describe.each(loaded)('%s follows the rules contract', (_, rules, players) => {
     let state = rules.initialState(game.firstPlayer)
     for (const move of game.moves) {
       const next = rules.applyMove(state, move)
-      expect(rules.currentPlayer(next)).toBe(nextPlayer(rules.currentPlayer(state), players.length))
+      const mover = rules.currentPlayer(state)
+      // A variant with extra turns (SOS) may also keep the turn with the player who just moved.
+      const allowed = extraTurns ? [nextPlayer(mover, players.length), mover] : [nextPlayer(mover, players.length)]
+      expect(allowed).toContain(rules.currentPlayer(next))
       state = next
     }
   })
